@@ -1,0 +1,47 @@
+.grid {
+    padding: 5px;
+    border: 1px solid #d9d9d9;
+    .grid-top {
+        position: relative;
+        background: #2db7f5;
+        .text {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            margin-top: -9px;
+            text-align: center;
+            color: #fff;
+            z-index: 9;
+        }
+        .img{
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            background-size: 100% 100%;
+            z-index: 99;
+        }
+        .mask {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: url('http://img.mockuai.com/tms/2016/10/20/upload_222d26b4de29eb4394fbfc6a2e932bc7.png') no-repeat center;
+            width: 100%;
+            display: none;
+            z-index: 999;
+        }
+    }
+    .grid-bottom {
+        p {
+            overflow: hidden;
+            line-height: 18px;
+            height: 18px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            &.price {
+                color: #f00;
+            }
+        }
+    }
+}
