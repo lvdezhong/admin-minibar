@@ -2,9 +2,11 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Row, Col } from 'antd'
+import PubSub from 'pubsub-js'
 
 import { pushDeviceDefaultItem } from '../../actions/device'
 import { pushMainTplDefaultItem } from '../../actions/maintpl'
+import { CLICK_GOODS_ITEM } from '../../utils'
 
 import GridBox from '../GridBox'
 import GridForm from '../GridForm'
@@ -29,12 +31,8 @@ class Shelves extends React.Component {
     constructor() {
         super()
         this.state = {
-            currentIndex: 0
+            active: 0
         }
-    }
-
-    handleCallback(index) {
-        this.setState({currentIndex: index});
     }
 
     componentWillUpdate(nextProps) {
@@ -54,9 +52,21 @@ class Shelves extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.pubsub_token = PubSub.subscribe(CLICK_GOODS_ITEM, function(msg, data) {
+            this.setState({
+                active: data
+            });
+        }.bind(this));
+    }
+
+    componentWillUnmount() {
+        PubSub.unsubscribe(this.pubsub_token);
+    }
+
     render() {
         const { deviceGoods, mainTplGoods, keyword } = this.props;
-        const { currentIndex } = this.state;
+        const { active } = this.state;
 
         switch (keyword) {
             case 'device':
@@ -77,19 +87,19 @@ class Shelves extends React.Component {
                     <Row>
                         <Col span={6}>
                             <Row>
-                                <Col span={24}><GridBox height={125} currentIndex="0" keyword={keyword} /></Col>
+                                <Col span={24}><GridBox active={active} height={125} currentIndex="0" keyword={keyword} /></Col>
                             </Row>
                             <Row>
-                                <Col span={24}><GridBox height={125} currentIndex="1" keyword={keyword} /></Col>
+                                <Col span={24}><GridBox active={active} height={125} currentIndex="1" keyword={keyword} /></Col>
                             </Row>
                         </Col>
-                        <Col span={12}><GridBox height={250} currentIndex="2" keyword={keyword} /></Col>
-                        <Col span={6}><GridBox height={250} currentIndex="3" keyword={keyword} /></Col>
+                        <Col span={12}><GridBox active={active} height={250} currentIndex="2" keyword={keyword} /></Col>
+                        <Col span={6}><GridBox active={active} height={250} currentIndex="3" keyword={keyword} /></Col>
                     </Row>
                     <Row>
-                        <Col span={8}><GridBox height={155} currentIndex="4" keyword={keyword} /></Col>
-                        <Col span={8}><GridBox height={155} currentIndex="5" keyword={keyword} /></Col>
-                        <Col span={8}><GridBox height={155} currentIndex="6" keyword={keyword} /></Col>
+                        <Col span={8}><GridBox active={active} height={155} currentIndex="4" keyword={keyword} /></Col>
+                        <Col span={8}><GridBox active={active} height={155} currentIndex="5" keyword={keyword} /></Col>
+                        <Col span={8}><GridBox active={active} height={155} currentIndex="6" keyword={keyword} /></Col>
                     </Row>
                 </div>
                 <div className="vending-form">

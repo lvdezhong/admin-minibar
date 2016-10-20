@@ -150,6 +150,9 @@ class GoodsDetail extends React.Component {
             getCurrentGoods({
                 id: this.id
             })
+            this.setState({
+                isUpdate: true
+            })
         } else {
             getNewGoods();
         }
@@ -160,8 +163,8 @@ class GoodsDetail extends React.Component {
         });
     }
 
-    componentWillUpdate(nextProps, nextState) {
-        if (nextProps.currentGoods.id && this.state.isUpdate == false) {
+    componentWillReceiveProps(nextProps) {
+        if (this.state.isUpdate) {
             this.setState({
                 fileList_horizontal: [{
                     uid: -1,
@@ -175,13 +178,9 @@ class GoodsDetail extends React.Component {
                     status: 'done',
                     url: nextProps.currentGoods.image_vertical,
                 }],
-                isUpdate: true
+                isUpdate: false
             })
-        }
-    }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.currentGoods != nextProps.currentGoods) {
             this.props.form.setFieldsValue({
                 name: nextProps.currentGoods.name,
                 origin_price: price('GET', nextProps.currentGoods.origin_price)
@@ -250,7 +249,7 @@ class GoodsDetail extends React.Component {
                                     <Button type="ghost">
                                         <Icon type="upload" /> 横图
                                     </Button>
-                                    <span className="help">建议尺寸：XXX*XXX</span>
+                                    <span className="help">建议尺寸：376px * 556px</span>
                                 </Upload>
                             </Col>
                             <Col span={12}>
@@ -258,7 +257,7 @@ class GoodsDetail extends React.Component {
                                     <Button type="ghost">
                                         <Icon type="upload" /> 竖图
                                     </Button>
-                                    <span className="help">建议尺寸：XXX*XXX</span>
+                                    <span className="help">建议尺寸：182px * 556px</span>
                                 </Upload>
                             </Col>
                         </Row>

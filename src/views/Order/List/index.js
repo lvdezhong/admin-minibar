@@ -138,7 +138,7 @@ class OrderList extends React.Component {
 
         let options = device.map((item) => {
             return (
-                <Option key={item.id} value={item.id.toString()}>{item.machine_sn}</Option>
+                <Option key={item.id} value={item.id.toString()}>{`${item.hotel.name}-${item.room_number}`}</Option>
             )
         });
 

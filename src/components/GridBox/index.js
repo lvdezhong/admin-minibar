@@ -16,7 +16,7 @@ class GridBox extends React.Component {
     }
 
     render() {
-        const { currentIndex, keyword, height } = this.props;
+        const { currentIndex, keyword, height, active } = this.props;
 
         switch (keyword) {
             case 'device':
@@ -29,6 +29,10 @@ class GridBox extends React.Component {
 
         const gridStyle = {
             height: height
+        }
+
+        if (active == currentIndex) {
+            gridStyle.borderColor = 'red'
         }
 
         const imgStyle = {

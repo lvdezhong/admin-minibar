@@ -141,7 +141,7 @@ class DeviceList extends React.Component {
             )
         });
 
-        options.unshift(<Option key="0" value="">全部</Option>);
+        options.unshift(<Option key="" value="">全部</Option>, <Option key="0" value="0">自定义模版</Option>);
 
         const { getFieldDecorator } = this.props.form
 

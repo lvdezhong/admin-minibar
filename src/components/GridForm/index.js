@@ -94,6 +94,7 @@ class GridForm extends React.Component {
         const { currentIndex, index } = this.state;
         const currentGoods = this.goodsCache[currentIndex];
 
+        // console.log(currentGoods);
         // if (index == null) {
         //     message.error('请选择一个商品！');
         //     return;
