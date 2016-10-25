@@ -1,41 +1,40 @@
 {
-    "name": "admin-minibar",
-    "version": "1.0.0",
-    "description": "React Ant.Design Admin",
-    "main": "index.js",
-    "scripts": {
-        "build": "webpack --progress --colors",
-        "dev": "webpack --progress --colors --config ./webpack.dev.config.js",
-        "start": "node server"
-    },
-    "author": "lvdezhong",
-    "license": "WTFPL",
-    "dependencies": {
-        "antd": "^2.1.0",
-        "pubsub-js": "^1.5.3",
-        "react": "^15.3.2",
-        "react-dom": "^15.3.2",
-        "react-redux": "^4.4.0",
-        "react-router": "^2.8.1",
-        "redux": "^3.3.1",
-        "redux-thunk": "^1.0.3"
-    },
-    "devDependencies": {
-        "babel-core": "^6.5.2",
-        "babel-loader": "^6.2.3",
-        "babel-plugin-antd": "^0.2.0",
-        "babel-preset-es2015": "^6.5.0",
-        "babel-preset-react": "^6.5.0",
-        "babel-preset-react-hmre": "^1.1.1",
-        "babel-preset-stage-0": "^6.5.0",
-        "css-loader": "^0.23.1",
-        "extract-text-webpack-plugin": "^1.0.1",
-        "html-webpack-plugin": "^2.24.0",
-        "less": "^2.7.1",
-        "less-loader": "^2.2.3",
-        "style-loader": "^0.13.1",
-        "url-loader": "^0.5.7",
-        "webpack": "^1.13.2",
-        "webpack-dev-server": "^1.16.2"
-    }
+  "name": "admin-minibar",
+  "version": "1.0.0",
+  "description": "React Ant.Design Admin",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --progress --colors",
+    "dev": "webpack --progress --colors --config ./webpack.dev.config.js",
+    "start": "node server"
+  },
+  "author": "lvdezhong",
+  "license": "WTFPL",
+  "dependencies": {
+    "antd": "^2.1.0",
+    "pubsub-js": "^1.5.3",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "react-redux": "^4.4.0",
+    "react-router": "^2.8.1",
+    "redux": "^3.3.1",
+    "redux-thunk": "^1.0.3"
+  },
+  "devDependencies": {
+    "babel-loader": "^6.2.3",
+    "babel-plugin-import": "^1.0.1",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-react-hmre": "^1.1.1",
+    "babel-preset-stage-0": "^6.5.0",
+    "css-loader": "^0.23.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "html-webpack-plugin": "^2.24.0",
+    "less": "^2.7.1",
+    "less-loader": "^2.2.3",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.16.2"
+  }
 }
