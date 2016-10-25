@@ -35,6 +35,14 @@ class DeviceDetail extends React.Component {
                 return item;
             })
         }
+
+        for (let i = 0; i < machine_item_list.length; i++) {
+            if (!machine_item_list[i].isCompleted) {
+                message.error('商品未添加完全！');
+                return
+            }
+        }
+
         updateDevice({
             id: id,
             machine_item_list: JSON.stringify(machine_item_list),

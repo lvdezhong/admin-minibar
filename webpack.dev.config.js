@@ -1,16 +1,15 @@
 const webpack = require('webpack');
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    devtool: false,
+    devtool: 'eval-source-map',
     entry: {
         app: ['./src/index'],
-        vendor: ['react', 'react-dom']
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
+        publicPath: '/assets/',
         filename: '[name].bundle.js'
     },
     resolve: {
@@ -24,7 +23,7 @@ module.exports = {
             include: __dirname
         }, {
             test: /\.less$/,
-            loader: ExtractTextPlugin.extract('style', 'css!less'),
+            loader: 'style!css!less',
             include: __dirname
         }, {
             test: /\.(png|jpg)$/,
@@ -39,20 +38,6 @@ module.exports = {
             title: 'minibar',
             template: 'index.html'
         }),
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('production')
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            output: {
-                comments: false
-            },
-            compress: {
-                warnings: false
-            }
-        }),
-        new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js'),
-        new ExtractTextPlugin('[name].bundle.css', {
-            allChunks: true
-        })
+        new webpack.HotModuleReplacementPlugin()
     ]
 }

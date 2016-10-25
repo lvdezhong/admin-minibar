@@ -102,7 +102,7 @@ class GridForm extends React.Component {
 
         this.props.form.validateFields((errors, values) => {
             if (errors) {
-                message.error('请正确填写表单！');
+                message.error('请正确填写商品信息！');
                 return;
             }
 
@@ -111,7 +111,7 @@ class GridForm extends React.Component {
             values.max_stock_num = Number(values.max_stock_num);
             values.status = Number(values.status);
 
-            const pushData = Object.assign({}, currentGoods, values)
+            const pushData = Object.assign({}, currentGoods, values, { isCompleted: true })
 
             PubSub.publish(UPDATE_GOODS_ITEM, currentIndex);
             switch (keyword) {

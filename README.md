@@ -1,4 +1,4 @@
-## React Ant.Design Admin UI
+## React Ant.Design Admin
 
 ## Features
 
@@ -7,8 +7,6 @@
 - [Ant.Design](http://ant.design/)
 - [Babel](https://babeljs.io/)
 - [webpack](https://webpack.github.io/)
-- [mocha](https://mochajs.org/)
-- [enzyme](https://github.com/airbnb/enzyme)
 
 ## Getting Started
 
@@ -18,5 +16,6 @@ Just clone the repo and install the necessary node modules:
 $ git clone http://gitlab.mockuai.com/lvdezhong/admin-minibar.git
 $ cd admin-minibar
 $ npm install
+$ npm run dev
 $ npm run start
 ```

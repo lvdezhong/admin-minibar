@@ -90,8 +90,18 @@ class GoodsDetail extends React.Component {
             return
         }
 
+        if (!fileList_horizontal[0].response) {
+            message.warn('横图还未上传成功请稍候！');
+            return
+        }
+
         if (fileList_vertical.length == 0) {
             message.error('请上传竖图！');
+            return
+        }
+
+        if (!fileList_vertical[0].response) {
+            message.warn('竖图还未上传成功请稍候！');
             return
         }
 

@@ -40,8 +40,15 @@ class MainTplDetail extends React.Component {
             const tmplItemList = currentMainTpl.tmpl_item_list;
 
             if (errors) {
-                message.error('请正确填写表单！');
+                message.error('请填写模板名称！');
                 return;
+            }
+
+            for (let i = 0; i < tmplItemList.length; i++) {
+                if (!tmplItemList[i].isCompleted) {
+                    message.error('商品未添加完全！');
+                    return
+                }
             }
 
             if (this.isEdit) {
