@@ -16,6 +16,6 @@ Just clone the repo and install the necessary node modules:
 $ git clone http://gitlab.mockuai.com/lvdezhong/admin-minibar.git
 $ cd admin-minibar
 $ npm install
-$ npm run dev
+$ npm run build
 $ npm run start
 ```
