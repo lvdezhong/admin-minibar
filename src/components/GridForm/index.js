@@ -69,13 +69,14 @@ class GridForm extends React.Component {
                 name: goods.item_list[index].name,
                 image_horizontal: goods.item_list[index].image_horizontal,
                 image_vertical: goods.item_list[index].image_vertical,
-                origin_price: goods.item_list[index].origin_price
+                origin_price: goods.item_list[index].origin_price,
+                isDefault: false
             }
 
             this.goodsCache[currentIndex] = Object.assign({}, this.goodsCache[currentIndex], item)
 
             this.setState({
-                visible: false,
+                visible: false
             });
         } else {
             message.warning('请选择一个商品！');
@@ -94,11 +95,10 @@ class GridForm extends React.Component {
         const { currentIndex, index } = this.state;
         const currentGoods = this.goodsCache[currentIndex];
 
-        // console.log(currentGoods);
-        // if (index == null) {
-        //     message.error('请选择一个商品！');
-        //     return;
-        // }
+        if (currentGoods.isDefault == true) {
+             message.error('请选择一个商品！');
+             return
+        }
 
         this.props.form.validateFields((errors, values) => {
             if (errors) {
@@ -111,7 +111,7 @@ class GridForm extends React.Component {
             values.max_stock_num = Number(values.max_stock_num);
             values.status = Number(values.status);
 
-            const pushData = Object.assign({}, currentGoods, values, { isCompleted: true })
+            const pushData = Object.assign({}, currentGoods, values)
 
             PubSub.publish(UPDATE_GOODS_ITEM, currentIndex);
             switch (keyword) {

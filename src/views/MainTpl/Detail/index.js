@@ -45,7 +45,7 @@ class MainTplDetail extends React.Component {
             }
 
             for (let i = 0; i < tmplItemList.length; i++) {
-                if (!tmplItemList[i].isCompleted) {
+                if (tmplItemList[i].isDefault == true) {
                     message.error('商品未添加完全！');
                     return
                 }

@@ -24,7 +24,8 @@ const defaultItem = {
     price: "",
     stock_num: "",
     max_stock_num: "",
-    status: 1
+    status: 1,
+    isDefault: true
 }
 
 class Shelves extends React.Component {

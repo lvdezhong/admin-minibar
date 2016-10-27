@@ -37,7 +37,7 @@ class DeviceDetail extends React.Component {
         }
 
         for (let i = 0; i < machine_item_list.length; i++) {
-            if (!machine_item_list[i].isCompleted) {
+            if (machine_item_list[i].isDefault == true) {
                 message.error('商品未添加完全！');
                 return
             }

@@ -20,8 +20,7 @@ class GoodsDetail extends React.Component {
         super()
         this.state = {
             fileList_horizontal: [],
-            fileList_vertical: [],
-            isUpdate: false
+            fileList_vertical: []
         }
     }
 
@@ -159,9 +158,34 @@ class GoodsDetail extends React.Component {
         if (this.isEdit) {
             getCurrentGoods({
                 id: this.id
-            })
-            this.setState({
-                isUpdate: true
+            }).payload.promise.then((data) => {
+                const { code, msg } = data.payload;
+
+                if (code == 10000) {
+                    var { data } = data.payload
+
+                    this.setState({
+                        fileList_horizontal: [{
+                            uid: -1,
+                            name: '',
+                            status: 'done',
+                            url: data.image_horizontal,
+                        }],
+                        fileList_vertical: [{
+                            uid: -1,
+                            name: '',
+                            status: 'done',
+                            url: data.image_vertical,
+                        }]
+                    })
+
+                    this.props.form.setFieldsValue({
+                        name: data.name,
+                        origin_price: price('GET', data.origin_price)
+                    });
+                } else {
+                    message.error(msg)
+                }
             })
         } else {
             getNewGoods();
@@ -171,31 +195,6 @@ class GoodsDetail extends React.Component {
             offset: 0,
             count: 1000
         });
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.state.isUpdate) {
-            this.setState({
-                fileList_horizontal: [{
-                    uid: -1,
-                    name: '',
-                    status: 'done',
-                    url: nextProps.currentGoods.image_horizontal,
-                }],
-                fileList_vertical: [{
-                    uid: -1,
-                    name: '',
-                    status: 'done',
-                    url: nextProps.currentGoods.image_vertical,
-                }],
-                isUpdate: false
-            })
-
-            this.props.form.setFieldsValue({
-                name: nextProps.currentGoods.name,
-                origin_price: price('GET', nextProps.currentGoods.origin_price)
-            });
-        }
     }
 
     render() {
