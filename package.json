@@ -12,6 +12,7 @@
   "license": "WTFPL",
   "dependencies": {
     "antd": "^2.1.0",
+    "lodash": "^4.16.4",
     "pubsub-js": "^1.5.3",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",

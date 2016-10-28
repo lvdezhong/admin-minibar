@@ -17,7 +17,10 @@ var plugins = [
         title: 'minibar',
         template: 'index.html'
     }),
-    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js')
+    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js'),
+    new webpack.ProvidePlugin({
+        _ : 'lodash'
+    })
 ]
 
 if (isProduction) {
@@ -63,6 +66,7 @@ var config = {
             'react-redux',
             'redux',
             'redux-thunk',
+            'lodash',
             'pubsub-js'
         ]
     },
