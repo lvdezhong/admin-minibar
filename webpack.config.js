@@ -17,7 +17,7 @@ var plugins = [
         title: 'minibar',
         template: 'index.html'
     }),
-    new webpack.optimize.CommonsChunkPlugin('vendor', '[name].js')
+    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js')
 ]
 
 if (isProduction) {
@@ -56,7 +56,15 @@ if (isProduction) {
 var config = {
     entry: {
         app: entryPath,
-        vendor: ['react', 'react-dom']
+        vendor: [
+            'react',
+            'react-dom',
+            'react-router',
+            'react-redux',
+            'redux',
+            'redux-thunk',
+            'pubsub-js'
+        ]
     },
     output: {
         path: outputDir,
