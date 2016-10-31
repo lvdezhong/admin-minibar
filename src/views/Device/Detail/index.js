@@ -5,8 +5,7 @@ import { connect } from 'react-redux'
 import { Form, Input, Select, Button, message, Row, Col, Card } from 'antd'
 import PubSub from 'pubsub-js'
 
-import { getCurrentDevice, updateDevice } from '../../../actions/device'
-import { getAllMainTpl, getCurrentMainTplGoods } from '../../../actions/maintpl'
+import action from '../../../store/actions'
 
 import Shelves from '../../../components/Shelves'
 
@@ -17,6 +16,11 @@ import './index.less'
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+@connect(
+    state => ({state: state}),
+    dispatch => ({action: bindActionCreators(action, dispatch)})
+)
+
 class DeviceDetail extends React.Component {
     constructor() {
         super()
@@ -25,8 +29,7 @@ class DeviceDetail extends React.Component {
     handleClick(e) {
         e.preventDefault();
 
-        const { updateDevice } = this.props;
-        let { id, machine_item_list } = this.props.currentDevice;
+        let { id, machine_item_list } = this.props.state.device.currentDevice;
         const formData = this.props.form.getFieldsValue();
 
         if (this.changed) {
@@ -43,7 +46,7 @@ class DeviceDetail extends React.Component {
             }
         }
 
-        updateDevice({
+        this.props.action.updateDevice({
             id: id,
             machine_item_list: JSON.stringify(machine_item_list),
             tmpl_id: formData.tmpl_id
@@ -60,11 +63,9 @@ class DeviceDetail extends React.Component {
     }
 
     handleChangeTmpl(value) {
-        const { getCurrentMainTplGoods } = this.props;
-
         if (value != 0) {
             this.changed = true;
-            getCurrentMainTplGoods({
+            this.props.action.getCurrentMainTplGoods({
                 id: value
             });
         }
@@ -72,12 +73,11 @@ class DeviceDetail extends React.Component {
 
     componentDidMount() {
         const { id } = this.props.params;
-        const { getAllMainTpl, getCurrentDevice } = this.props;
 
-        getAllMainTpl({
+        this.props.action.getAllMainTpl({
             offset: 0,
             count: 1000
-        }).payload.promise.then(getCurrentDevice({
+        }).payload.promise.then(this.props.action.getCurrentDevice({
             id: id
         }));
 
@@ -96,8 +96,7 @@ class DeviceDetail extends React.Component {
         const self = this;
 
         const { getFieldDecorator } = this.props.form;
-
-        const { currentDevice, maintpl } = this.props
+        const { currentDevice, maintpl } = this.props.state.device;
 
         const formItemLayout = {
             labelCol: { span: 5 },
@@ -160,23 +159,4 @@ class DeviceDetail extends React.Component {
 
 DeviceDetail = Form.create()(DeviceDetail)
 
-function mapStateToProps(state) {
-    const { currentDevice, maintpl, isPending, errors } = state.device;
-    return {
-        currentDevice: currentDevice,
-        maintpl: maintpl,
-        isPending: isPending,
-        errors: errors
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        getCurrentDevice: bindActionCreators(getCurrentDevice, dispatch),
-        updateDevice: bindActionCreators(updateDevice, dispatch),
-        getAllMainTpl: bindActionCreators(getAllMainTpl, dispatch),
-        getCurrentMainTplGoods: bindActionCreators(getCurrentMainTplGoods, dispatch)
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DeviceDetail)
+export default DeviceDetail;

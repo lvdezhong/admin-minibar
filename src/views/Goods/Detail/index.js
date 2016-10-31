@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Form, Input, Select, Button, Upload, Icon, message, Row, Col } from 'antd'
 
-import { getCurrentGoods, getCategory, addGoods, updateGoods, getNewGoods } from '../../../actions/goods'
+import action from '../../../store/actions'
 
 import Shelves from '../../../components/Shelves'
 
@@ -14,6 +14,11 @@ import './index.less'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+
+@connect(
+    state => ({state: state}),
+    dispatch => ({action: bindActionCreators(action, dispatch)})
+)
 
 class GoodsDetail extends React.Component {
     constructor() {
@@ -111,7 +116,7 @@ class GoodsDetail extends React.Component {
             }
 
             if (this.isEdit) {
-                updateGoods({
+                this.props.action.updateGoods({
                     id: this.id,
                     name: values.name,
                     origin_price: price('POST', values.origin_price),
@@ -129,7 +134,7 @@ class GoodsDetail extends React.Component {
                     }
                 });
             } else {
-                addGoods({
+                this.props.action.addGoods({
                     name: values.name,
                     origin_price: price('POST', values.origin_price),
                     category_id: values.category_id,
@@ -156,7 +161,7 @@ class GoodsDetail extends React.Component {
         const { getCurrentGoods, getCategory, getNewGoods, currentGoods } = this.props;
 
         if (this.isEdit) {
-            getCurrentGoods({
+            this.props.action.getCurrentGoods({
                 id: this.id
             }).payload.promise.then((data) => {
                 const { code, msg } = data.payload;
@@ -188,17 +193,17 @@ class GoodsDetail extends React.Component {
                 }
             })
         } else {
-            getNewGoods();
+            this.props.action.getNewGoods();
         }
 
-        getCategory({
+        this.props.action.getCategory({
             offset: 0,
             count: 1000
         });
     }
 
     render() {
-        const { currentGoods, category } = this.props
+        const { currentGoods, category } = this.props.state.goods;
 
         const formItemLayout = {
             labelCol: { span: 4 },
@@ -313,24 +318,4 @@ class GoodsDetail extends React.Component {
 
 GoodsDetail = Form.create()(GoodsDetail)
 
-function mapStateToProps(state) {
-    const { currentGoods, category, isPending, errors } = state.goods;
-    return {
-        currentGoods: currentGoods,
-        category: category,
-        isPending: isPending,
-        errors: errors
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        getCurrentGoods: bindActionCreators(getCurrentGoods, dispatch),
-        getCategory: bindActionCreators(getCategory, dispatch),
-        addGoods: bindActionCreators(addGoods, dispatch),
-        updateGoods: bindActionCreators(updateGoods, dispatch),
-        getNewGoods: bindActionCreators(getNewGoods, dispatch)
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(GoodsDetail)
+export default GoodsDetail;

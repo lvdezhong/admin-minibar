@@ -1,4 +1,4 @@
-import api from '../api'
+import api from '../../../api'
 
 export const GET_GOODS = 'GET_GOODS';
 export const GET_GOODS_PENDING = 'GET_GOODS_PENDING';

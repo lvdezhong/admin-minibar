@@ -1,4 +1,4 @@
-import api from '../api'
+import api from '../../../api'
 
 export const GET_ALL_MENU = 'GET_ALL_MENU';
 export const UPDATE_NAVPATH = 'UPDATE_NAVPATH';

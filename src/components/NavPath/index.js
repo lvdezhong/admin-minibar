@@ -5,13 +5,9 @@ import { connect } from 'react-redux'
 
 import './index.less'
 
-const defaultProps = {
-    navpath: []
-}
-
-const propTypes = {
-    navpath: PropTypes.array
-}
+@connect(
+    state => ({state: state})
+)
 
 class NavPath extends React.Component {
     constructor(props) {
@@ -19,11 +15,11 @@ class NavPath extends React.Component {
     }
 
     render () {
-        const { navpath } = this.props
+        const { navpath } = this.props.state.menu;
 
         const bread = navpath.map((item)=>{
             return (
-                <Breadcrumb.Item key={'bc-'+item.key}>{item.name}</Breadcrumb.Item>
+                <Breadcrumb.Item key={'bc-' + item.key}>{item.name}</Breadcrumb.Item>
             )
         })
         return (
@@ -37,13 +33,4 @@ class NavPath extends React.Component {
     }
 }
 
-NavPath.propTypes = propTypes;
-NavPath.defaultProps = defaultProps;
-
-function mapStateToProps(state) {
-    return {
-        navpath: state.menu.navpath
-    }
-}
-
-export default connect(mapStateToProps)(NavPath)
+export default NavPath;

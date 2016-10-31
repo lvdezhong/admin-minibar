@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { Form, Row, Col, Input, Select, Button, Table, Tag, Pagination, DatePicker } from 'antd'
 
-import { getOrder } from '../../../actions/order'
-import { getAllDevice } from '../../../actions/device'
+import action from '../../../store/actions'
 
 import { price } from '../../../utils'
 
@@ -14,6 +13,11 @@ import './index.less'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RangePicker = DatePicker.RangePicker;
+
+@connect(
+    state => ({state: state}),
+    dispatch => ({action: bindActionCreators(action, dispatch)})
+)
 
 class OrderList extends React.Component {
     constructor() {
@@ -42,13 +46,12 @@ class OrderList extends React.Component {
             current: page,
         });
 
-        this.props.getOrder(this.postData);
+        this.props.action.getOrder(this.postData);
     }
 
     handleSubmit(e) {
         e.preventDefault();
 
-        const { getOrder } = this.props;
         const formData = Object.assign(this.props.form.getFieldsValue(), this.timeData);
 
         this.paginationCfg.offset = 0;
@@ -58,7 +61,7 @@ class OrderList extends React.Component {
             current: 1
         });
 
-        getOrder(this.postData);
+        this.props.action.getOrder(this.postData);
     }
 
     handleTimeChange(dates, dateStrings) {
@@ -67,17 +70,15 @@ class OrderList extends React.Component {
     }
 
     componentDidMount() {
-        const { getOrder, getAllDevice } = this.props;
-
-        getOrder(this.postData, this.paginationCfg);
-        getAllDevice({
+        this.props.action.getOrder(this.postData, this.paginationCfg);
+        this.props.action.getAllDevice({
             offset: 0,
             count: 1000
         });
     }
 
     render() {
-        const { order, device } = this.props
+        const { order, device } = this.props.state.order;
         const orderStatus = {
             10: "未支付",
             20: "订单取消",
@@ -219,21 +220,4 @@ class OrderList extends React.Component {
 
 OrderList = Form.create()(OrderList);
 
-function mapStateToProps(state) {
-    const { order, device, isPending, errors } = state.order;
-    return {
-        order: order,
-        isPending: isPending,
-        device: device,
-        errors: errors
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        getOrder: bindActionCreators(getOrder, dispatch),
-        getAllDevice: bindActionCreators(getAllDevice, dispatch)
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(OrderList)
+export default OrderList;

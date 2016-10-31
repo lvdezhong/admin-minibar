@@ -23,7 +23,7 @@ import {
     GET_NEW_MAINTPL,
     PUSH_MAINTPL_DEFAULT_ITEM,
     PUSH_MAINTPL_GOODS_ITEM
-} from '../actions/maintpl'
+} from './maintplAction'
 
 import { combineReducers } from 'redux'
 

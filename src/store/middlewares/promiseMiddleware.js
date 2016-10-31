@@ -1,4 +1,4 @@
-import { isPromise } from '../utils'
+import { isPromise } from '../../utils'
 
 const defaultTypes = ['PENDING', 'FULFILLED', 'REJECTED'];
 

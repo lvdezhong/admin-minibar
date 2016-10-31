@@ -6,6 +6,10 @@ import { CLICK_GOODS_ITEM, price } from '../../utils'
 
 import './index.less'
 
+@connect(
+    state => ({state: state})
+)
+
 class GridBox extends React.Component {
     constructor() {
         super()
@@ -20,10 +24,12 @@ class GridBox extends React.Component {
 
         switch (keyword) {
             case 'device':
-                var info = this.props.deviceGoods[currentIndex]
+                const { machine_item_list } = this.props.state.device.currentDevice;
+                var info = machine_item_list[currentIndex]
                 break;
             case 'maintpl':
-                var info = this.props.mainTplGoods[currentIndex]
+                const { tmpl_item_list } = this.props.state.maintpl.currentMainTpl;
+                var info = tmpl_item_list[currentIndex]
                 break;
         }
 
@@ -64,13 +70,4 @@ class GridBox extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
-    const { machine_item_list } = state.device.currentDevice;
-    const { tmpl_item_list } = state.maintpl.currentMainTpl;
-    return {
-        deviceGoods: machine_item_list,
-        mainTplGoods: tmpl_item_list
-    }
-}
-
-export default connect(mapStateToProps)(GridBox)
+export default GridBox;

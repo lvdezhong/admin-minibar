@@ -6,7 +6,7 @@ const InputGroup = Input.Group;
 
 import './index.less'
 
-export default class SearchInput extends React.Component {
+class SearchInput extends React.Component {
     constructor() {
         super()
         this.state = {
@@ -58,3 +58,5 @@ export default class SearchInput extends React.Component {
         )
     }
 }
+
+export default SearchInput;

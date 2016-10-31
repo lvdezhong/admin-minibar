@@ -5,9 +5,8 @@ import { Link } from 'react-router'
 import { Form, Input, Row, Col, Radio, Button, Modal, Table, Tag, message } from 'antd'
 import PubSub from 'pubsub-js'
 
-import { pushDeviceGoodsItem } from '../../actions/device'
-import { pushMainTplGoodsItem } from '../../actions/maintpl'
-import { getGoods } from '../../actions/goods'
+import action from '../../store/actions'
+
 import { CLICK_GOODS_ITEM, UPDATE_GOODS_ITEM, price } from '../../utils'
 
 import SearchInput from '../SearchInput'
@@ -15,9 +14,14 @@ import SearchInput from '../SearchInput'
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 
+@connect(
+    state => ({state: state}),
+    dispatch => ({action: bindActionCreators(action, dispatch)})
+)
+
 class GridForm extends React.Component {
     constructor(props) {
-        super()
+        super(props)
         this.state = {
             visible: false,
             index: null,
@@ -34,23 +38,23 @@ class GridForm extends React.Component {
 
         switch (props.keyword) {
             case 'device':
-                this.goodsCache = props.deviceGoods.slice(0);
+                const { machine_item_list } = props.state.device.currentDevice;
+                this.goodsCache = machine_item_list.slice(0);
                 break;
             case 'maintpl':
-                this.goodsCache = props.mainTplGoods.slice(0);
+                const { tmpl_item_list } = props.state.maintpl.currentMainTpl;
+                this.goodsCache = tmpl_item_list.slice(0);
                 break;
         }
     }
 
     showModal() {
-        const { getGoods } = this.props;
-
         this.setState({
             visible: true,
             index: null
         });
 
-        getGoods(this.paginationCfg);
+        this.props.action.getGoods(this.paginationCfg);
     }
 
     goodsItemClick(selected, index) {
@@ -60,7 +64,7 @@ class GridForm extends React.Component {
     }
 
     handleOk() {
-        const { goods } = this.props;
+        const { goods } = this.props.state.goods;
         const { index, currentIndex } = this.state;
 
         if (index != null) {
@@ -116,10 +120,10 @@ class GridForm extends React.Component {
             PubSub.publish(UPDATE_GOODS_ITEM, currentIndex);
             switch (keyword) {
                 case 'device':
-                    this.props.pushDeviceGoodsItem(currentIndex, pushData);
+                    this.props.action.pushDeviceGoodsItem(currentIndex, pushData);
                     break;
                 case 'maintpl':
-                    this.props.pushMainTplGoodsItem(currentIndex, pushData);
+                    this.props.action.pushMainTplGoodsItem(currentIndex, pushData);
                     break;
             }
             message.success('修改成功！');
@@ -127,8 +131,6 @@ class GridForm extends React.Component {
     }
 
     handleSearch(value) {
-        const { getGoods } = this.props;
-
         this.paginationCfg.offset = 0;
         this.postData = Object.assign({
             name: value
@@ -138,19 +140,17 @@ class GridForm extends React.Component {
             current: 1
         });
 
-        getGoods(this.postData);
+        this.props.action.getGoods(this.postData);
     }
 
     handleRefresh() {
-        const { getGoods } = this.props;
-
         this.paginationCfg.offset = 0;
 
         this.setState({
             current: 1
         });
 
-        getGoods(this.paginationCfg).payload.promise.then(function(data) {
+        this.props.action.getGoods(this.paginationCfg).payload.promise.then(function(data) {
             const { code, msg } = data.payload;
 
             if (code == 10000) {
@@ -183,7 +183,7 @@ class GridForm extends React.Component {
     componentWillUpdate(nextProps, nextState) {
         const index = this.state.index;
         const nextIndex = nextState.index;
-        var nextGoods = nextProps.goods.item_list;
+        var nextGoods = nextProps.state.goods.goods.item_list;
 
         if (nextIndex != null && index != nextIndex) {
             for (let i = 0; i < nextGoods.length; i ++) {
@@ -204,10 +204,12 @@ class GridForm extends React.Component {
 
             switch (keyword) {
                 case 'device':
-                    var currentGoods = this.props.deviceGoods[data];
+                    const { machine_item_list } = this.props.state.device.currentDevice
+                    var currentGoods = machine_item_list[data];
                     break;
                 case 'maintpl':
-                    var currentGoods = this.props.mainTplGoods[data];
+                    const { tmpl_item_list } = this.props.state.maintpl.currentMainTpl;
+                    var currentGoods = tmpl_item_list[data];
                     break;
             }
 
@@ -231,7 +233,7 @@ class GridForm extends React.Component {
     render() {
         const self = this;
 
-        const { goods } = this.props;
+        const { goods } = this.props.state.goods;
         const { currentIndex } = this.state;
         const currentGoods = this.goodsCache[currentIndex];
 
@@ -280,8 +282,6 @@ class GridForm extends React.Component {
             current: this.state.current,
             total: goods.total_count,
             onChange(page) {
-                const { getGoods } = self.props;
-
                 self.paginationCfg.offset = (page - 1) * self.paginationCfg.count;
                 self.postData = Object.assign(self.postData, self.paginationCfg);
 
@@ -289,7 +289,7 @@ class GridForm extends React.Component {
                     current: page,
                 });
 
-                getGoods(self.postData);
+                self.props.action.getGoods(self.postData);
             }
         }
 
@@ -371,23 +371,4 @@ class GridForm extends React.Component {
 
 GridForm = Form.create()(GridForm);
 
-function mapStateToProps(state) {
-    const { goods } = state.goods
-    const { machine_item_list } = state.device.currentDevice;
-    const { tmpl_item_list } = state.maintpl.currentMainTpl;
-    return {
-        goods: goods,
-        deviceGoods: machine_item_list,
-        mainTplGoods: tmpl_item_list
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        pushDeviceGoodsItem: bindActionCreators(pushDeviceGoodsItem, dispatch),
-        pushMainTplGoodsItem: bindActionCreators(pushMainTplGoodsItem, dispatch),
-        getGoods: bindActionCreators(getGoods, dispatch)
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(GridForm)
+export default GridForm;

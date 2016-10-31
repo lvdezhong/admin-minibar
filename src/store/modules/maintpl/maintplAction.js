@@ -1,4 +1,4 @@
-import api from '../api'
+import api from '../../../api'
 
 export const GET_MAINTPL = 'GET_MAINTPL';
 export const GET_MAINTPL_PENDING = 'GET_MAINTPL_PENDING';

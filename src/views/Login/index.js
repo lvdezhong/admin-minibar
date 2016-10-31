@@ -3,11 +3,17 @@ import { browserHistory } from 'react-router'
 import { Form, Input, Button, Row, Col, notification } from 'antd'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { login } from '../../actions/user'
+
+import action from '../../store/actions'
 
 import './index.less'
 
 const FormItem = Form.Item
+
+@connect(
+    state => ({state: state}),
+    dispatch => ({action: bindActionCreators(action, dispatch)})
+)
 
 class Login extends React.Component {
     constructor() {
@@ -19,7 +25,7 @@ class Login extends React.Component {
 
         const data = this.props.form.getFieldsValue()
 
-        this.props.login({
+        this.props.action.login({
             mobile: data.user,
             password: data.password
         }).payload.promise.then(function(data) {
@@ -83,14 +89,4 @@ class Login extends React.Component {
 
 Login = Form.create()(Login);
 
-function mapStateToProps() {
-    return {}
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        login: bindActionCreators(login, dispatch)
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+export default Login;

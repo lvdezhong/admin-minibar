@@ -4,13 +4,17 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { Form, Row, Col, Input, Select, Table, Tag, Button } from 'antd'
 
-import { getDevice } from '../../../actions/device'
-import { getAllMainTpl } from '../../../actions/maintpl'
+import action from '../../../store/actions'
 
 import './index.less'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+
+@connect(
+    state => ({state: state}),
+    dispatch => ({action: bindActionCreators(action, dispatch)})
+)
 
 class DeviceList extends React.Component {
     constructor() {
@@ -28,7 +32,6 @@ class DeviceList extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
 
-        const { getDevice } = this.props;
         const formData = this.props.form.getFieldsValue();
 
         this.paginationCfg.offset = 0;
@@ -38,14 +41,12 @@ class DeviceList extends React.Component {
             current: 1
         });
 
-        getDevice(this.postData);
+        this.props.action.getDevice(this.postData);
     }
 
     componentDidMount() {
-        const { getDevice, getAllMainTpl } = this.props;
-
-        getDevice(this.paginationCfg);
-        getAllMainTpl({
+        this.props.action.getDevice(this.paginationCfg);
+        this.props.action.getAllMainTpl({
             offset: 0,
             count: 1000
         });
@@ -72,7 +73,7 @@ class DeviceList extends React.Component {
             2: "故障"
         }
 
-        const { device, maintpl } = this.props
+        const { device, maintpl } = this.props.state.device;
 
         const columns = [{
             title: '设备编号',
@@ -128,7 +129,7 @@ class DeviceList extends React.Component {
                     current: page,
                 });
 
-                self.props.getDevice(self.postData);
+                self.props.action.getDevice(self.postData);
             },
             showTotal(total) {
                 return `共 ${total} 条`
@@ -210,21 +211,4 @@ class DeviceList extends React.Component {
 
 DeviceList = Form.create()(DeviceList);
 
-function mapStateToProps(state) {
-    const { device, maintpl, isPending, errors } = state.device;
-    return {
-        device: device,
-        maintpl: maintpl,
-        isPending: isPending,
-        errors: errors
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        getDevice: bindActionCreators(getDevice, dispatch),
-        getAllMainTpl: bindActionCreators(getAllMainTpl, dispatch)
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DeviceList)
+export default DeviceList;

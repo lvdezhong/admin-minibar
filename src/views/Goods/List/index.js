@@ -4,13 +4,18 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { Row, Col, Button, Table, Tag, Modal, message } from 'antd'
 
-import { getGoods, deleteGoods } from '../../../actions/goods'
+import action from '../../../store/actions'
 
 import { price } from '../../../utils'
 
 import './index.less'
 
 const confirm = Modal.confirm;
+
+@connect(
+    state => ({state: state}),
+    dispatch => ({action: bindActionCreators(action, dispatch)})
+)
 
 class GoodsList extends React.Component {
     constructor() {
@@ -42,9 +47,7 @@ class GoodsList extends React.Component {
     }
 
     doDelete(idList) {
-        const { deleteGoods } = this.props;
-
-        deleteGoods({
+        this.props.action.deleteGoods({
             id_list: JSON.stringify(idList)
         }).payload.promise.then(function(data) {
             const { code, msg } = data.payload;
@@ -68,8 +71,6 @@ class GoodsList extends React.Component {
     }
 
     handleTableChange(pagination, filters, sorter) {
-        const { getGoods } = this.props;
-
         if (sorter.columnKey == 'origin_price') {
             this.postData = {
                 order_by: 'price',
@@ -89,11 +90,11 @@ class GoodsList extends React.Component {
             current: pagination.current,
         });
 
-        getGoods(this.postData)
+        this.props.action.getGoods(this.postData)
     }
 
     componentDidMount() {
-        this.props.getGoods(this.paginationCfg);
+        this.props.action.getGoods(this.paginationCfg);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -104,13 +105,13 @@ class GoodsList extends React.Component {
                 current: 1
             });
 
-            this.props.getGoods(this.paginationCfg);
+            this.props.action.getGoods(this.paginationCfg);
         }
     }
 
     render() {
         const self = this;
-        const { goods } = this.props
+        const { goods } = this.props.state.goods;
         const columns = [{
             title: '商品名称',
             dataIndex: 'name',
@@ -190,21 +191,4 @@ class GoodsList extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
-    const { goods, isPending, errors, isUpdate } = state.goods;
-    return {
-        goods: goods,
-        isPending: isPending,
-        errors: errors,
-        isUpdate: isUpdate
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        getGoods: bindActionCreators(getGoods, dispatch),
-        deleteGoods: bindActionCreators(deleteGoods, dispatch)
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(GoodsList)
+export default GoodsList;

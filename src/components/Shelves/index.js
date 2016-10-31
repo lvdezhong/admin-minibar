@@ -4,19 +4,13 @@ import { connect } from 'react-redux'
 import { Row, Col } from 'antd'
 import PubSub from 'pubsub-js'
 
-import { pushDeviceDefaultItem } from '../../actions/device'
-import { pushMainTplDefaultItem } from '../../actions/maintpl'
+import action from '../../store/actions'
 import { CLICK_GOODS_ITEM } from '../../utils'
 
 import GridBox from '../GridBox'
 import GridForm from '../GridForm'
 
 import './index.less'
-
-const defaultProps = {
-    deviceGoods: [],
-    mainTplGoods: []
-}
 
 const defaultItem = {
     name: "默认",
@@ -27,6 +21,11 @@ const defaultItem = {
     status: 1,
     isDefault: true
 }
+
+@connect(
+    state => ({state: state}),
+    dispatch => ({action: bindActionCreators(action, dispatch)})
+)
 
 class Shelves extends React.Component {
     constructor() {
@@ -41,13 +40,17 @@ class Shelves extends React.Component {
 
         switch (keyword) {
             case 'device':
-                if (nextProps.deviceGoods.length == 0 || nextProps.deviceGoods.length < 7) {
-                    this.props.pushDeviceDefaultItem(defaultItem, 7);
+                const machine_item_list = nextProps.state.device.currentDevice.machine_item_list || [];
+
+                if (machine_item_list == 0 || machine_item_list.length < 7) {
+                    this.props.action.pushDeviceDefaultItem(defaultItem, 7);
                 }
                 break;
             case 'maintpl':
-                if (nextProps.mainTplGoods.length == 0 || nextProps.mainTplGoods.length < 7) {
-                    this.props.pushMainTplDefaultItem(defaultItem, 7);
+                const tmpl_item_list = nextProps.state.maintpl.currentMainTpl.tmpl_item_list || [];
+
+                if (tmpl_item_list.length == 0 || tmpl_item_list.length < 7) {
+                    this.props.action.pushMainTplDefaultItem(defaultItem, 7);
                 }
                 break;
         }
@@ -66,15 +69,17 @@ class Shelves extends React.Component {
     }
 
     render() {
-        const { deviceGoods, mainTplGoods, keyword } = this.props;
+        const { keyword } = this.props;
         const { active } = this.state;
 
         switch (keyword) {
             case 'device':
-                var goods = deviceGoods;
+                const { machine_item_list } = this.props.state.device.currentDevice;
+                var goods = machine_item_list || [];
                 break;
             case 'maintpl':
-                var goods = mainTplGoods;
+                const { tmpl_item_list } = this.props.state.maintpl.currentMainTpl;
+                var goods = tmpl_item_list || [];
                 break;
         }
 
@@ -111,22 +116,4 @@ class Shelves extends React.Component {
     }
 }
 
-Shelves.defaultProps = defaultProps;
-
-function mapStateToProps(state) {
-    const { machine_item_list } = state.device.currentDevice;
-    const { tmpl_item_list } = state.maintpl.currentMainTpl;
-    return {
-        deviceGoods: machine_item_list,
-        mainTplGoods: tmpl_item_list
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        pushDeviceDefaultItem: bindActionCreators(pushDeviceDefaultItem, dispatch),
-        pushMainTplDefaultItem: bindActionCreators(pushMainTplDefaultItem, dispatch)
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Shelves)
+export default Shelves;

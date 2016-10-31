@@ -4,13 +4,18 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Form, Input, Select, Button, message, Row, Col, Card } from 'antd'
 
-import { getCurrentMainTpl, addMainTpl, updateMainTpl, getNewMainTpl } from '../../../actions/maintpl'
+import action from '../../../store/actions'
 
 import Shelves from '../../../components/Shelves'
 
 import './index.less'
 
 const FormItem = Form.Item;
+
+@connect(
+    state => ({state: state}),
+    dispatch => ({action: bindActionCreators(action, dispatch)})
+)
 
 class MainTplDetail extends React.Component {
     constructor(props) {
@@ -21,14 +26,12 @@ class MainTplDetail extends React.Component {
         this.id = this.props.params.id;
         this.id ? this.isEdit = true : this.isEdit = false;
 
-        const { getCurrentMainTpl, getNewMainTpl } = this.props;
-
         if (this.isEdit) {
-            getCurrentMainTpl({
+            this.props.action.getCurrentMainTpl({
                 id: this.id
             });
         } else {
-            getNewMainTpl();
+            this.props.action.getNewMainTpl();
         }
     }
 
@@ -36,8 +39,7 @@ class MainTplDetail extends React.Component {
         e.preventDefault();
 
         this.props.form.validateFields((errors, values) => {
-            const { currentMainTpl, updateMainTpl, addMainTpl } = this.props;
-            const tmplItemList = currentMainTpl.tmpl_item_list;
+            const tmplItemList = this.props.state.maintpl.currentMainTpl.tmpl_item_list;
 
             if (errors) {
                 message.error('请填写模板名称！');
@@ -52,7 +54,7 @@ class MainTplDetail extends React.Component {
             }
 
             if (this.isEdit) {
-                updateMainTpl({
+                this.props.action.updateMainTpl({
                     id: this.id,
                     name: values.name,
                     tmpl_item_list: JSON.stringify(tmplItemList)
@@ -67,7 +69,7 @@ class MainTplDetail extends React.Component {
                     }
                 });
             } else {
-                addMainTpl({
+                this.props.action.addMainTpl({
                     name: values.name,
                     tmpl_item_list: JSON.stringify(tmplItemList)
                 }).payload.promise.then(function(data) {
@@ -85,7 +87,7 @@ class MainTplDetail extends React.Component {
     }
 
     render() {
-        const { currentMainTpl } = this.props;
+        const { currentMainTpl } = this.props.state.maintpl;
 
         const formItemLayout = {
             labelCol: { span: 3 },
@@ -119,22 +121,4 @@ class MainTplDetail extends React.Component {
 
 MainTplDetail = Form.create()(MainTplDetail)
 
-function mapStateToProps(state) {
-    const { currentMainTpl, isPending, errors } = state.maintpl;
-    return {
-        currentMainTpl: currentMainTpl,
-        isPending: isPending,
-        errors: errors
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        getCurrentMainTpl: bindActionCreators(getCurrentMainTpl, dispatch),
-        addMainTpl: bindActionCreators(addMainTpl, dispatch),
-        updateMainTpl: bindActionCreators(updateMainTpl, dispatch),
-        getNewMainTpl: bindActionCreators(getNewMainTpl, dispatch)
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(MainTplDetail)
+export default MainTplDetail;

@@ -6,9 +6,14 @@ import { Table, Tag, Row, Col, Button, Modal, message } from 'antd'
 
 import SearchInput from '../../../components/SearchInput'
 
-import { getMainTpl, copyMainTpl, deleteMainTpl, setMainTpl } from '../../../actions/maintpl'
+import action from '../../../store/actions'
 
 const confirm = Modal.confirm;
+
+@connect(
+    state => ({state: state}),
+    dispatch => ({action: bindActionCreators(action, dispatch)})
+)
 
 class MainTplList extends React.Component {
     constructor() {
@@ -24,10 +29,8 @@ class MainTplList extends React.Component {
     }
 
     handleCopy(id) {
-        const { copyMainTpl } = this.props;
-
         this.showConfirm('复制模版？', () => {
-            copyMainTpl({
+            this.props.action.copyMainTpl({
                 id: id
             }).payload.promise.then(function(data) {
                 const { code, msg } = data.payload;
@@ -42,10 +45,8 @@ class MainTplList extends React.Component {
     }
 
     handleDelete(id) {
-        const { deleteMainTpl } = this.props;
-
         this.showConfirm('你确定要删除？', () => {
-            deleteMainTpl({
+            this.props.action.deleteMainTpl({
                 id: id
             }).payload.promise.then(data => {
                 const { code, msg } = data.payload;
@@ -60,10 +61,8 @@ class MainTplList extends React.Component {
     }
 
     handleSet(id) {
-        const { setMainTpl } = this.props;
-
         this.showConfirm('设为默认？', () => {
-            setMainTpl({
+            this.props.action.setMainTpl({
                 id: id
             }).payload.promise.then(function(data) {
                 const { code, msg } = data.payload;
@@ -78,8 +77,6 @@ class MainTplList extends React.Component {
     }
 
     handleSearch(value) {
-        const { getMainTpl } = this.props;
-
         this.paginationCfg.offset = 0;
         this.postData = Object.assign({
             name: value
@@ -89,7 +86,7 @@ class MainTplList extends React.Component {
             current: 1
         });
 
-        getMainTpl(this.postData);
+        this.props.action.getMainTpl(this.postData);
     }
 
     showConfirm(title, cb) {
@@ -103,26 +100,24 @@ class MainTplList extends React.Component {
     }
 
     componentDidMount() {
-        const { getMainTpl } = this.props;
-
-        getMainTpl(this.paginationCfg);
+        this.props.action.getMainTpl(this.paginationCfg);
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.isUpdate) {
+        if (nextProps.state.maintpl.isUpdate) {
             this.paginationCfg.offset = 0;
 
             this.setState({
                 current: 1
             });
 
-            this.props.getMainTpl(this.paginationCfg);
+            this.props.action.getMainTpl(this.paginationCfg);
         }
     }
 
     render() {
         const self = this;
-        const { maintpl } = this.props
+        const { maintpl } = this.props.state.maintpl;
         const columns = [{
             title: '标题',
             dataIndex: 'name',
@@ -159,7 +154,7 @@ class MainTplList extends React.Component {
                     current: page,
                 });
 
-                self.props.getMainTpl(self.postData);
+                self.props.action.getMainTpl(self.postData);
             },
             showTotal(total) {
                 return `共 ${total} 条`
@@ -186,23 +181,4 @@ class MainTplList extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
-    const { maintpl, isPending, errors, isUpdate } = state.maintpl;
-    return {
-        maintpl: maintpl,
-        isPending: isPending,
-        errors: errors,
-        isUpdate: isUpdate
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        getMainTpl: bindActionCreators(getMainTpl, dispatch),
-        copyMainTpl: bindActionCreators(copyMainTpl, dispatch),
-        deleteMainTpl: bindActionCreators(deleteMainTpl, dispatch),
-        setMainTpl: bindActionCreators(setMainTpl, dispatch)
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(MainTplList)
+export default MainTplList;

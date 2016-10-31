@@ -1,11 +1,9 @@
-import _ from 'lodash'
-
 import {
     GET_ALL_MENU,
     UPDATE_NAVPATH
-} from '../actions/menu'
+} from './menuAction'
 
-import menuData from '../data/menu'
+import menuData from '../../../data/menu'
 
 const initialState = {
     currentIndex: 0,

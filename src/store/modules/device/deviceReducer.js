@@ -7,7 +7,7 @@ import {
     GET_DEVICE_ITEM_ERROR,
     PUSH_DEVICE_DEFAULT_ITEM,
     PUSH_DEVICE_GOODS_ITEM
-} from '../actions/device'
+} from './deviceAction'
 
 import {
     GET_ALL_MAINTPL_PENDING,
@@ -16,7 +16,7 @@ import {
     GET_MAINTPL_GOODS_PENDING,
     GET_MAINTPL_GOODS_SUCCESS,
     GET_MAINTPL_GOODS_ERROR
-} from '../actions/maintpl'
+} from '../maintpl/maintplAction'
 
 import { combineReducers } from 'redux'
 

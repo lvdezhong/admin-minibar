@@ -1,4 +1,4 @@
-import api from '../api'
+import api from '../../../api'
 
 export const GET_DEVICE = 'GET_DEVICE';
 export const GET_DEVICE_PENDING = 'GET_DEVICE_PENDING';

@@ -1,4 +1,4 @@
-import api from '../api';
+import api from '../../../api';
 
 export const UID_NOT_FOUND = 'UID_NOT_FOUND';
 

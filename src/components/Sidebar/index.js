@@ -3,39 +3,33 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Menu, Icon } from 'antd'
 import { Link } from 'react-router'
-import { getAllMenu, updateNavPath } from '../../actions/menu'
+
+import action from '../../store/actions'
 
 import './index.less'
 
 const SubMenu = Menu.SubMenu
 
-const defaultProps = {
-    items: [],
-    currentIndex: 0
-}
-
-const propTypes = {
-    items: PropTypes.array,
-    currentIndex: PropTypes.number
-}
+@connect(
+    state => ({state: state}),
+    dispatch => ({action: bindActionCreators(action, dispatch)})
+)
 
 class Sidebar extends React.Component {
-    constructor(props) {
-      super(props)
-
-      this.menuClickHandle = this.menuClickHandle.bind(this);
+    constructor() {
+        super()
     }
 
     componentDidMount() {
-        this.props.getAllMenu()
+        this.props.action.getAllMenu()
     }
 
     menuClickHandle(item) {
-        this.props.updateNavPath(item.keyPath, item.key)
+        this.props.action.updateNavPath(item.keyPath, item.key)
     }
 
     render() {
-        const { items } = this.props
+        const { items } = this.props.state.menu;
         let openKey = []
         const menu = items.map((item) => {
             openKey.push('sub'+item.key)
@@ -51,7 +45,7 @@ class Sidebar extends React.Component {
         });
         return (
             <aside className="ant-layout-sider">
-                <Menu mode="inline" theme="dark" defaultOpenKeys={openKey} onClick={this.menuClickHandle}>
+                <Menu mode="inline" theme="dark" defaultOpenKeys={openKey} onClick={this.menuClickHandle.bind(this)}>
                     {menu}
                 </Menu>
             </aside>
@@ -59,21 +53,4 @@ class Sidebar extends React.Component {
     }
 }
 
-Sidebar.propTypes = propTypes;
-Sidebar.defaultProps = defaultProps;
-
-function mapStateToProps(state) {
-    return {
-        items: state.menu.items,
-        currentIndex: state.menu.currentIndex
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        getAllMenu: bindActionCreators(getAllMenu, dispatch),
-        updateNavPath: bindActionCreators(updateNavPath, dispatch)
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)
+export default Sidebar;

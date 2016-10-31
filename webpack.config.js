@@ -15,9 +15,8 @@ var outputDir = path.resolve(__dirname, 'dist');
 var plugins = [
     new HtmlWebpackPlugin({
         title: 'minibar',
-        template: 'index.html'
+        template: './src/index.html'
     }),
-    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js'),
     new webpack.ProvidePlugin({
         _ : 'lodash'
     })
@@ -25,12 +24,13 @@ var plugins = [
 
 if (isProduction) {
     plugins.push(
-        new ExtractTextPlugin('[name].[contenthash:8].css', {
-            allChunks: true
-        }),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production')
         }),
+        new ExtractTextPlugin('[name].[contenthash:8].css', {
+            allChunks: true
+        }),
+        new webpack.optimize.CommonsChunkPlugin('vendor', '[name].[chunkhash:8].js'),
         new webpack.optimize.UglifyJsPlugin({
             output: {
                 comments: false
@@ -49,9 +49,7 @@ if (isProduction) {
     )
 
     plugins.push(
-        new ExtractTextPlugin('[name].css', {
-            allChunks: true
-        }),
+        new webpack.optimize.CommonsChunkPlugin('vendor', '[name].js'),
         new webpack.HotModuleReplacementPlugin()
     )
 }
@@ -83,7 +81,7 @@ var config = {
             include: __dirname
         }, {
             test: /\.less$/,
-            loader: ExtractTextPlugin.extract('style', 'css!less'),
+            loader: isProduction ? ExtractTextPlugin.extract('style', 'css!less') : 'style!css!less',
             include: __dirname
         }, {
             test: /\.(png|jpg)$/,

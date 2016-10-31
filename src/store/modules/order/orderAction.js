@@ -1,4 +1,4 @@
-import api from '../api'
+import api from '../../../api'
 
 export const GET_ORDER = 'GET_ORDER';
 export const GET_ORDER_PENDING = 'GET_ORDER_PENDING';

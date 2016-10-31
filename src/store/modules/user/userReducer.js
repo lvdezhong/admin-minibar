@@ -4,7 +4,7 @@ import {
     LOGIN_ERROR,
     LOGOUT_SUCCESS,
     FETCH_PROFILE
-} from '../actions/user'
+} from './userAction'
 
 import { combineReducers } from 'redux'
 

@@ -12,7 +12,7 @@ import {
     GET_CATEGORY_SUCCESS,
     GET_CATEGORY_ERROR,
     GET_NEW_GOODS
-} from '../actions/goods'
+} from './goodsAction'
 
 import { combineReducers } from 'redux'
 

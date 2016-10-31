@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { Router, Route, IndexRedirect, Redirect, browserHistory } from 'react-router'
 
-import configureStore from './store/configureStore'
+import configureStore from './store'
 
 import App from './views/App'
 import Login from './views/Login'

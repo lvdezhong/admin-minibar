@@ -2,13 +2,13 @@ import {
     GET_ORDER_PENDING,
     GET_ORDER_SUCCESS,
     GET_ORDER_ERROR
-} from '../actions/order'
+} from './orderAction'
 
 import {
     GET_ALL_DEVICE_PENDING,
     GET_ALL_DEVICE_SUCCESS,
     GET_ALL_DEVICE_ERROR
-} from '../actions/device'
+} from '../device/deviceAction'
 
 import { combineReducers } from 'redux'
 
