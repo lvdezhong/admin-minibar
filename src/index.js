@@ -17,6 +17,9 @@ import MainTplDetail from './views/MainTpl/Detail'
 import GoodsList from './views/Goods/List'
 import GoodsDetail from './views/Goods/Detail'
 
+import GiftList from './views/Gift/List'
+import GiftDetail from './views/Gift/Detail'
+
 import OrderList from './views/Order/List'
 
 const store = configureStore();
@@ -34,22 +37,26 @@ ReactDOM.render(
         <Router history={browserHistory}>
             <Route path="/" onEnter={validate}>
                 <IndexRedirect to="device/list" />
-                <Route path="login" component={Login}/>
+                <Route path="login" component={Login} />
                 <Route component={App}>
                     <Redirect from="device" to="device/list" />
-                    <Route path="device/list" component={DeviceList}/>
-                    <Route path="device/detail/:id" component={DeviceDetail}/>
+                    <Route path="device/list" component={DeviceList} />
+                    <Route path="device/detail/:id" component={DeviceDetail} />
 
                     <Redirect from="maintpl" to="maintpl/list" />
-                    <Route path="maintpl/list" component={MainTplList}/>
-                    <Route path="maintpl/detail(/:id)" component={MainTplDetail}/>
+                    <Route path="maintpl/list" component={MainTplList} />
+                    <Route path="maintpl/detail(/:id)" component={MainTplDetail} />
 
                     <Redirect from="goods" to="goods/list" />
-                    <Route path="goods/list" component={GoodsList}/>
-                    <Route path="goods/detail(/:id)" component={GoodsDetail}/>
+                    <Route path="goods/list" component={GoodsList} />
+                    <Route path="goods/detail(/:id)" component={GoodsDetail} />
+
+                    <Redirect from="goods" to="gift/list" />
+                    <Route path="gift/list" component={GiftList} />
+                    <Route path="gift/detail(/:id)" component={GiftDetail} />
 
                     <Redirect from="order" to="order/list" />
-                    <Route path="order/list" component={OrderList}/>
+                    <Route path="order/list" component={OrderList} />
                 </Route>
             </Route>
         </Router>

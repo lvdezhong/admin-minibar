@@ -65,7 +65,8 @@ var config = {
             'redux',
             'redux-thunk',
             'lodash',
-            'pubsub-js'
+            'pubsub-js',
+            'mirrorkey'
         ]
     },
     output: {
@@ -77,6 +78,11 @@ var config = {
         loaders: [{
             test: /\.js$/,
             loader: 'babel',
+            exclude: /node_modules/,
+            include: __dirname
+        }, {
+            test: /\.json$/,
+            loader: 'json',
             exclude: /node_modules/,
             include: __dirname
         }, {

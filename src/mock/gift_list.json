@@ -1,0 +1,28 @@
+{
+    "code": 10000,
+    "msg": "success",
+    "data": {
+        "gift_group_list": [{
+            "id": 1,
+            "name": "虾仁",
+            "item_count": 10,
+            "gmt_created": "2016-10-21 14:13:10"
+        }, {
+            "id": 2,
+            "name": "虾仁",
+            "item_count": 10,
+            "gmt_created": "2016-10-21 14:13:10"
+        }, {
+            "id": 3,
+            "name": "虾仁",
+            "item_count": 10,
+            "gmt_created": "2016-10-21 14:13:10"
+        }, {
+            "id": 4,
+            "name": "虾仁",
+            "item_count": 10,
+            "gmt_created": "2016-10-21 14:13:10"
+        }],
+        "total_count": 14
+    }
+}

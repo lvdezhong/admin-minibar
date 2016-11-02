@@ -400,7 +400,7 @@ function getSession(isChange) {
     })
 }
 
-function doFetch(path, params, type) {
+function doFetch(path, params, type, isMock) {
     const session_token = localStorage.getItem('session_token') || '';
     const access_token = localStorage.getItem('access_token') || '';
 
@@ -413,6 +413,11 @@ function doFetch(path, params, type) {
     data.api_sign = makeSign(data);
 
     return new Promise(function (resolve, reject) {
+        if (isMock) {
+            handleResponse(path, resolve, reject);
+            return;
+        }
+
         if (type == 'GET') {
             fetch(appInfo.baseURI + path + '?' + toQueryString(data))
             .then(status)
@@ -442,15 +447,15 @@ class _Api {
         this.opts = opts || {};
     }
 
-    get(path, { params } = {}) {
+    get(path, { params } = {}, isMock) {
         return getSession(false).then(function() {
-            return doFetch(path, params, 'GET');
+            return doFetch(path, params, 'GET', isMock);
         })
     }
 
-    post(path, { params } = {}) {
+    post(path, { params } = {}, isMock) {
         return getSession(false).then(function() {
-            return doFetch(path, params, 'POST');
+            return doFetch(path, params, 'POST', isMock);
         })
     }
 }

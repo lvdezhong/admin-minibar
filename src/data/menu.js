@@ -1,4 +1,4 @@
-const menuData = [{
+const data = [{
     "key": 1,
     "name": "设备",
     "icon": "laptop",
@@ -19,6 +19,10 @@ const menuData = [{
         "name": "商品库",
         "key": 201,
         "link": "/goods/list"
+    }, {
+        "name": "赠品库",
+        "key": 202,
+        "link": "/gift/list"
     }]
 }, {
     "key": 3,
@@ -31,4 +35,4 @@ const menuData = [{
     }]
 }]
 
-export default menuData;
+export default data;

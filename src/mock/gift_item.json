@@ -1,0 +1,41 @@
+{
+    "code": 10000,
+    "msg": "success",
+    "data": {
+        "id": 1,
+        "name": "1",
+        "gift_list": [{
+            "id": 14,
+            "item_id": 1,
+            "group_id": 1,
+            "name": "哈哈哈",
+            "image_horizontal": "",
+            "image_vertical": "",
+            "origin_price": 100
+        }, {
+            "id": 13,
+            "item_id": 1,
+            "group_id": 1,
+            "name": "哈哈哈",
+            "image_horizontal": "",
+            "image_vertical": "",
+            "origin_price": 100
+        }, {
+            "id": 12,
+            "item_id": 1,
+            "group_id": 1,
+            "name": "哈哈哈",
+            "image_horizontal": "",
+            "image_vertical": "",
+            "origin_price": 100
+        }, {
+            "id": 11,
+            "item_id": 1,
+            "group_id": 1,
+            "name": "哈哈哈",
+            "image_horizontal": "",
+            "image_vertical": "",
+            "origin_price": 100
+        }]
+    }
+}
