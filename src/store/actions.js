@@ -5,13 +5,15 @@ import * as orderAction from './modules/order/orderAction'
 import * as menuAction from './modules/menu/menuAction'
 import * as userAction from './modules/user/userAction'
 import * as giftAction from './modules/gift/giftAction'
+import * as taskAction from './modules/task/taskAction'
 
 export default {
-  ...deviceAction,
-  ...maintplAction,
-  ...goodsAction,
-  ...orderAction,
-  ...menuAction,
-  ...userAction,
-  ...giftAction
+    ...deviceAction,
+    ...maintplAction,
+    ...goodsAction,
+    ...orderAction,
+    ...menuAction,
+    ...userAction,
+    ...giftAction,
+    ...taskAction
 }

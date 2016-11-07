@@ -22,6 +22,10 @@ import GiftDetail from './views/Gift/Detail'
 
 import OrderList from './views/Order/List'
 
+import TaskList from './views/Task/List'
+import TaskNew from './views/Task/New'
+import TaskDetail from './views/Task/Detail'
+
 const store = configureStore();
 
 const validate = function(next, replace) {
@@ -57,6 +61,11 @@ ReactDOM.render(
 
                     <Redirect from="order" to="order/list" />
                     <Route path="order/list" component={OrderList} />
+
+                    <Redirect from="task" to="task/list" />
+                    <Route path="task/list" component={TaskList} />
+                    <Route path="task/new" component={TaskNew} />
+                    <Route path="task/detail(/:id)" component={TaskDetail} />
                 </Route>
             </Route>
         </Router>

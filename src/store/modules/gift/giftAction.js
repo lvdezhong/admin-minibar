@@ -8,27 +8,27 @@ import result from '../../../mock/result.json'
 export const getGift = (params) => ({
     type: types.GET_GIFT,
     payload: {
-        promise: api.post(gift_list, {
+        promise: api.post('/minibar/manager/item/gift_group/list', {
             params: params
-        }, true)
+        })
     }
 })
 
 export const deleteGift = (params) => ({
     type: types.DELETE_GIFT,
     payload: {
-        promise: api.post(result, {
+        promise: api.post('/minibar/manager/item/gift_group/delete', {
             params: params
-        }, true)
+        })
     }
 })
 
 export const getCurrentGift = (params) => ({
     type: types.GET_GIFT_ITEM,
     payload: {
-        promise: api.post(gift_item, {
+        promise: api.get('/minibar/manager/item/gift_group/get', {
             params: params
-        }, true)
+        })
     }
 })
 

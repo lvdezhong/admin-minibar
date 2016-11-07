@@ -21,6 +21,13 @@ export function toQueryString(obj) {
     return ret.join('&');
 }
 
+export function getQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]);
+    return null;
+}
+
 export function price(type, price) {
     if (price == '' || price == undefined) {
         return price;

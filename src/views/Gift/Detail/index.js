@@ -218,7 +218,7 @@ class GiftDetail extends React.Component {
         if (currentGift.gift_list) {
             giftList = _.map(currentGift.gift_list, function(item) {
                 return (
-                    <GoodsItem key={item.id} name={item.name} price={item.origin_price} img={item.image_vertical} />
+                    <GoodsItem key={item.id} name={item.name} price={item.origin_price} img={item.image_horizontal} />
                 )
             })
         }

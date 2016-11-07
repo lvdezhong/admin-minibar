@@ -15,8 +15,11 @@ class GridBox extends React.Component {
         super()
     }
 
-    handleClick() {
-        PubSub.publish(CLICK_GOODS_ITEM, this.props.currentIndex);
+    handleClick(type) {
+        PubSub.publish(CLICK_GOODS_ITEM, {
+            index: this.props.currentIndex,
+            type: type
+        });
     }
 
     render() {
@@ -50,14 +53,14 @@ class GridBox extends React.Component {
             height: height - 46
         }
 
-        if (info && info.status == 0) {
-            maskStyle.display = 'block';
-        }
+        if (info && info.content_type == '0') {
+            if (info.status == 0) {
+                maskStyle.display = 'block';
+            }
 
-        return (
-            <div className="grid" style={gridStyle} onClick={this.handleClick.bind(this)}>
+            var elem = <div>
                 <div className="grid-top">
-                    <span className="text"><Icon type="plus" />添加商品</span>
+                    <span className="text"><Icon type="plus" />添加商品<br />或 营销活动</span>
                     <div className="img" style={imgStyle}></div>
                     <div className="mask" style={maskStyle}></div>
                 </div>
@@ -65,6 +68,16 @@ class GridBox extends React.Component {
                     <p className="price">¥{info && price('GET', info.price)}</p>
                     <p className="name">{info && info.name}</p>
                 </div>
+            </div>
+        } else if (info && info.content_type == '1') {
+            var elem = <div>
+                <div className="grid-task"></div>
+            </div>
+        }
+
+        return (
+            <div className="grid" style={gridStyle} onClick={this.handleClick.bind(this, info.content_type)}>
+                {elem}
             </div>
         )
     }

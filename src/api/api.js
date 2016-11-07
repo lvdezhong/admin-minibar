@@ -1,17 +1,17 @@
 import { toQueryString } from '../utils'
 import { browserHistory } from 'react-router'
 
-// const appInfo = {
-//     baseURI: 'http://api.mockuai.com:8090',
-//     app_key: '5b036edd2fe8730db1983368a122fb45',
-//     app_pwd: '84ef0ca439e44fa93c4375ff94b420c7'
-// }
-
 const appInfo = {
-    baseURI: 'http://api.minibar.mockuai.com',
-    app_key: '1435a07bcf93045ee631619978ef18ec',
-    app_pwd: '2a94f6b9b969b3e01e32acb18d0c605a'
+    baseURI: 'http://api.mockuai.com:8090',
+    app_key: '5b036edd2fe8730db1983368a122fb45',
+    app_pwd: '84ef0ca439e44fa93c4375ff94b420c7'
 }
+
+// const appInfo = {
+//     baseURI: 'http://api.minibar.mockuai.com',
+//     app_key: '1435a07bcf93045ee631619978ef18ec',
+//     app_pwd: '2a94f6b9b969b3e01e32acb18d0c605a'
+// }
 
 function utf8_encode(argString) {
     // discuss at: http://phpjs.org/functions/utf8_encode/

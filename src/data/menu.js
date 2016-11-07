@@ -33,6 +33,15 @@ const data = [{
         "key": 301,
         "link": "/order/list"
     }]
+}, {
+    "key": 4,
+    "name": "微任务",
+    "icon": "bars",
+    "child": [{
+        "name": "免费送",
+        "key": 401,
+        "link": "/task/list"
+    }]
 }]
 
 export default data;

@@ -23,7 +23,7 @@ const gift = (state = {}, action) => {
 const currentGift = (state = {}, action) => {
     switch (action.type) {
         case types.GET_GIFT_ITEM_SUCCESS:
-            return action.payload.data;
+            return action.payload.data.gift_group;
         case types.UPDATE_GIFT_LIST:
             return Object.assign({}, state, {
                 [action.payload.key]: giftList(state[action.payload.key], action)

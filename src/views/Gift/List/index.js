@@ -27,8 +27,11 @@ class GiftList extends React.Component {
 
     handleDelete(id) {
         this.showConfirm('你确定要删除？', () => {
+            var deleteArr = [];
+            deleteArr.push(id);
+
             this.props.action.deleteGift({
-                id: id
+                id_list: JSON.stringify(deleteArr)
             });
         });
     }
@@ -74,8 +77,8 @@ class GiftList extends React.Component {
             width: '25%'
         }, {
             title: '商品数',
-            dataIndex: 'item_count',
-            key: 'item_count',
+            dataIndex: 'gift_count',
+            key: 'gift_count',
             width: '25%'
         }, {
             title: '操作',

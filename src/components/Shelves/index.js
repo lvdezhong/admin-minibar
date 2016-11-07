@@ -59,7 +59,7 @@ class Shelves extends React.Component {
     componentDidMount() {
         this.pubsub_token = PubSub.subscribe(CLICK_GOODS_ITEM, function(msg, data) {
             this.setState({
-                active: data
+                active: data.index
             });
         }.bind(this));
     }
