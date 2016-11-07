@@ -15,7 +15,8 @@ var outputDir = path.resolve(__dirname, 'dist');
 var plugins = [
     new HtmlWebpackPlugin({
         title: 'minibar',
-        template: './src/index.html'
+        template: './src/index.html',
+        inject: true
     }),
     new webpack.ProvidePlugin({
         _ : 'lodash'
