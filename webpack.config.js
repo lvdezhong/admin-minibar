@@ -15,7 +15,8 @@ var outputDir = path.resolve(__dirname, 'dist');
 var plugins = [
     new HtmlWebpackPlugin({
         title: 'minibar',
-        template: './src/index.html'
+        template: './src/index.html',
+        inject: true
     }),
     new webpack.ProvidePlugin({
         _ : 'lodash'
@@ -71,7 +72,7 @@ var config = {
     output: {
         path: outputDir,
         filename: isProduction ? '[name].[chunkhash:8].js' : '[name].js',
-        publicPath: isProduction ? 'http://boss.minibar.mockuai.com/' : 'http://localhost:8000/'
+        publicPath: isProduction ? 'http://yatong.boss.minibar.mockuai.com/' : 'http://localhost:8000/'
     },
     module: {
         loaders: [{
