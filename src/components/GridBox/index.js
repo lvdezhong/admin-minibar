@@ -23,25 +23,27 @@ class GridBox extends React.Component {
     }
 
     render() {
-        const { currentIndex, dataSource, height, active } = this.props;
+        const { currentIndex, dataSource, height, active, imgType } = this.props;
 
         const gridStyle = {
             height: height
         }
-
         if (active == currentIndex) {
             gridStyle.borderColor = 'red'
         }
 
         const imgStyle = {
-            backgroundImage: `url(${dataSource.image_horizontal})`,
             height: height - 46
+        }
+        if (imgType == 1) {
+            imgStyle.backgroundImage = `url(${dataSource.image_horizontal})`;
+        } else {
+            imgStyle.backgroundImage = `url(${dataSource.image_vertical})`;
         }
 
         const maskStyle = {
             height: height - 46
         }
-
         if (dataSource.status == 0) {
             maskStyle.display = 'block';
         }
