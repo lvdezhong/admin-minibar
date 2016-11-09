@@ -2,7 +2,7 @@ import { toQueryString } from '../utils'
 import { browserHistory } from 'react-router'
 
 const appInfo = {
-    baseURI: 'http://api.mockuai.com:8091',
+    baseURI: 'http://api.mockuai.com:8090',
     app_key: '5b036edd2fe8730db1983368a122fb45',
     app_pwd: '84ef0ca439e44fa93c4375ff94b420c7'
 }

@@ -23,18 +23,7 @@ class GridBox extends React.Component {
     }
 
     render() {
-        const { currentIndex, keyword, height, active } = this.props;
-
-        switch (keyword) {
-            case 'device':
-                const { machine_item_list } = this.props.state.device.currentDevice;
-                var info = machine_item_list[currentIndex]
-                break;
-            case 'maintpl':
-                const { tmpl_item_list } = this.props.state.maintpl.currentMainTpl;
-                var info = tmpl_item_list[currentIndex]
-                break;
-        }
+        const { currentIndex, dataSource, height, active } = this.props;
 
         const gridStyle = {
             height: height
@@ -45,21 +34,32 @@ class GridBox extends React.Component {
         }
 
         const imgStyle = {
-            backgroundImage: `url(${info && info.image_vertical})`,
+            backgroundImage: `url(${dataSource.image_horizontal})`,
             height: height - 46
         }
 
-        let maskStyle = {
+        const maskStyle = {
             height: height - 46
         }
 
-        if (info.content_type == 1) {
-            var elem = <div className="grid-task">活动</div>
+        if (dataSource.status == 0) {
+            maskStyle.display = 'block';
+        }
+
+        const gridTaskStyle = {
+            height: height - 12
+        }
+
+        if (dataSource.content_type == 1) {
+            var elem = <div className="grid-task" style={gridTaskStyle}>
+                <div className="mark"><span>送</span></div>
+                <div className="gift"></div>
+                <div className="describe">
+                    <p>免费送哟～</p>
+                    <p className="slogan">SURPRISE!</p>
+                </div>
+            </div>
         } else {
-            if (info.status == 0) {
-                maskStyle.display = 'block';
-            }
-
             var elem = <div>
                 <div className="grid-top">
                     <span className="text"><Icon type="plus" />添加商品<br />或 营销活动</span>
@@ -67,14 +67,14 @@ class GridBox extends React.Component {
                     <div className="mask" style={maskStyle}></div>
                 </div>
                 <div className="grid-bottom">
-                    <p className="price">¥{info && price('GET', info.price)}</p>
-                    <p className="name">{info && info.name}</p>
+                    <p className="price">¥{price('GET', dataSource.price)}</p>
+                    <p className="name">{dataSource.name}</p>
                 </div>
             </div>
         }
 
         return (
-            <div className="grid" style={gridStyle} onClick={this.handleClick.bind(this, info.content_type)}>
+            <div className="grid" style={gridStyle} onClick={this.handleClick.bind(this, dataSource.content_type)}>
                 {elem}
             </div>
         )

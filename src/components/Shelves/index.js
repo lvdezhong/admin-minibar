@@ -94,19 +94,19 @@ class Shelves extends React.Component {
                     <Row>
                         <Col span={6}>
                             <Row>
-                                <Col span={24}><GridBox active={active} height={125} currentIndex="0" keyword={keyword} /></Col>
+                                <Col span={24}><GridBox active={active} height={125} currentIndex={0} dataSource={goods[0]} /></Col>
                             </Row>
                             <Row>
-                                <Col span={24}><GridBox active={active} height={125} currentIndex="1" keyword={keyword} /></Col>
+                                <Col span={24}><GridBox active={active} height={125} currentIndex={1} dataSource={goods[1]} /></Col>
                             </Row>
                         </Col>
-                        <Col span={12}><GridBox active={active} height={250} currentIndex="2" keyword={keyword} /></Col>
-                        <Col span={6}><GridBox active={active} height={250} currentIndex="3" keyword={keyword} /></Col>
+                        <Col span={12}><GridBox active={active} height={250} currentIndex={2} dataSource={goods[2]} /></Col>
+                        <Col span={6}><GridBox active={active} height={250} currentIndex={3} dataSource={goods[3]} /></Col>
                     </Row>
                     <Row>
-                        <Col span={8}><GridBox active={active} height={155} currentIndex="4" keyword={keyword} /></Col>
-                        <Col span={8}><GridBox active={active} height={155} currentIndex="5" keyword={keyword} /></Col>
-                        <Col span={8}><GridBox active={active} height={155} currentIndex="6" keyword={keyword} /></Col>
+                        <Col span={8}><GridBox active={active} height={155} currentIndex={4} dataSource={goods[4]} /></Col>
+                        <Col span={8}><GridBox active={active} height={155} currentIndex={5} dataSource={goods[5]} /></Col>
+                        <Col span={8}><GridBox active={active} height={155} currentIndex={6} dataSource={goods[6]} /></Col>
                     </Row>
                 </div>
                 <div className="vending-form">
