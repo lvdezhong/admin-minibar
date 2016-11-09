@@ -56,7 +56,7 @@ const device = (state = [], action) => {
 const currentDevice = (state = {}, action) => {
     switch (action.type) {
         case GET_DEVICE_ITEM_SUCCESS:
-            return Object.assign({}, state, action.payload.data);
+            return Object.assign({}, state, action.payload.data.machine);
         case PUSH_DEVICE_DEFAULT_ITEM:
         case PUSH_DEVICE_GOODS_ITEM:
         case GET_MAINTPL_GOODS_SUCCESS:
