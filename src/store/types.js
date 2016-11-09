@@ -29,6 +29,8 @@ export default keyMirror({
 
     UPDATE_GIFT_LIST: null,
 
+    GET_NEW_GIFT: null,
+
     // 任务
     GET_TASK: null,
     GET_TASK_PENDING: null,

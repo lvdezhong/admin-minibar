@@ -34,7 +34,7 @@ class TaskNew extends React.Component {
     handleNext() {
         const { task } = this.props.state;
 
-        if (task.type == 1) {
+        if (task.type == 2) {
             if (!this.auth_code) {
                 message.warning('请先对公众号进行授权！');
                 return;
@@ -84,7 +84,7 @@ class TaskNew extends React.Component {
         const { task } = this.props.state;
         const { getFieldDecorator } = this.props.form;
 
-        if (task.type == 1) {
+        if (task.type == 2) {
             var elem = <div className="ui-box task-focus">
                 <p>用户扫码关注公众号后，完成任务条件，可获得免费送资格</p>
                 <Button type="primary" onClick={this.handleGet.bind(this)}>公众号授权</Button>
@@ -134,8 +134,8 @@ class TaskNew extends React.Component {
                     <Col span={12}>
                         <div className="ui-box task-new-select">
                             <Select defaultValue={task.type} onChange={this.handleChange.bind(this)}>
-                                <Option value="1">关注公众号</Option>
-                                <Option value="2">分享链接</Option>
+                                <Option value="2">关注公众号</Option>
+                                <Option value="1">分享链接</Option>
                             </Select>
                         </div>
                     </Col>

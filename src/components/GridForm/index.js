@@ -31,7 +31,7 @@ class GridForm extends React.Component {
             selectedTask: null,
             pageGoods: 1,
             pageTask: 1,
-            type: '0'
+            type: 0
         }
 
         this.paginationCfgGoods = {
@@ -50,16 +50,16 @@ class GridForm extends React.Component {
             lifecycle: 2
         }
 
-        this.type = '0'
+        this.type = 0;
 
         switch (props.keyword) {
             case 'device':
                 const { machine_item_list } = props.state.device.currentDevice;
-                this.goodsCache = machine_item_list.slice(0);
+                this.goodsCache = _.clone(machine_item_list, true);
                 break;
             case 'maintpl':
                 const { tmpl_item_list } = props.state.maintpl.currentMainTpl;
-                this.goodsCache = tmpl_item_list.slice(0);
+                this.goodsCache = _.clone(tmpl_item_list, true);
                 break;
         }
     }
@@ -107,18 +107,23 @@ class GridForm extends React.Component {
 
             this.setState({
                 visible: false,
-                key: this.type
+                type: this.type
             });
         } else if (selectedTask != null) {
             const item = {
-                name: task_list[selectedTask].title,
                 task_id: task_list[selectedTask].id,
-                start_time: task_list[selectedTask].start_time,
-                end_time: task_list[selectedTask].end_time,
-                task_item_list: task_list[selectedTask].task_item_list,
                 isDefault: false,
-                content_type: this.type
+                content_type: this.type,
+                extro_info: {
+                    title: task_list[selectedTask].title,
+                    start_time: task_list[selectedTask].start_time,
+                    end_time: task_list[selectedTask].end_time,
+                    task_item_list: task_list[selectedTask].task_item_list
+                }
             }
+
+            delete this.goodsCache[currentIndex].origin_price;
+            delete this.goodsCache[currentIndex].price;
 
             this.goodsCache[currentIndex] = Object.assign({}, this.goodsCache[currentIndex], item)
 
@@ -140,7 +145,7 @@ class GridForm extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const { keyword } = this.props;
-        const { currentIndex, selectedGoods, key } = this.state;
+        const { currentIndex, type } = this.state;
         const currentGoods = this.goodsCache[currentIndex];
 
         if (currentGoods.isDefault == true) {
@@ -148,33 +153,28 @@ class GridForm extends React.Component {
              return
         }
 
-        if (key == '0') {
-            this.props.form.validateFields((errors, values) => {
-                if (errors) {
-                    message.error('请正确填写商品信息！');
-                    return;
+        this.props.form.validateFields((errors, values) => {
+            if (errors) {
+                message.error('请正确填写表单信息！');
+                return;
+            }
+
+            if (type == 0) {
+                var formData = {
+                    price: Number(price('POST', values.price)),
+                    stock_num: Number(values.goods_stock_num),
+                    max_stock_num: Number(values.goods_max_stock_num),
+                    status: Number(values.goods_status)
                 }
-
-                values.price = Number(price('POST', values.price));
-                values.stock_num = Number(values.stock_num);
-                values.max_stock_num = Number(values.max_stock_num);
-                values.status = Number(values.status);
-
-                var pushData = Object.assign({}, currentGoods, values);
-
-                PubSub.publish(UPDATE_GOODS_ITEM, currentIndex);
-                switch (keyword) {
-                    case 'device':
-                        this.props.action.pushDeviceGoodsItem(currentIndex, pushData);
-                        break;
-                    case 'maintpl':
-                        this.props.action.pushMainTplGoodsItem(currentIndex, pushData);
-                        break;
+            } else {
+                var formData = {
+                    stock_num: Number(values.task_stock_num),
+                    max_stock_num: Number(values.task_max_stock_num),
+                    status: Number(values.task_status)
                 }
-                message.success('修改成功！');
-            })
-        } else {
-            var pushData = currentGoods;
+            }
+
+            var pushData = Object.assign({}, currentGoods, formData);
 
             PubSub.publish(UPDATE_GOODS_ITEM, currentIndex);
             switch (keyword) {
@@ -186,7 +186,7 @@ class GridForm extends React.Component {
                     break;
             }
             message.success('修改成功！');
-        }
+        })
     }
 
     handleSearchGoods(value) {
@@ -257,17 +257,23 @@ class GridForm extends React.Component {
 
     checkStock(rule, value, callback) {
         const { validateFields } = this.props.form;
+        const { type } = this.state;
 
-        if (value) {
-          validateFields(['max_stock_num'], { force: true });
+        if (value && type == 0) {
+            validateFields(['goods_max_stock_num'], { force: true });
+        } else if (value && type == 1) {
+            validateFields(['task_max_stock_num'], { force: true });
         }
         callback();
     }
 
     checkMaxStock(rule, value, callback) {
         const { getFieldValue } = this.props.form;
+        const { type } = this.state;
 
-        if (value && value < getFieldValue('stock_num')) {
+        if (value && type == 0 && value < getFieldValue('goods_stock_num')) {
+            callback('最大库存不能小于库存');
+        } else if (value && type == 1 && value < getFieldValue('task_stock_num')) {
             callback('最大库存不能小于库存');
         } else {
             callback();
@@ -300,11 +306,12 @@ class GridForm extends React.Component {
     }
 
     componentDidMount() {
-        this.pubsub_token = PubSub.subscribe(CLICK_GOODS_ITEM, function(msg, data) {
+        this.pubsub_token = PubSub.subscribe(CLICK_GOODS_ITEM, (msg, data) => {
             this.setState({
                 currentIndex: data.index,
                 type: data.type,
-                selectedGoods: null
+                selectedGoods: null,
+                selectedTask: null
             });
 
             const { keyword } = this.props;
@@ -322,17 +329,20 @@ class GridForm extends React.Component {
 
             this.goodsCache[data.index] = currentGoods;
 
-            this.props.form.setFieldsValue({
-                price: price('GET', currentGoods.price),
-                stock_num: currentGoods.stock_num.toString(),
-                max_stock_num: currentGoods.max_stock_num.toString(),
-                status: `${currentGoods.status}`
-            });
-        }.bind(this));
-
-        PubSub.publish(CLICK_GOODS_ITEM, {
-            index: 0,
-            type: '0'
+            if (data.type == 0) {
+                this.props.form.setFieldsValue({
+                    price: price('GET', currentGoods.price),
+                    goods_stock_num: currentGoods.stock_num.toString(),
+                    goods_max_stock_num: currentGoods.max_stock_num.toString(),
+                    goods_status: `${currentGoods.status}`
+                });
+            } else {
+                this.props.form.setFieldsValue({
+                    task_stock_num: currentGoods.stock_num.toString(),
+                    task_max_stock_num: currentGoods.max_stock_num.toString(),
+                    task_status: `${currentGoods.status}`
+                });
+            }
         });
     }
 
@@ -463,14 +473,14 @@ class GridForm extends React.Component {
                 self.postDataTask = Object.assign(self.postDataTask, self.paginationCfgTask);
 
                 self.setState({
-                    pageTask: page,
+                    pageTask: page
                 });
 
                 self.props.action.getTask(self.postDataTask);
             }
         }
 
-        if (type == '0') {
+        if (type == 0) {
             var elem = <div>
                 <FormItem {...formItemLayout} label="商品名称">
                     <p className="ant-form-text">{currentGoods.name}</p>
@@ -490,7 +500,7 @@ class GridForm extends React.Component {
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="库存">
-                    {getFieldDecorator('stock_num', {
+                    {getFieldDecorator('goods_stock_num', {
                         rules: [
                             { required: true, message: '商品库存不能为空' },
                             { pattern: /^[1-9]\d*$/, message: '商品库存请填写数字' },
@@ -502,7 +512,7 @@ class GridForm extends React.Component {
                     <span>当前剩余库存：{currentGoods.stock_num}</span>
                 </FormItem>
                 <FormItem {...formItemLayout} label="最大库存">
-                    {getFieldDecorator('max_stock_num', {
+                    {getFieldDecorator('goods_max_stock_num', {
                         rules: [
                             { required: true, message: '最大库存不能为空' },
                             { pattern: /^[1-9]\d*$/, message: '商品库存请填写数字' },
@@ -513,7 +523,7 @@ class GridForm extends React.Component {
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="状态">
-                    {getFieldDecorator('status')(
+                    {getFieldDecorator('goods_status')(
                         <RadioGroup>
                             <Radio value="1">启用</Radio>
                             <Radio value="0">禁用</Radio>
@@ -522,19 +532,59 @@ class GridForm extends React.Component {
                 </FormItem>
             </div>
         } else {
-            const giftList = _.map(currentGoods.task_item_list, function(item) {
-                return (
-                    <GoodsItem key={item.id} name={item.name} price={item.origin_price} img={item.image_horizontal} />
-                )
-            })
+            var giftList = [];
+            if (currentGoods.extro_info) {
+                giftList = _.map(currentGoods.extro_info.task_item_list, (item, index) => {
+                    let itemData = {
+                        name: item.name,
+                        price: item.origin_price,
+                        img: item.image_horizontal
+                    }
+
+                    return (
+                        <GoodsItem key={item.id} dataSource={itemData} closable={false} />
+                    )
+                })
+            }
 
             var elem = <div>
                 <FormItem {...formItemLayout} label="活动名称">
-                    <p className="ant-form-text">{currentGoods.name}</p>
+                    <p className="ant-form-text">{currentGoods.extro_info && currentGoods.extro_info.title}</p>
                     <Button type="primary" size="small" onClick={this.showModal.bind(this)}>选择商品/营销活动</Button>
                 </FormItem>
                 <FormItem {...formItemLayout} label="有效期">
-                    <p className="ant-form-text">{`${currentGoods.start_time} 到 ${currentGoods.end_time}`}</p>
+                    <p className="ant-form-text">{`${currentGoods.extro_info && currentGoods.extro_info.start_time} 到 ${currentGoods.extro_info && currentGoods.extro_info.end_time}`}</p>
+                </FormItem>
+                <FormItem {...formItemLayout} label="库存">
+                    {getFieldDecorator('task_stock_num', {
+                        rules: [
+                            { required: true, message: '商品库存不能为空' },
+                            { pattern: /^[1-9]\d*$/, message: '商品库存请填写数字' },
+                            { validator: this.checkStock.bind(this) }
+                        ]
+                    })(
+                        <Input />
+                    )}
+                    <span>当前剩余库存：{currentGoods.stock_num}</span>
+                </FormItem>
+                <FormItem {...formItemLayout} label="最大库存">
+                    {getFieldDecorator('task_max_stock_num', {
+                        rules: [
+                            { required: true, message: '最大库存不能为空' },
+                            { pattern: /^[1-9]\d*$/, message: '商品库存请填写数字' },
+                            { validator: this.checkMaxStock.bind(this) }
+                        ]
+                    })(
+                        <Input placeholder="最大库存用于补货端批量补货" />
+                    )}
+                </FormItem>
+                <FormItem {...formItemLayout} label="状态">
+                    {getFieldDecorator('task_status')(
+                        <RadioGroup>
+                            <Radio value="1">启用</Radio>
+                            <Radio value="0">禁用</Radio>
+                        </RadioGroup>
+                    )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="赠送商品">
                     {giftList}

@@ -67,7 +67,8 @@ var config = {
             'redux-thunk',
             'lodash',
             'pubsub-js',
-            'mirrorkey'
+            'mirrorkey',
+            'classnames'
         ]
     },
     output: {

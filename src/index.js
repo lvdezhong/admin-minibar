@@ -65,7 +65,7 @@ ReactDOM.render(
                     <Redirect from="task" to="task/list" />
                     <Route path="task/list" component={TaskList} />
                     <Route path="task/new" component={TaskNew} />
-                    <Route path="task/detail(/:id)" component={TaskDetail} />
+                    <Route path="task/detail(/:id)(/:disabled)" component={TaskDetail} />
                 </Route>
             </Route>
         </Router>

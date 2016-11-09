@@ -10,34 +10,34 @@ import task_item from '../../../mock/task_item.json'
 export const getTask = (params) => ({
     type: types.GET_TASK,
     payload: {
-        promise: api.post(task_list, {
+        promise: api.get('/minibar/task/list', {
             params: params
-        }, true)
+        })
     }
 })
 
 export const invalidTask = (params) => ({
     type: types.INVALID_TASK,
     payload: {
-        promise: api.post(result, {
+        promise: api.post('/minibar/task/invalid', {
             params: params
-        }, true)
+        })
     }
 })
 
 export const getLoginUrl = () => ({
     type: types.GET_LOGIN_URL,
     payload: {
-        promise: api.post(login_url, {}, true)
+        promise: api.get('/minibar/wechat/thirdparty/componentloginurl', {})
     }
 })
 
 export const getAuthorizeInfo = (params) => ({
     type: types.GET_AUTHORIZE_INFO,
     payload: {
-        promise: api.post(authorize_info, {
+        promise: api.get('/minibar/wechat/open/get', {
             params: params
-        }, true)
+        })
     }
 })
 
@@ -58,26 +58,25 @@ export const setTaskType = (type) => ({
 export const addTask = (params) => ({
     type: types.ADD_TASK,
     payload: {
-        promise: api.post(result, {
+        promise: api.post('/minibar/task/add', {
             params: params
-        }, true)
+        })
     }
 })
 
 export const updateTaskItemList = (data, key) => ({
     type: types.UPDATE_TASK_ITEM_LIST,
     payload: {
-        data: data,
-        key: key
+        data
     }
 })
 
 export const getCurrentTask = (params) => ({
     type: types.GET_TASK_ITEM,
     payload: {
-        promise: api.post(task_item, {
+        promise: api.get('/minibar/task/get', {
             params: params
-        }, true)
+        })
     }
 })
 

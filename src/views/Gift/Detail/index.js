@@ -67,7 +67,7 @@ class GiftDetail extends React.Component {
         });
     }
 
-    getIndex(arr, obj) {
+    getIndex(arr, id) {
         let index = -1;
 
         if (arr.length == 0) {
@@ -75,7 +75,7 @@ class GiftDetail extends React.Component {
         }
 
         _.forEach(arr, (item, i) => {
-            if (item.id == obj.id) {
+            if (item.item_id == id) {
                 return index = i;
             }
         })
@@ -84,27 +84,29 @@ class GiftDetail extends React.Component {
     }
 
     showModal() {
-        const gift_list = this.props.state.gift.currentGift.gift_list || [];
-        const _giftList = _.clone(gift_list, true);
-
         this.setState({
-            visible: true,
-            selectedArr: _giftList
+            visible: true
         });
 
         this.props.action.getGoods(this.paginationCfg);
     }
 
     goodsItemClick(item) {
+        const selectItem = {
+            item_id: item.id,
+            name: item.name,
+            image_horizontal: item.image_horizontal,
+            origin_price: item.origin_price
+        }
         const { selectedArr } = this.state;
-        const _index = this.getIndex(selectedArr, item);
+        const _index = this.getIndex(selectedArr, selectItem.item_id);
 
         if (_index == -1) {
             if (selectedArr.length >= 10) {
                 message.warning('所选商品不能超过10个！');
                 return;
             }
-            selectedArr.push(item);
+            selectedArr.push(selectItem);
         } else {
             selectedArr.splice(_index, 1);
         }
@@ -122,13 +124,14 @@ class GiftDetail extends React.Component {
 
     handleOk() {
         const { selectedArr } = this.state;
+        const _selectedArr = _.clone(selectedArr, true)
 
         if (selectedArr.length == 0) {
              message.warning('请选择一个商品！');
              return;
         }
 
-        this.props.action.updateGiftList(selectedArr, 'gift_list');
+        this.props.action.updateGiftList(_selectedArr, 'gift_list');
 
         this.setState({
             visible: false
@@ -166,6 +169,13 @@ class GiftDetail extends React.Component {
         });
     }
 
+    handleGoodsItemCancel(index) {
+        const { selectedArr } = this.state;
+        selectedArr.splice(index, 1);
+
+        this.props.action.updateGiftList(selectedArr, 'gift_list');
+    }
+
     componentDidMount() {
         this.id = this.props.params.id;
         this.id ? this.isEdit = true : this.isEdit = false;
@@ -173,7 +183,16 @@ class GiftDetail extends React.Component {
         if (this.isEdit) {
             this.props.action.getCurrentGift({
                 id: this.id
+            }).payload.promise.then(() => {
+                const gift_list = this.props.state.gift.currentGift.gift_list || [];
+                const _giftList = _.clone(gift_list, true);
+
+                this.setState({
+                    selectedArr: _giftList
+                });
             });
+        } else {
+            this.props.action.getNewGift();
         }
     }
 
@@ -182,7 +201,7 @@ class GiftDetail extends React.Component {
         const { selectedArr } = nextState;
 
         _.forEach(itemList, (item) => {
-            const _index = this.getIndex(selectedArr, item);
+            const _index = this.getIndex(selectedArr, item.id);
 
             if (_index == -1) {
                 item.selected = false;
@@ -216,9 +235,15 @@ class GiftDetail extends React.Component {
 
         let giftList = [];
         if (currentGift.gift_list) {
-            giftList = _.map(currentGift.gift_list, function(item) {
+            giftList = _.map(currentGift.gift_list, (item, index) => {
+                let itemData = {
+                    name: item.name,
+                    price: item.origin_price,
+                    img: item.image_horizontal
+                }
+                
                 return (
-                    <GoodsItem key={item.id} name={item.name} price={item.origin_price} img={item.image_horizontal} />
+                    <GoodsItem key={item.item_id} dataSource={itemData} onCancel={this.handleGoodsItemCancel.bind(this, index)} />
                 )
             })
         }

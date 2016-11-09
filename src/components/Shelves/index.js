@@ -19,6 +19,7 @@ const defaultItem = {
     stock_num: "",
     max_stock_num: "",
     status: 1,
+    content_type: 0,
     isDefault: true
 }
 
@@ -42,7 +43,7 @@ class Shelves extends React.Component {
             case 'device':
                 const machine_item_list = nextProps.state.device.currentDevice.machine_item_list || [];
 
-                if (machine_item_list == 0 || machine_item_list.length < 7) {
+                if (machine_item_list.length == 0 || machine_item_list.length < 7) {
                     this.props.action.pushDeviceDefaultItem(defaultItem, 7);
                 }
                 break;

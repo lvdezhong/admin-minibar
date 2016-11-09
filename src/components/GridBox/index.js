@@ -53,7 +53,9 @@ class GridBox extends React.Component {
             height: height - 46
         }
 
-        if (info && info.content_type == '0') {
+        if (info.content_type == 1) {
+            var elem = <div className="grid-task">活动</div>
+        } else {
             if (info.status == 0) {
                 maskStyle.display = 'block';
             }
@@ -68,10 +70,6 @@ class GridBox extends React.Component {
                     <p className="price">¥{info && price('GET', info.price)}</p>
                     <p className="name">{info && info.name}</p>
                 </div>
-            </div>
-        } else if (info && info.content_type == '1') {
-            var elem = <div>
-                <div className="grid-task"></div>
             </div>
         }
 

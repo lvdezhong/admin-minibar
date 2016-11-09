@@ -6,6 +6,9 @@ const itemList = (state = [], action) => {
     switch (action.type) {
         case types.UPDATE_TASK_ITEM_LIST:
             return action.payload.data
+        case types.GET_AUTHORIZE_INFO_SUCCESS:
+        case types.GET_SHARE_INFO:
+            return [];
         default:
             return state;
     }
@@ -25,15 +28,17 @@ const currentTask = (state = {}, action) => {
         case types.GET_TASK_ITEM_SUCCESS:
             return action.payload.data;
         case types.UPDATE_TASK_ITEM_LIST:
+        case types.GET_AUTHORIZE_INFO_SUCCESS:
+        case types.GET_SHARE_INFO:
             return Object.assign({}, state, {
-                [action.payload.key]: itemList(state[action.payload.key], action)
+                task_item_list: itemList(state[action.payload.key], action)
             });
         default:
             return state;
     }
 }
 
-const type = (state = '1', action) => {
+const type = (state = '2', action) => {
     switch (action.type) {
         case types.SET_TASK_TYPE:
             return action.payload.type;
@@ -56,9 +61,12 @@ const loginUrl = (state = null, action) => {
 const authorizeInfo = (state = null, action) => {
     switch (action.type) {
         case types.GET_AUTHORIZE_INFO_SUCCESS:
-            return action.payload.data.wechat_open;
+            return action.payload.data;
         case types.GET_TASK_ITEM_SUCCESS:
-            return action.payload.data.wechat_open;
+            return {
+                nick_name: action.payload.data.wechat_open_d_t_o && action.payload.data.wechat_open_d_t_o.nick_name,
+                id: action.payload.data.wechat_open_d_t_o && action.payload.data.wechat_open_d_t_o.id
+            }
         default:
             return state;
     }

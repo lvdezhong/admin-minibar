@@ -43,7 +43,7 @@ export const updateGiftList = (data, key) => ({
 export const addGift = (params) => ({
     type: types.ADD_GIFT,
     payload: {
-        promise: api.post('/minibar/manager/item/gift_list/list', {
+        promise: api.post('/minibar/manager/item/gift_group/add', {
             params: params
         })
     }
@@ -56,4 +56,8 @@ export const updateGift = (params) => ({
             params: params
         })
     }
+})
+
+export const getNewGift = () => ({
+    type: types.GET_NEW_GIFT
 })

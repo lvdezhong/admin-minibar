@@ -28,6 +28,8 @@ const currentGift = (state = {}, action) => {
             return Object.assign({}, state, {
                 [action.payload.key]: giftList(state[action.payload.key], action)
             });
+        case types.GET_NEW_GIFT:
+            return {}
         default:
             return state;
     }

@@ -102,11 +102,21 @@ class TaskDetail extends React.Component {
     }
 
     giftItemClick(item) {
-        this.setState({
-            selectedArr: item.gift_list
-        })
+        this.props.action.getCurrentGift({
+            id: item.id
+        }).payload.promise.then((data) => {
+            const { code, msg } = data.payload;
 
-        message.success(`已选择赠品库 ${item.name} 中的所有商品！`);
+            if (code == 10000) {
+                this.setState({
+                    selectedArr: data.payload.data.gift_group.gift_list
+                })
+
+                message.success(`已选择赠品库 ${item.name} 中的所有商品！`);
+            } else {
+                message.error(msg);
+            }
+        });
     }
 
     handleCancel() {
@@ -123,7 +133,7 @@ class TaskDetail extends React.Component {
              return;
         }
 
-        this.props.action.updateTaskItemList(selectedArr, 'task_item_list');
+        this.props.action.updateTaskItemList(selectedArr);
 
         this.setState({
             visible: false
@@ -208,13 +218,13 @@ class TaskDetail extends React.Component {
                 return;
             }
 
-            values.start_time = values.time[0].format('YYYY-MM-DD');
-            values.end_time = values.time[1].format('YYYY-MM-DD');
+            values.start_time = values.time[0].format('YYYY-MM-DD') + ' 00:00:00';
+            values.end_time = values.time[1].format('YYYY-MM-DD') + ' 00:00:00';
             values.type = task.type;
             values.task_item_list = JSON.stringify(task.currentTask.task_item_list);
             delete values.time;
 
-            if (task.type == '1') {
+            if (task.type == '2') {
                 values.wechat_open_id = task.authorizeInfo.id;
             } else {
                 values.share_url = task.shareInfo.share_url;
@@ -230,9 +240,19 @@ class TaskDetail extends React.Component {
         });
     }
 
+    handleGoodsItemCancel(index) {
+        const { selectedArr } = this.state;
+        selectedArr.splice(index, 1);
+
+        this.props.action.updateTaskItemList(selectedArr);
+    }
+
     componentDidMount() {
         this.id = this.props.params.id;
+        this.disabled = this.props.params.disabled;
+
         this.id ? this.isEdit = true : this.isEdit = false;
+        this.disabled ? this.isDisabled = true : this.isDisabled = false;
 
         if (this.isEdit) {
             this.props.action.getCurrentTask({
@@ -281,9 +301,15 @@ class TaskDetail extends React.Component {
 
         let taskItemList = [];
         if (currentTask.task_item_list) {
-            taskItemList = _.map(currentTask.task_item_list, function(item) {
+            taskItemList = _.map(currentTask.task_item_list, (item, index) => {
+                let itemData = {
+                    name: item.name,
+                    price: item.origin_price,
+                    img: item.image_horizontal
+                }
+
                 return (
-                    <GoodsItem key={item.item_id} name={item.name} price={item.origin_price} img={item.image_horizontal} />
+                    <GoodsItem key={item.item_id} dataSource={itemData} onCancel={this.handleGoodsItemCancel.bind(this, index)} />
                 )
             })
         }
@@ -381,7 +407,7 @@ class TaskDetail extends React.Component {
             }
         }
 
-        if (task.type == 1) {
+        if (task.type == 2) {
             var elem = <div>
                 <FormItem {...formItemLayout} label="任务类型">
                     <p className="ant-form-text">关注公众号</p>
@@ -469,7 +495,7 @@ class TaskDetail extends React.Component {
                         )}
                     </FormItem>
                     <FormItem wrapperCol={{ span: 20, offset: 4 }}>
-                        <Button type="primary" htmlType="submit" size="default">确定</Button>
+                        { this.isDisabled ? <Button type="primary" htmlType="submit" size="default" disabled>确定</Button> : <Button type="primary" htmlType="submit" size="default">确定</Button> }
                     </FormItem>
                 </Form>
                 <Modal
