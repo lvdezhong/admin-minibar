@@ -29,6 +29,19 @@ const menuData = [{
         "key": 301,
         "link": "/order/list"
     }]
+}, {
+    "key": 4,
+    "name": "微任务",
+    "icon": "line-chart",
+    "child": [{
+        "name": "免费送",
+        "key": 401,
+        "link": "/order/list"
+    },{
+        "name": "活动数据",
+        "key": 402,
+        "link": "/chart"
+    }]
 }]
 
 export default menuData;

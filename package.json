@@ -3,11 +3,6 @@
   "version": "1.0.0",
   "description": "React Ant.Design Admin",
   "main": "index.js",
-  "scripts": {
-    "build": "webpack --progress --colors",
-    "dist": "NODE_ENV=production webpack --progress --colors",
-    "start": "node server"
-  },
   "author": "lvdezhong",
   "license": "WTFPL",
   "dependencies": {
@@ -19,7 +14,8 @@
     "react-redux": "^4.4.0",
     "react-router": "^2.8.1",
     "redux": "^3.3.1",
-    "redux-thunk": "^1.0.3"
+    "redux-thunk": "^1.0.3",
+    "d3": "^3.5.0"
   },
   "devDependencies": {
     "babel-core": "^6.18.0",
@@ -41,6 +37,7 @@
     "url-loader": "^0.5.7",
     "webpack": "^1.13.3",
     "webpack-dev-server": "^1.16.2",
-    "webpack-md5-hash": "0.0.5"
+    "webpack-md5-hash": "0.0.5",
+    "uglify-js": "2.x"
   }
 }

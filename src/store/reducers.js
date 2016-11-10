@@ -6,6 +6,7 @@ import device from './modules/device/deviceReducer'
 import maintpl from './modules/maintpl/maintplReducer'
 import goods from './modules/goods/goodsReducer'
 import order from './modules/order/orderReducer'
+import chart from './modules/chart/chartReducer'
 
 export default combineReducers({
     user,
@@ -13,5 +14,6 @@ export default combineReducers({
     device,
     maintpl,
     goods,
-    order
+    order,
+    chart
 });

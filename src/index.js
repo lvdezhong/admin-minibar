@@ -19,6 +19,8 @@ import GoodsDetail from './views/Goods/Detail'
 
 import OrderList from './views/Order/List'
 
+import Chart from './views/Chart'
+
 const store = configureStore();
 
 const validate = function(next, replace) {
@@ -50,6 +52,8 @@ ReactDOM.render(
 
                     <Redirect from="order" to="order/list" />
                     <Route path="order/list" component={OrderList}/>
+
+                    <Route path="chart" component={Chart}/>
                 </Route>
             </Route>
         </Router>
