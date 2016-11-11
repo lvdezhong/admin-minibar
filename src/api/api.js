@@ -1,17 +1,17 @@
 import { toQueryString } from '../utils'
 import { browserHistory } from 'react-router'
 
-// const appInfo = {
-//     baseURI: 'http://api.mockuai.com:8090',
-//     app_key: '5b036edd2fe8730db1983368a122fb45',
-//     app_pwd: '84ef0ca439e44fa93c4375ff94b420c7'
-// }
-
 const appInfo = {
-    baseURI: 'http://api.minibar.mockuai.com',
-    app_key: '732107fc97120ce6777c2f821c3a0679',
-    app_pwd: '60a7b01e91cf29e3ade371b7f8a369dc'
+    baseURI: 'http://api.mockuai.com:8091',
+    app_key: '5b036edd2fe8730db1983368a122fb45',
+    app_pwd: '84ef0ca439e44fa93c4375ff94b420c7'
 }
+
+// const appInfo = {
+//     baseURI: 'http://api.minibar.mockuai.com',
+//     app_key: '1435a07bcf93045ee631619978ef18ec',
+//     app_pwd: '2a94f6b9b969b3e01e32acb18d0c605a'
+// }
 
 function utf8_encode(argString) {
     // discuss at: http://phpjs.org/functions/utf8_encode/
@@ -400,7 +400,7 @@ function getSession(isChange) {
     })
 }
 
-function doFetch(path, params, type) {
+function doFetch(path, params, type, isMock) {
     const session_token = localStorage.getItem('session_token') || '';
     const access_token = localStorage.getItem('access_token') || '';
 
@@ -413,6 +413,11 @@ function doFetch(path, params, type) {
     data.api_sign = makeSign(data);
 
     return new Promise(function (resolve, reject) {
+        if (isMock) {
+            handleResponse(path, resolve, reject);
+            return;
+        }
+
         if (type == 'GET') {
             fetch(appInfo.baseURI + path + '?' + toQueryString(data))
             .then(status)
@@ -442,15 +447,15 @@ class _Api {
         this.opts = opts || {};
     }
 
-    get(path, { params } = {}) {
+    get(path, { params } = {}, isMock) {
         return getSession(false).then(function() {
-            return doFetch(path, params, 'GET');
+            return doFetch(path, params, 'GET', isMock);
         })
     }
 
-    post(path, { params } = {}) {
+    post(path, { params } = {}, isMock) {
         return getSession(false).then(function() {
-            return doFetch(path, params, 'POST');
+            return doFetch(path, params, 'POST', isMock);
         })
     }
 }

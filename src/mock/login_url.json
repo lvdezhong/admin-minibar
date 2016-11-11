@@ -1,0 +1,7 @@
+{
+    "code": 10000,
+    "msg": "success",
+    "data": {
+        "login_url": "http://www.baidu.com/"
+    }
+}

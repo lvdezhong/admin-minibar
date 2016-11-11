@@ -9,7 +9,7 @@
             left: 0;
             right: 0;
             top: 50%;
-            margin-top: -9px;
+            margin-top: -18px;
             text-align: center;
             color: #fff;
             z-index: 9;
@@ -41,6 +41,58 @@
             text-overflow: ellipsis;
             &.price {
                 color: #f00;
+            }
+        }
+    }
+    .grid-task {
+        position: relative;
+        overflow: hidden;
+        background: #facfd4;
+        .mark {
+            position: absolute;
+            left: -36px;
+            width: 0;
+            height: 0;
+            border-left: 36px solid transparent;
+            border-right: 36px solid transparent;
+            border-top: 36px solid #ec4054;
+            span {
+                position: absolute;
+                left: 4px;
+                top: -34px;
+                color: #fff;
+                font-size: 12px;
+                font-weight: bold;
+            }
+        }
+        .gift {
+            position: absolute;
+            height: 0;
+            width: 70%;
+            padding-top: 70%;
+            top: 50%;
+            left: 50%;
+            margin-top: -55%;
+            margin-left: -35%;
+            background: url('http://img.mockuai.com/tms/2016/11/9/upload_fe6f17a6f95f6fb511cf052f1a4ca76c.png') no-repeat center;
+            background-size: 100% 100%;
+        }
+        .describe {
+            position: absolute;
+            width: 70px;
+            bottom: 8px;
+            left: 50%;
+            margin-left: -35px;
+            p {
+                text-align: center;
+                color: #fe142f;
+                line-height: 16px;
+                font-size: 10px;
+                -webkit-transform: scale(0.8);
+            }
+            .slogan {
+                border-top: 1px solid #fe142f;
+                border-bottom: 1px solid #fe142f;
             }
         }
     }

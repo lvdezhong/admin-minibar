@@ -61,7 +61,7 @@ const maintpl = (state = [], action) => {
 const currentMainTpl = (state = {}, action) => {
     switch (action.type) {
         case GET_MAINTPL_ITEM_SUCCESS:
-            return Object.assign({}, state, action.payload.data);
+            return Object.assign({}, state, action.payload.data.machine_tmpl);
         case PUSH_MAINTPL_DEFAULT_ITEM:
         case PUSH_MAINTPL_GOODS_ITEM:
             return Object.assign({}, state, {

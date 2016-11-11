@@ -1,0 +1,35 @@
+.goods-item-wrapper {
+    display: flex;
+    width: 300px;
+    border: 1px solid #999;
+    padding: 5px;
+    margin-top: 10px;
+
+    .goods-item-img {
+        width: 50px;
+        height: 50px;
+        border: 1px solid #999;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+
+    .goods-item-info {
+        width: 230px;
+        margin-left: 10px;
+
+        p {
+            heigth: 20px;
+            line-height: 20px;
+        }
+
+        .goods-item-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .goods-item-price {
+            color: #f00;
+        }
+    }
+}

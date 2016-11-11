@@ -38,7 +38,7 @@ const goodsList = (state = [], action) => {
             }
             return cacheState;
         case GET_MAINTPL_GOODS_SUCCESS:
-            return action.payload.data.tmpl_item_list
+            return action.payload.data.machine_tmpl.tmpl_item_list
         default:
             return state;
     }

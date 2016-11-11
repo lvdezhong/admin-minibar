@@ -1,0 +1,60 @@
+{
+    "code": 10000,
+    "msg": "success",
+    "data": {
+        "id": 1,
+        "wechat_open": {
+            "id": 1,
+            "nick_name": "hahaha",
+            "head_img": ""
+        },
+        "title": "hahahahaha",
+        "start_time": "2016-10-10",
+        "end_time": "2016-10-15",
+        "type": 2,
+        "content": "hehehehehe",
+        "user_limit": 1,
+        "share_url": "www.baidu.com",
+        "share_code": "11212",
+        "count": 1,
+        "join_count": 1,
+        "accomplish_count": 1,
+        "status": 1,
+        "lifecycle": 1,
+        "running_status": 1,
+        "qr_code_url": "www.baidu.com",
+        "task_item_list": [{
+            "id": 1,
+            "item_id": 11,
+            "group_id": 1,
+            "name": "haha",
+            "image_horizontal": "",
+            "image_vertical": "",
+            "origin_price": 100
+        }, {
+            "id": 2,
+            "item_id": 12,
+            "group_id": 1,
+            "name": "haha",
+            "image_horizontal": "",
+            "image_vertical": "",
+            "origin_price": 100
+        }, {
+            "id": 3,
+            "item_id": 13,
+            "group_id": 1,
+            "name": "haha",
+            "image_horizontal": "",
+            "image_vertical": "",
+            "origin_price": 100
+        }, {
+            "id": 4,
+            "item_id": 14,
+            "group_id": 1,
+            "name": "haha",
+            "image_horizontal": "",
+            "image_vertical": "",
+            "origin_price": 100
+        }]
+    }
+}

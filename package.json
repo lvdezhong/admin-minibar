@@ -12,7 +12,9 @@
   "license": "WTFPL",
   "dependencies": {
     "antd": "^2.1.0",
+    "classnames": "^2.2.5",
     "lodash": "^4.16.4",
+    "mirrorkey": "^1.2.0",
     "pubsub-js": "^1.5.3",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
@@ -34,6 +36,7 @@
     "css-loader": "^0.23.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
+    "json-loader": "^0.5.4",
     "html-webpack-plugin": "^2.24.0",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
