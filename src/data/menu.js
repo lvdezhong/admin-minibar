@@ -41,6 +41,10 @@ const data = [{
         "name": "免费送",
         "key": 401,
         "link": "/task/list"
+    }, {
+        "name": "活动数据",
+        "key": 402,
+        "link": "/chart"
     }]
 }]
 

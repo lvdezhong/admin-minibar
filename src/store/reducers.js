@@ -8,6 +8,7 @@ import goods from './modules/goods/goodsReducer'
 import order from './modules/order/orderReducer'
 import gift from './modules/gift/giftReducer'
 import task from './modules/task/taskReducer'
+import chart from './modules/chart/chartReducer'
 
 export default combineReducers({
     user,
@@ -17,5 +18,6 @@ export default combineReducers({
     goods,
     order,
     gift,
-    task
+    task,
+    chart
 });

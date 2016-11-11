@@ -6,6 +6,7 @@ import * as menuAction from './modules/menu/menuAction'
 import * as userAction from './modules/user/userAction'
 import * as giftAction from './modules/gift/giftAction'
 import * as taskAction from './modules/task/taskAction'
+import * as chartAction from './modules/chart/chartAction'
 
 export default {
     ...deviceAction,
@@ -15,5 +16,6 @@ export default {
     ...menuAction,
     ...userAction,
     ...giftAction,
-    ...taskAction
+    ...taskAction,
+    ...chartAction
 }

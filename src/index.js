@@ -26,6 +26,8 @@ import TaskList from './views/Task/List'
 import TaskNew from './views/Task/New'
 import TaskDetail from './views/Task/Detail'
 
+import Chart from './views/Chart'
+
 const store = configureStore();
 
 const validate = function(next, replace) {
@@ -66,6 +68,8 @@ ReactDOM.render(
                     <Route path="task/list" component={TaskList} />
                     <Route path="task/new" component={TaskNew} />
                     <Route path="task/detail(/:id)(/:disabled)" component={TaskDetail} />
+
+                    <Route path="chart" component={Chart}/>
                 </Route>
             </Route>
         </Router>

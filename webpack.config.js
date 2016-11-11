@@ -68,7 +68,8 @@ var config = {
             'lodash',
             'pubsub-js',
             'mirrorkey',
-            'classnames'
+            'classnames',
+            'd3'
         ]
     },
     output: {

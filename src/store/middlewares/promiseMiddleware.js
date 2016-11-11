@@ -71,7 +71,7 @@ export default function promiseMiddleware(config = {}) {
                             }
                         }
                     });
-                },
+                }
             );
 
             return action;
