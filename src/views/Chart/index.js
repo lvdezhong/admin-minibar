@@ -24,35 +24,20 @@ const RangePicker = DatePicker.RangePicker;
 class Chart extends React.Component {
     constructor() {
         super()
-        this.state = {
-            current: 1
-        }
-        this.paginationCfg = {
-            count: 10,
-            offset: 0
-        }
+
         this.timeData = {
             start_time: '',
             end_time: ''
         }
         this.hotelData = {
-            hotel_id_list:[]
+            hotel_id_list:''
         }
         this.postData = {
-            status: 0
+
         }
+        this.peopleLine=[]
+        this.countLine=[]
 
-    }
-
-    handleChange(page) {
-        this.paginationCfg.offset = (page - 1) * this.paginationCfg.count;
-        this.postData = Object.assign(this.postData, this.paginationCfg);
-
-        this.setState({
-            current: page,
-        });
-
-        this.props.action.getChart(this.postData);
     }
 
     handleTimeChange(dates, dateStrings) {
@@ -62,20 +47,73 @@ class Chart extends React.Component {
     }
 
     handleChangeSelect(value){
-        this.hotelData.hotel_id_list = JSON.stringify(value);
+        var arrVal=[];
+        value.forEach(function(v,i){
+            arrVal.push(v*1);
+        });
+        this.hotelData.hotel_id_list = JSON.stringify(arrVal);
         this.postData = Object.assign(this.postData, this.hotelData);
+    }
+    //处理数据
+    handleLine(_obj){
+        var lineData = [];
+        var lineObj= {
+            name:'',
+            values:[],
+            strokeWidth: 3
+        }
+        var obj = {
+            x: null,
+            y:null
+        }
+        var arr=[];
+        _obj.data.forEach(function(item,index){
+            lineObj= {
+                name:'',
+                values:[],
+                strokeWidth: null
+            }
+            arr=[];
+            item.date.forEach(function(v,i){
+                obj = {
+                    x: null,
+                    y:null
+                }
+                obj.x=v*1;
+                switch (_obj.type){
+                    case 'peopleLine':
+                        obj.y=item.people[i];
+                        break;
+                    case 'countLine':
+                        obj.y=item.count[i];
+                        break;
+                    case 'buyLine':
+                        obj.y=item.buy[i];
+                        break;
+                }
+                arr.push(obj);
+                lineObj.values = arr;
+            });
+            lineObj.name = item.name;
+            lineData.push(lineObj);
+        });
+        return lineData;
     }
 
     handleSubmit(e) {
         e.preventDefault();
-        this.paginationCfg.offset = 0;
-        this.postData = Object.assign(this.postData, this.paginationCfg);
-
-        this.setState({
-            current: 1
+        this.props.action.getChart(this.postData).payload.promise.then((data)=>{
+            console.log(data.payload.data.hotel);
+            this.peopleLine = this.handleLine({
+                data: data.payload.data.hotel,
+                type:'peopleLine'
+            });
+            this.countLine = this.handleLine({
+                data: data.payload.data.hotel,
+                type:'countLine'
+            });
         });
 
-        this.props.action.getChart(this.postData);
     }
 
     componentDidMount() {
@@ -125,6 +163,7 @@ class Chart extends React.Component {
     }
 
     render() {
+        console.log(1);
         const {chart, hotel } = this.props.state.chart;
         const formItemLayout = {
             labelCol: {span: 10},
@@ -132,21 +171,14 @@ class Chart extends React.Component {
         }
 
         const { getFieldDecorator } = this.props.form
-
-
-        let options = hotel.map((item) => {
+        var hotelList = hotel.hotel_list || [];
+        let options = hotelList.map((item) => {
             return (
                 <Option key={item.id} value={item.id.toString()}>{`${item.name}`}</Option>
             )
         });
 
 
-        var lineDate = [{
-            name: '酒店1',
-            values: [ { x:1423915030039, y: 20 }, { x:1423916330040, y: 30 }, { x: 1423917330050, y: 10 }, { x: 1423918330050, y: 5 }, { x: 1423919330070, y: 8 }, { x: 1423920330080, y: 15 }, { x: 1423921330080, y: 10 } ],
-            stroke: 'red',
-            strokeWidth: 3,
-        }];
 
 
         return (
@@ -175,19 +207,16 @@ class Chart extends React.Component {
                     </Form>
                 </div>
 
-
-
-
                 <div className="ui-box">
                     <LineChart
                     legend={true}
-                    data={lineDate}
+                    data={this.peopleLine}
                     width= {800}
                     height={400}
                     viewBoxObject={{
                             x: 0,
                             y: 0,
-                            width: 700,
+                            width: 800,
                             height: 400
                         }}
                     title="酒店维度，活动参与人数，次数日变化折线图"
@@ -207,7 +236,7 @@ class Chart extends React.Component {
                 <div className="ui-box">
                     <LineChart
                         legend={true}
-                        data={lineDate}
+                        data={this.countLine}
                         width= {800}
                         height={400}
                         viewBoxObject={{

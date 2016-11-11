@@ -22,7 +22,7 @@ const chart = (state = {}, action) => {
 const hotel = (state = [], action) => {
     switch (action.type) {
         case GET_HOTEL_SUCCESS:
-            return action.payload.data.hotel_list;
+            return action.payload.data;
         default:
             return state;
     }

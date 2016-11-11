@@ -7,7 +7,7 @@ import { browserHistory } from 'react-router'
 // 定宇
 //debugApi = 'http://172.16.0.95:8091/';
  const appInfo = {
-     baseURI: 'http://172.16.0.45:8090',
+     baseURI: 'http://172.16.0.45:8091',
      app_key: '5b036edd2fe8730db1983368a122fb45',
      app_pwd: '84ef0ca439e44fa93c4375ff94b420c7'
  }
