@@ -97,7 +97,8 @@ class TaskNew extends React.Component {
                             {getFieldDecorator('count', {
                                 initialValue: '',
                                 rules: [
-                                    { required: true, message: '人数不能为空！' }
+                                    { required: true, message: '人数不能为空！' },
+                                    { pattern: /^[1-9]\d*$/, message: '人数请填写数字' }
                                 ]
                             })(
                                 <Input />

@@ -218,8 +218,8 @@ class TaskDetail extends React.Component {
                 return;
             }
 
-            values.start_time = values.time[0].format('YYYY-MM-DD') + ' 00:00:00';
-            values.end_time = values.time[1].format('YYYY-MM-DD') + ' 00:00:00';
+            values.start_time = values.time[0].format('YYYY-MM-DD HH:mm:ss');
+            values.end_time = values.time[1].format('YYYY-MM-DD HH:mm:ss');
             values.type = task.type;
             values.task_item_list = JSON.stringify(task.currentTask.task_item_list);
             delete values.time;
@@ -454,7 +454,8 @@ class TaskDetail extends React.Component {
                         {getFieldDecorator('title', {
                             initialValue: currentTask.title,
                             rules: [
-                                { required: true, message: '活动名称不能为空' }
+                                { required: true, message: '活动名称不能为空' },
+                                { max: 20, message: '活动名称不能超过20个字' }
                             ]
                         })(
                             <Input placeholder="请输入活动名称" />
@@ -467,7 +468,7 @@ class TaskDetail extends React.Component {
                                 { required: true, type: 'array', message: '有效期不能为空' }
                             ]
                         })(
-                            <RangePicker style={{ width: 200 }} />
+                            <RangePicker showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm" />
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout} label="赠送商品">
@@ -479,7 +480,10 @@ class TaskDetail extends React.Component {
                     </FormItem>
                     <FormItem {...formItemLayout} label="任务说明">
                         {getFieldDecorator('content', {
-                            initialValue: currentTask.content
+                            initialValue: currentTask.content || '',
+                            rules: [
+                                { max: 200, message: '任务说明不能超过200个字' }
+                            ]
                         })(
                             <Input type="textarea" rows={4} />
                         )}
@@ -488,7 +492,8 @@ class TaskDetail extends React.Component {
                         {getFieldDecorator('user_limit', {
                             initialValue: currentTask.user_limit && currentTask.user_limit.toString(),
                             rules: [
-                                { required: true, message: '参与次数不能为空' }
+                                { required: true, message: '参与次数不能为空' },
+                                { pattern: /^[1-9]\d*$/, message: '参与次数请填写数字' }
                             ]
                         })(
                             <Input placeholder="每个用户限参与的次数" />

@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react'
 import { Icon } from 'antd'
 import classNames from 'classnames'
 
+import { price } from '../../utils'
+
 import './index.less'
 
 const propTypes = {
@@ -39,7 +41,7 @@ class GoodsItem extends React.Component{
                 <div className="goods-item-img" style={imgStyle}></div>
                 <div className="goods-item-info">
                     <p className="goods-item-name">{dataSource.name}</p>
-                    <p className="goods-item-price">¥ {dataSource.price}</p>
+                    <p className="goods-item-price">¥ {price('GET', dataSource.price)}</p>
                 </div>
                 <Icon className={cancelClassName} onClick={this.handleCancel.bind(this)} type="close" />
             </div>

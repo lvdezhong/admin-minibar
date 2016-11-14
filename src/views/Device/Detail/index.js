@@ -33,7 +33,7 @@ class DeviceDetail extends React.Component {
         const formData = this.props.form.getFieldsValue();
 
         if (this.changed) {
-            machine_item_list = machine_item_list.map(function(item) {
+            machine_item_list = _.map(machine_item_list, function(item) {
                 delete item.id;
                 return item;
             })
@@ -44,6 +44,8 @@ class DeviceDetail extends React.Component {
                 message.error('商品未添加完全！');
                 return
             }
+
+            machine_item_list[i].extro_info && delete machine_item_list[i].extro_info;
         }
 
         this.props.action.updateDevice({

@@ -51,6 +51,8 @@ class MainTplDetail extends React.Component {
                     message.error('商品未添加完全！');
                     return
                 }
+
+                tmplItemList[i].extro_info && delete tmplItemList[i].extro_info;
             }
 
             if (this.isEdit) {

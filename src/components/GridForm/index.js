@@ -433,22 +433,12 @@ class GridForm extends React.Component {
         }, {
             title: '有效期',
             key: 'time',
-            width: '30%',
+            width: '50%',
             render(text, record) {
                 return (
                     `${record.start_time} 至 ${record.end_time}`
                 )
             }
-        }, {
-            title: '参与次数',
-            dataIndex: 'join_count',
-            key: 'join_count',
-            width: '10%'
-        }, {
-            title: '兑换次数',
-            dataIndex: 'accomplish_count',
-            key: 'accomplish_count',
-            width: '10%'
         }, {
             title: '操作',
             dataIndex: 'id',
