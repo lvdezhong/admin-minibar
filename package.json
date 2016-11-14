@@ -12,6 +12,7 @@
   "dependencies": {
     "antd": "^2.1.0",
     "classnames": "^2.2.5",
+    "d3": "^3.5.0",
     "lodash": "^4.16.4",
     "mirrorkey": "^1.2.0",
     "pubsub-js": "^1.5.3",
@@ -20,8 +21,8 @@
     "react-redux": "^4.4.0",
     "react-router": "^2.8.1",
     "redux": "^3.3.1",
-    "redux-thunk": "^1.0.3",
-    "d3": "^3.5.0"
+    "redux-promise-middleware": "^4.1.0",
+    "redux-thunk": "^1.0.3"
   },
   "devDependencies": {
     "babel-core": "^6.18.0",

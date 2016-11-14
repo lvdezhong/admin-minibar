@@ -27,8 +27,8 @@ class Header extends React.Component {
     handleClick(e) {
         switch (e.key) {
             case 'logout':
-                this.props.action.logout().payload.promise.then(function(data) {
-                    const { code, msg } = data.payload;
+                this.props.action.logout().then(function(data) {
+                    const { code, msg } = data.value;
 
                     if (code == 10000) {
                         localStorage.removeItem('access_token');

@@ -123,8 +123,8 @@ class GoodsDetail extends React.Component {
                     category_id: values.category_id,
                     image_horizontal: fileList_horizontal[0].url,
                     image_vertical: fileList_vertical[0].url
-                }).payload.promise.then(function(data) {
-                    const { code, msg } = data.payload;
+                }).then(function(data) {
+                    const { code, msg } = data.value;
 
                     if (code == 10000) {
                         message.success('保存成功！');
@@ -140,8 +140,8 @@ class GoodsDetail extends React.Component {
                     category_id: values.category_id,
                     image_horizontal: fileList_horizontal[0].url,
                     image_vertical: fileList_vertical[0].url
-                }).payload.promise.then(function(data) {
-                    const { code, msg } = data.payload;
+                }).then(function(data) {
+                    const { code, msg } = data.value;
 
                     if (code == 10000) {
                         message.success('保存成功！');
@@ -163,30 +163,31 @@ class GoodsDetail extends React.Component {
         if (this.isEdit) {
             this.props.action.getCurrentGoods({
                 id: this.id
-            }).payload.promise.then((data) => {
-                const { code, msg } = data.payload;
+            }).then((data) => {
+                const { code, msg } = data.value;
 
                 if (code == 10000) {
-                    var { data } = data.payload
+                    console.log(data);
+                    var { data } = data.value
 
                     this.setState({
                         fileList_horizontal: [{
                             uid: -1,
                             name: '',
                             status: 'done',
-                            url: data.image_horizontal,
+                            url: data.item.image_horizontal,
                         }],
                         fileList_vertical: [{
                             uid: -1,
                             name: '',
                             status: 'done',
-                            url: data.image_vertical,
+                            url: data.item.image_vertical,
                         }]
                     })
 
                     this.props.form.setFieldsValue({
-                        name: data.name,
-                        origin_price: price('GET', data.origin_price)
+                        name: data.item.name,
+                        origin_price: price('GET', data.item.origin_price)
                     });
                 } else {
                     message.error(msg)

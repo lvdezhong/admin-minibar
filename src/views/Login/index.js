@@ -28,11 +28,11 @@ class Login extends React.Component {
         this.props.action.login({
             mobile: data.user,
             password: data.password
-        }).payload.promise.then(function(data) {
-            const { code, msg } = data.payload;
+        }).then(function(data) {
+            const { code, msg } = data.value;
 
             if (code == 10000) {
-                const { access_token, user } = data.payload.data;
+                const { access_token, user } = data.value.data;
 
                 localStorage.setItem('access_token', access_token);
                 localStorage.setItem('uid', user.id);

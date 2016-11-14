@@ -5,12 +5,6 @@ function toQueryPair(key, value) {
     return key + '=' + encodeURIComponent(value === null ? '' : String(value));
 }
 
-export function isPromise(value) {
-    if (value !== null && typeof value === 'object') {
-        return value.promise && typeof value.promise.then === 'function';
-    }
-}
-
 export function toQueryString(obj) {
     let ret = [];
     for (let key in obj) {

@@ -4,8 +4,7 @@ import {
     compose
 } from 'redux'
 import thunkMiddleware from 'redux-thunk'
-
-import promiseMiddleware from './middlewares/promiseMiddleware'
+import promiseMiddleware from 'redux-promise-middleware'
 
 import rootReducer from './reducers'
 

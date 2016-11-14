@@ -222,8 +222,8 @@ class GridForm extends React.Component {
             pageGoods: 1
         });
 
-        this.props.action.getGoods(this.paginationCfgGoods).payload.promise.then(function(data) {
-            const { code, msg } = data.payload;
+        this.props.action.getGoods(this.paginationCfgGoods).then(function(data) {
+            const { code, msg } = data.value;
 
             if (code == 10000) {
                 message.success('刷新成功！')
@@ -240,8 +240,8 @@ class GridForm extends React.Component {
             pageTask: 1
         });
 
-        this.props.action.getTask(this.paginationCfgTask).payload.promise.then(function(data) {
-            const { code, msg } = data.payload;
+        this.props.action.getTask(this.paginationCfgTask).then(function(data) {
+            const { code, msg } = data.value;
 
             if (code == 10000) {
                 message.success('刷新成功！')

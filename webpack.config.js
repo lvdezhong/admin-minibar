@@ -64,6 +64,7 @@ var config = {
             'react-router',
             'react-redux',
             'redux',
+            'redux-promise-middleware',
             'redux-thunk',
             'lodash',
             'pubsub-js',

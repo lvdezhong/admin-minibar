@@ -104,12 +104,12 @@ class TaskDetail extends React.Component {
     giftItemClick(item) {
         this.props.action.getCurrentGift({
             id: item.id
-        }).payload.promise.then((data) => {
-            const { code, msg } = data.payload;
+        }).then(data => {
+            const { code, msg } = data.value;
 
             if (code == 10000) {
                 this.setState({
-                    selectedArr: data.payload.data.gift_group.gift_list
+                    selectedArr: data.value.data.gift_group.gift_list
                 })
 
                 message.success(`已选择赠品库 ${item.name} 中的所有商品！`);
@@ -160,8 +160,8 @@ class TaskDetail extends React.Component {
             currentGoods: 1
         });
 
-        this.props.action.getGoods(this.paginationCfgGoods).payload.promise.then(function(data) {
-            const { code, msg } = data.payload;
+        this.props.action.getGoods(this.paginationCfgGoods).then(function(data) {
+            const { code, msg } = data.value;
 
             if (code == 10000) {
                 message.success('刷新成功！')
@@ -191,8 +191,8 @@ class TaskDetail extends React.Component {
             currentGift: 1
         });
 
-        this.props.action.getGift(this.paginationCfgGift).payload.promise.then(function(data) {
-            const { code, msg } = data.payload;
+        this.props.action.getGift(this.paginationCfgGift).then(data => {
+            const { code, msg } = data.value;
 
             if (code == 10000) {
                 message.success('刷新成功！')

@@ -69,7 +69,7 @@ ReactDOM.render(
                     <Route path="task/new" component={TaskNew} />
                     <Route path="task/detail(/:id)(/:disabled)" component={TaskDetail} />
 
-                    <Route path="chart" component={Chart}/>
+                    <Route path="chart(/:id)" component={Chart}/>
                 </Route>
             </Route>
         </Router>

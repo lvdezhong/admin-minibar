@@ -158,8 +158,8 @@ class GiftDetail extends React.Component {
             current: 1
         });
 
-        this.props.action.getGoods(this.paginationCfg).payload.promise.then(function(data) {
-            const { code, msg } = data.payload;
+        this.props.action.getGoods(this.paginationCfg).then(function(data) {
+            const { code, msg } = data.value;
 
             if (code == 10000) {
                 message.success('刷新成功！')
@@ -183,7 +183,7 @@ class GiftDetail extends React.Component {
         if (this.isEdit) {
             this.props.action.getCurrentGift({
                 id: this.id
-            }).payload.promise.then(() => {
+            }).then(() => {
                 const gift_list = this.props.state.gift.currentGift.gift_list || [];
                 const _giftList = _.clone(gift_list, true);
 
@@ -241,7 +241,7 @@ class GiftDetail extends React.Component {
                     price: item.origin_price,
                     img: item.image_horizontal
                 }
-                
+
                 return (
                     <GoodsItem key={item.item_id} dataSource={itemData} onCancel={this.handleGoodsItemCancel.bind(this, index)} />
                 )

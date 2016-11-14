@@ -50,8 +50,8 @@ class DeviceDetail extends React.Component {
             id: id,
             machine_item_list: JSON.stringify(machine_item_list),
             tmpl_id: formData.tmpl_id
-        }).payload.promise.then(function(data) {
-            const { code, msg } = data.payload;
+        }).then(function(data) {
+            const { code, msg } = data.value;
 
             if (code == 10000) {
                 message.success('保存成功！');
@@ -77,7 +77,7 @@ class DeviceDetail extends React.Component {
         this.props.action.getAllMainTpl({
             offset: 0,
             count: 1000
-        }).payload.promise.then(this.props.action.getCurrentDevice({
+        }).then(this.props.action.getCurrentDevice({
             id: id
         }));
 
