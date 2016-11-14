@@ -102,14 +102,13 @@ class Chart extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        this.props.action.getChart(this.postData).payload.promise.then((data)=>{
-            console.log(data.payload.data.hotel);
+        this.props.action.getChart(this.postData).then((data)=>{
             this.peopleLine = this.handleLine({
-                data: data.payload.data.hotel,
+                data: data.value.data.hotel,
                 type:'peopleLine'
             });
             this.countLine = this.handleLine({
-                data: data.payload.data.hotel,
+                data: data.value.data.hotel,
                 type:'countLine'
             });
         });
@@ -117,6 +116,7 @@ class Chart extends React.Component {
     }
 
     componentDidMount() {
+        this.id = this.props.params.id;
         this.props.action.getHotel({
             offset: 0,
             count: 1000
@@ -163,7 +163,6 @@ class Chart extends React.Component {
     }
 
     render() {
-        console.log(1);
         const {chart, hotel } = this.props.state.chart;
         const formItemLayout = {
             labelCol: {span: 10},
@@ -177,8 +176,6 @@ class Chart extends React.Component {
                 <Option key={item.id} value={item.id.toString()}>{`${item.name}`}</Option>
             )
         });
-
-
 
 
         return (
