@@ -17,8 +17,7 @@ class GridBox extends React.Component {
 
     handleClick(type) {
         PubSub.publish(CLICK_GOODS_ITEM, {
-            index: this.props.currentIndex,
-            type: type
+            index: this.props.currentIndex
         });
     }
 
@@ -76,7 +75,7 @@ class GridBox extends React.Component {
         }
 
         return (
-            <div className="grid" style={gridStyle} onClick={this.handleClick.bind(this, dataSource.content_type)}>
+            <div className="grid" style={gridStyle} onClick={this.handleClick.bind(this)}>
                 {elem}
             </div>
         )

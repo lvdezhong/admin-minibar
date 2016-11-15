@@ -134,7 +134,7 @@ class TaskNew extends React.Component {
                 <Row type="flex" justify="center">
                     <Col span={12}>
                         <div className="ui-box task-new-select">
-                            <Select defaultValue={task.type} onChange={this.handleChange.bind(this)}>
+                            <Select defaultValue={`${task.type}`} onChange={this.handleChange.bind(this)}>
                                 <Option value="2">关注公众号</Option>
                                 <Option value="1">分享链接</Option>
                             </Select>

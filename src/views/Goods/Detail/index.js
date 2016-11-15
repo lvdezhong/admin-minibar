@@ -27,6 +27,8 @@ class GoodsDetail extends React.Component {
             fileList_horizontal: [],
             fileList_vertical: []
         }
+
+        this.fetchLock = false;
     }
 
     handleChangeHorizontal(info) {
@@ -86,6 +88,10 @@ class GoodsDetail extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
 
+        if (this.fetchLock) {
+            return;
+        }
+
         const { updateGoods, addGoods } = this.props;
         const { fileList_horizontal, fileList_vertical } = this.state;
 
@@ -115,6 +121,8 @@ class GoodsDetail extends React.Component {
                 return;
             }
 
+            this.fetchLock = true;
+
             if (this.isEdit) {
                 this.props.action.updateGoods({
                     id: this.id,
@@ -123,7 +131,8 @@ class GoodsDetail extends React.Component {
                     category_id: values.category_id,
                     image_horizontal: fileList_horizontal[0].url,
                     image_vertical: fileList_vertical[0].url
-                }).then(function(data) {
+                }).then((data) => {
+                    this.fetchLock = false;
                     const { code, msg } = data.value;
 
                     if (code == 10000) {
@@ -140,7 +149,8 @@ class GoodsDetail extends React.Component {
                     category_id: values.category_id,
                     image_horizontal: fileList_horizontal[0].url,
                     image_vertical: fileList_vertical[0].url
-                }).then(function(data) {
+                }).then((data) => {
+                    this.fetchLock = false;
                     const { code, msg } = data.value;
 
                     if (code == 10000) {

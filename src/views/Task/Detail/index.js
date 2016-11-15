@@ -45,6 +45,8 @@ class TaskDetail extends React.Component {
 
         this.postDataGoods = {}
         this.postDataGift = {}
+
+        this.fetchLock = false;
     }
 
     getIndex(arr, id) {
@@ -205,6 +207,10 @@ class TaskDetail extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
 
+        if (this.fetchLock) {
+            return;
+        }
+
         const { task } = this.props.state;
 
         this.props.form.validateFields((errors, values) => {
@@ -231,11 +237,17 @@ class TaskDetail extends React.Component {
                 values.count = task.shareInfo.count;
             }
 
+            this.fetchLock = true;
+
             if (this.isEdit) {
                 values.id = this.id;
-                this.props.action.updateTask(values);
+                this.props.action.updateTask(values).then(() => {
+                    this.fetchLock = false;
+                });
             } else {
-                this.props.action.addTask(values);
+                this.props.action.addTask(values).then(() => {
+                    this.fetchLock = false;
+                });
             }
         });
     }
