@@ -458,6 +458,17 @@ class TaskDetail extends React.Component {
             </div>
         }
 
+        var defaultTime = []
+        if (currentTask.start_time && currentTask.start_time) {
+            defaultTime = [moment(currentTask.start_time), moment(currentTask.end_time)];
+        } else {
+            var date1 = new Date();
+            var date2 = new Date(date1);
+            date2.setDate(date1.getDate() + 7);
+
+            defaultTime = [moment(date1), moment(date2)]
+        }
+
         return (
             <div>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
@@ -475,7 +486,7 @@ class TaskDetail extends React.Component {
                     </FormItem>
                     <FormItem {...formItemLayout} label="有效期">
                         {getFieldDecorator('time', {
-                            initialValue: [moment(currentTask.start_time), moment(currentTask.end_time)],
+                            initialValue: defaultTime,
                             rules: [
                                 { required: true, type: 'array', message: '有效期不能为空' }
                             ]

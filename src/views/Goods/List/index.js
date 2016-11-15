@@ -98,7 +98,7 @@ class GoodsList extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.isUpdate) {
+        if (nextProps.state.goods.isUpdate) {
             this.paginationCfg.offset = 0;
 
             this.setState({

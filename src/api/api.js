@@ -340,17 +340,17 @@ function handleResponse(data, resolve, reject) {
         case 50002:
             // 缺少参数session_token
             getSession(true);
-            return reject(data);
+            return resolve(data);
             break;
         case 50003:
         case 50004:
             // 缺少access_token
             browserHistory.push('/login');
-            return reject(data);
+            return resolve(data);
             break;
         default:
             // 其他情况
-            return reject(data);
+            return resolve(data);
     }
 }
 
