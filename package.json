@@ -22,7 +22,8 @@
     "react-router": "^2.8.1",
     "redux": "^3.3.1",
     "redux-promise-middleware": "^4.1.0",
-    "redux-thunk": "^1.0.3"
+    "redux-thunk": "^1.0.3",
+    "wangeditor": "^2.1.22"
   },
   "devDependencies": {
     "babel-core": "^6.18.0",

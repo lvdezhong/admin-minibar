@@ -19,7 +19,8 @@ var plugins = [
         inject: true
     }),
     new webpack.ProvidePlugin({                                                 // 将lodash放到全局的window对象中
-        _ : 'lodash'
+        _: 'lodash',
+        $: 'jquery'
     })
 ]
 
@@ -70,6 +71,8 @@ var config = {
             'pubsub-js',
             'mirrorkey',
             'classnames',
+            'jquery',
+            'wangeditor',
             'd3'
         ]
     },
@@ -94,7 +97,11 @@ var config = {
             loader: isProduction ? ExtractTextPlugin.extract('style', 'css!less') : 'style!css!less',
             include: __dirname
         }, {
-            test: /\.(png|jpg)$/,
+            test: /\.css$/,
+            loader: 'style!css',
+            include: __dirname
+        }, {
+            test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/,
             loader: 'url',
             query: {
                 limit: 8192

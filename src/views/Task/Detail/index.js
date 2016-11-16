@@ -12,6 +12,9 @@ import GoodsItem from '../../../components/GoodsItem'
 
 import { price } from '../../../utils'
 
+import 'wangeditor/dist/css/wangEditor.min.css'
+import 'wangeditor'
+
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
 const RangePicker = DatePicker.RangePicker;
@@ -214,14 +217,26 @@ class TaskDetail extends React.Component {
         const { task } = this.props.state;
 
         this.props.form.validateFields((errors, values) => {
+            const editorTxt = this.editor.$txt.text();
+            const editorHtml = this.editor.$txt.html();
+
             if (errors) {
                 message.error('请正确填写表单！');
                 return;
             }
 
-            if (!task.currentTask.task_item_list) {
+            if (!task.currentTask.task_item_list || task.currentTask.task_item_list.length == 0 ) {
                 message.error('请至少选择一件商品！');
                 return;
+            }
+
+            if (editorTxt.length != 0) {
+                if (editorTxt.length > 200) {
+                    message.error('任务说明不能多于200个字！');
+                    return;
+                } else {
+                    values.content = editorHtml;
+                }
             }
 
             values.start_time = values.time[0].format('YYYY-MM-DD HH:mm:ss');
@@ -269,8 +284,36 @@ class TaskDetail extends React.Component {
         if (this.isEdit) {
             this.props.action.getCurrentTask({
                 id: this.id
+            }).then((data) => {
+                const { code, msg } = data.value;
+
+                if (code == 10000) {
+                    if (data.value.data.content) {
+                        this.editor.$txt.html(data.value.data.content);
+                    }
+                } else {
+                    message.error(msg)
+                }
             });
         }
+
+        // 富文本编辑器插件
+        var editorContainer = document.getElementById('editor');
+        this.editor = new wangEditor(editorContainer);
+        this.editor.config.menus = [
+            'source',
+            '|',
+            'fontsize',
+            'bold',
+            'underline',
+            'italic',
+            'forecolor',
+            '|',
+            'alignleft',
+            'aligncenter',
+            'alignright'
+        ];
+        this.editor.create();
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -502,14 +545,7 @@ class TaskDetail extends React.Component {
                         </div>
                     </FormItem>
                     <FormItem {...formItemLayout} label="任务说明">
-                        {getFieldDecorator('content', {
-                            initialValue: currentTask.content || '',
-                            rules: [
-                                { max: 200, message: '任务说明不能超过200个字' }
-                            ]
-                        })(
-                            <Input type="textarea" rows={4} />
-                        )}
+                        <div id="editor" style={{height: '150px'}}></div>
                     </FormItem>
                     <FormItem {...formItemLayout} label="参与次数">
                         {getFieldDecorator('user_limit', {

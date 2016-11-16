@@ -47,7 +47,7 @@ class GridForm extends React.Component {
         this.postDataGoods = {}
 
         this.postDataTask = {
-            lifecycle: 2
+            lifecycle: 10
         }
 
         this.type = 0;
