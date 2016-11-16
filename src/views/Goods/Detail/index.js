@@ -100,7 +100,7 @@ class GoodsDetail extends React.Component {
             return
         }
 
-        if (!fileList_horizontal[0].response) {
+        if (!fileList_horizontal[0].url) {
             message.warn('横图还未上传成功请稍候！');
             return
         }
@@ -110,7 +110,7 @@ class GoodsDetail extends React.Component {
             return
         }
 
-        if (!fileList_vertical[0].response) {
+        if (!fileList_vertical[0].url) {
             message.warn('竖图还未上传成功请稍候！');
             return
         }
