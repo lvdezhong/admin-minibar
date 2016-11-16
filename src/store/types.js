@@ -71,5 +71,7 @@ export default keyMirror({
     UPDATE_TASK: null,
     UPDATE_TASK_PENDING: null,
     UPDATE_TASK_SUCCESS: null,
-    UPDATE_TASK_ERROR: null
+    UPDATE_TASK_ERROR: null,
+
+    GET_NEW_TASK: null
 })

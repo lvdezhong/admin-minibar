@@ -33,6 +33,8 @@ const currentTask = (state = {}, action) => {
             return Object.assign({}, state, {
                 task_item_list: itemList(state[action.payload.key], action)
             });
+        case types.GET_NEW_GOODS:
+            return {}
         default:
             return state;
     }

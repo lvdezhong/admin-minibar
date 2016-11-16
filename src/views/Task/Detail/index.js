@@ -295,6 +295,8 @@ class TaskDetail extends React.Component {
                     message.error(msg)
                 }
             });
+        } else {
+            this.props.action.getNewTask();
         }
 
         // 富文本编辑器插件

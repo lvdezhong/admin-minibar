@@ -88,3 +88,7 @@ export const updateTask = (params) => ({
         })
     }
 })
+
+export const getNewTask = (params) => ({
+    type: types.GET_NEW_TASK
+})
