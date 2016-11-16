@@ -335,6 +335,10 @@ class GridForm extends React.Component {
                     task_status: `${currentGoods.status}`
                 });
             }
+
+            this.setState({
+                type: currentGoods.content_type
+            });
         });
 
         PubSub.publish(CLICK_GOODS_ITEM, {
