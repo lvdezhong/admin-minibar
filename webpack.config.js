@@ -101,11 +101,11 @@ var config = {
             loader: 'style!css',
             include: __dirname
         }, {
-            test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/,
-            loader: 'url',
-            query: {
-                limit: 8192
-            }
+            test: /\.(png|jpg)$/,
+            loader: 'url?limit=8192'
+        }, {
+            test: /\.(woff|svg|eot|ttf)\??.*$/,
+            loader: 'url?limit=50000&name=[name].[ext]'
         }]
     },
     plugins: plugins,
