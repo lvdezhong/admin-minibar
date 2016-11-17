@@ -5,7 +5,6 @@ import {
 } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import promiseMiddleware from 'redux-promise-middleware'
-
 import rootReducer from './reducers'
 
 const createStoreWithMiddleware = applyMiddleware(

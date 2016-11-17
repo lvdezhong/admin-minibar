@@ -10,7 +10,7 @@
   "author": "lvdezhong",
   "license": "WTFPL",
   "dependencies": {
-    "antd": "^2.1.0",
+    "antd": "^2.4.2",
     "classnames": "^2.2.5",
     "d3": "^3.5.0",
     "lodash": "^4.16.4",

@@ -484,7 +484,8 @@ class TaskDetail extends React.Component {
                     {getFieldDecorator('count', {
                         initialValue: task.shareInfo && task.shareInfo.count.toString(),
                         rules: [
-                            { required: true, message: '分享人数不能为空' }
+                            { required: true, message: '分享人数不能为空' },
+                            { pattern: /^[1-9]\d*$/, message: '分享人数请填写数字' }
                         ]
                     })(
                         this.isEdit ? <Input placeholder="请输入人数" disabled /> : <Input placeholder="请输入人数" />
@@ -551,13 +552,13 @@ class TaskDetail extends React.Component {
                     </FormItem>
                     <FormItem {...formItemLayout} label="参与次数">
                         {getFieldDecorator('user_limit', {
-                            initialValue: currentTask.user_limit && currentTask.user_limit.toString(),
+                            initialValue: task.type == 2 ? '1' : currentTask.user_limit && currentTask.user_limit.toString(),
                             rules: [
                                 { required: true, message: '参与次数不能为空' },
                                 { pattern: /^[1-9]\d*$/, message: '参与次数请填写数字' }
                             ]
                         })(
-                            <Input placeholder="每个用户限参与的次数" />
+                            task.type == 2 ? <Input placeholder="每个用户限参与的次数" disabled /> : <Input placeholder="每个用户限参与的次数" />
                         )}
                     </FormItem>
                     <FormItem wrapperCol={{ span: 20, offset: 4 }}>
