@@ -36,12 +36,14 @@ class Chart extends React.Component {
             task_id: ''
         }
         this.state={
-            value:'1'
+            value:'1',
+            valueRatio:'1'
         }
         this.chartOne = []
         this.chartTwo = []
         this.chartThree = []
         this.LineChartOne = 'peopleLine'
+        this.RatioLineTwo = 'peopleRatioLine'
     }
 
     //时间选择
@@ -61,7 +63,7 @@ class Chart extends React.Component {
         this.postData = Object.assign(this.postData, this.hotelData);
     }
 
-    //图形切换
+    //图形一切换
     onChangeLineType(e) {
         this.setState({
             value: e.target.value
@@ -70,6 +72,17 @@ class Chart extends React.Component {
             this.LineChartOne = 'peopleLine';
         } else {
             this.LineChartOne = 'countLine';
+        }
+    }
+    //图形二切换
+    onChangeRatioType(e) {
+        this.setState({
+            valueRatio: e.target.value
+        });
+        if (e.target.value == 1) {
+            this.RatioLineTwo = 'peopleRatioLine';
+        } else {
+            this.RatioLineTwo = 'countRatioLine';
         }
     }
 
@@ -118,11 +131,11 @@ class Chart extends React.Component {
                         case 'countLine':
                             obj.y = item.count[i];
                             break;
-                        case 'buyLine':
-                            obj.y = item.buy[i];
+                        case 'countRatioLine':
+                            obj.y = item.countRatio[i];
                             break;
-                        case 'ratioLine':
-                            obj.y = item.ratio[i];
+                        case 'peopleRatioLine':
+                            obj.y = item.peopleRatio[i];
                             break;
                     }
                     arr.push(obj);
@@ -233,7 +246,7 @@ class Chart extends React.Component {
             });
             this.chartTwo = this.handleLine({
                 data: chart.hotel,
-                type: 'buyLine'
+                type: this.RatioLineTwo
             });
             this.chartThree = this.handleLine({
                 data: chart.hotel,
@@ -303,6 +316,10 @@ class Chart extends React.Component {
                     />
                 </div>
                 <div className="ui-box">
+                    <RadioGroup className="radio_type" onChange={this.onChangeRatioType.bind(this)} defaultValue="1" value={this.state.valueRatio}>
+                        <RadioButton value="1">人数</RadioButton>
+                        <RadioButton value="2">次数</RadioButton>
+                    </RadioGroup>
                     <LineChart
                         legend={true}
                         data={this.chartTwo}
