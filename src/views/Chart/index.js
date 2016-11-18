@@ -2,7 +2,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { Form, Row, Col, Input, Select, Button, Radio, Table, Tag, Pagination, DatePicker } from 'antd'
+import { Form, Row, Col, Input, Select, Button, Radio, Table, Tag, Pagination, DatePicker, message } from 'antd'
 var LineChart = require('../../components/lineChart');
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -61,9 +61,9 @@ class Chart extends React.Component {
         e.preventDefault();
         this.handleChangeSelect(this.props.form.getFieldsValue().hotel_id_list);
         this.postData = Object.assign(this.postData, this.timeData);
-        this.props.action.getChart(this.postData).catch((err) => {
-            console.log(err)
-        });
+        this.props.action.getChart(this.postData).catch((data) => {
+            message.error(data.msg);
+        })
     }
 
     componentDidMount() {
@@ -82,7 +82,7 @@ class Chart extends React.Component {
                 hotel_id_list:JSON.stringify(arrHotelList),
                 task_id: this.postData.task_id
             }).catch((data) => {
-                console.log(data)
+                message.error(data.msg);
             });
         });
     }

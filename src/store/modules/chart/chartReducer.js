@@ -47,7 +47,7 @@ const errors = (state = null, action = {}) => {
     switch (action.type) {
         case GET_CHART_ERROR:
         case GET_HOTEL_ERROR:
-            return action.payload.message;
+            return action.payload;
         default:
             return state;
     }
