@@ -35,12 +35,13 @@ class Chart extends React.Component {
         this.postData = {
             task_id: ''
         }
+        this.state={
+            value:'1'
+        }
         this.chartOne = []
         this.chartTwo = []
         this.chartThree = []
-        this.state = {
-            value: "1"
-        }
+        this.LineChartOne = 'peopleLine'
     }
 
     //时间选择
@@ -62,22 +63,14 @@ class Chart extends React.Component {
 
     //图形切换
     onChangeLineType(e) {
-        const {chart, hotel } = this.props.state.chart;
         this.setState({
             value: e.target.value
         });
         if (e.target.value == 1) {
-            this.chartOne = this.handleLine({
-                data: chart.hotel,
-                type: 'peopleLine'
-            });
+            this.LineChartOne = 'peopleLine';
         } else {
-            this.chartOne = this.handleLine({
-                data: chart.hotel,
-                type: 'countLine'
-            });
+            this.LineChartOne = 'countLine';
         }
-        console.log(this.chartOne);
     }
 
     //处理数据
@@ -127,6 +120,9 @@ class Chart extends React.Component {
                             break;
                         case 'buyLine':
                             obj.y = item.buy[i];
+                            break;
+                        case 'ratioLine':
+                            obj.y = item.ratio[i];
                             break;
                     }
                     arr.push(obj);
@@ -233,11 +229,11 @@ class Chart extends React.Component {
         if (chart.hotel) {
             this.chartOne = this.handleLine({
                 data: chart.hotel,
-                type: 'peopleLine'
+                type: this.LineChartOne
             });
             this.chartTwo = this.handleLine({
                 data: chart.hotel,
-                type: 'countLine'
+                type: 'buyLine'
             });
             this.chartThree = this.handleLine({
                 data: chart.hotel,
@@ -277,7 +273,10 @@ class Chart extends React.Component {
                 </div>
 
                 <div className="ui-box">
-
+                    <RadioGroup className="radio_type" onChange={this.onChangeLineType.bind(this)} defaultValue="1" value={this.state.value}>
+                        <RadioButton value="1">人数</RadioButton>
+                        <RadioButton value="2">次数</RadioButton>
+                    </RadioGroup>
                     <LineChart
                         legend={true}
                         data={this.chartOne}
@@ -290,7 +289,7 @@ class Chart extends React.Component {
                                 height: 400
                             }}
                         title="酒店维度，活动参与人数，次数日变化折线图"
-                        yAxisLabel="活动参与次数"
+                        yAxisLabel="活动参与数"
                         xAxisLabel="日期"
                         xAccessor={(d)=> {
                             return new Date(d.x);
@@ -316,7 +315,7 @@ class Chart extends React.Component {
                                 height: 400
                             }}
                         title="酒店维度，购买人数与活动参与人数比率日变化折线图"
-                        yAxisLabel="活动参与人数"
+                        yAxisLabel="活动参与比率"
                         xAxisLabel="日期"
                         xAccessor={(d)=> {
                                 return new Date(d.x);
