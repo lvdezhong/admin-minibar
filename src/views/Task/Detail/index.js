@@ -265,7 +265,9 @@ class TaskDetail extends React.Component {
     handleChange(info) {
         let file = info.file;
 
-        if (file.status === 'done') {
+        if (file.status === 'uploading') {
+            message.warning('上传中...');
+        } else if (file.status === 'done') {
             message.success(`${file.name} 上传成功！`);
         } else if (file.status === 'error') {
             message.error(`${file.name} 上传失败！`);
@@ -317,6 +319,7 @@ class TaskDetail extends React.Component {
             'aligncenter',
             'alignright'
         ];
+        this.editor.config.menuFixed = false;
         this.editor.create();
     }
 
@@ -628,6 +631,7 @@ class TaskDetail extends React.Component {
                     title="选择商品"
                     visible={this.state.visible}
                     onCancel={this.handleCancel.bind(this)}
+                    style={{top: '30px'}}
                     footer={[
                         <Button key="ok" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
                     ]}

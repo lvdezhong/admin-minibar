@@ -324,7 +324,16 @@ class GiftDetail extends React.Component {
                     </FormItem>
                 </Form>
 
-                <Modal title="选择商品" width={700} visible={this.state.visible} onCancel={this.handleCancel.bind(this)} footer={[<Button key="ok" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>]}>
+                <Modal
+                    title="选择商品"
+                    width={700}
+                    visible={this.state.visible}
+                    onCancel={this.handleCancel.bind(this)}
+                    style={{top: '30px'}}
+                    footer={[
+                        <Button key="ok" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                    ]}
+                >
                     <div className="ui-box">
                         <Row>
                             <Col span={12}>

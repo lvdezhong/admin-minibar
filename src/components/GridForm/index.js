@@ -605,6 +605,7 @@ class GridForm extends React.Component {
                     visible={this.state.visible}
                     onCancel={this.handleCancel.bind(this)}
                     width={700}
+                    style={{top: '30px'}}
                     footer={[
                         <Button key="ok" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
                     ]}
