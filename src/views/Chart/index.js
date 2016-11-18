@@ -124,21 +124,9 @@ class Chart extends React.Component {
     //筛选按钮
     handleSubmit(e) {
         e.preventDefault();
-        this.props.action.getChart(this.postData).then((data)=>{
-            this.chartOne = this.handleLine({
-                data: data.value.data.hotel,
-                type:'peopleLine'
-            });
-            this.chartTwo = this.handleLine({
-                data: data.value.data.hotel,
-                type:'countLine'
-            });
-            this.chartThree = this.handleLine({
-                data: data.value.data.hotel,
-                type:'hourCount'
-            });
-        });
-
+        this.handleChangeSelect(this.props.form.getFieldsValue().hotel_id_list);
+        this.postData = Object.assign(this.postData, this.timeData);
+        this.props.action.getChart(this.postData);
     }
 
     componentDidMount() {
@@ -284,10 +272,6 @@ class Chart extends React.Component {
                 data: chart.hotel,
                 type:'countLine'
             });
-            //this.chartThree = this.handleLine({
-            //    data: data.value.data.hotel,
-            //    type:'buyLine'
-            //});
             this.chartThree = handleLine({
                 data: chart.hotel,
                 type:'hourCount'
