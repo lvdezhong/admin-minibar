@@ -16,18 +16,18 @@ import { browserHistory } from 'react-router'
 // }
 
 // 亚通线上
-const appInfo = {
-    baseURI: 'http://api.minibar.mockuai.com',
-    app_key: '732107fc97120ce6777c2f821c3a0679',
-    app_pwd: '60a7b01e91cf29e3ade371b7f8a369dc'
-}
-
-// 魔筷线上
 // const appInfo = {
 //     baseURI: 'http://api.minibar.mockuai.com',
-//     app_key: '1435a07bcf93045ee631619978ef18ec',
-//     app_pwd: '2a94f6b9b969b3e01e32acb18d0c605a'
+//     app_key: '732107fc97120ce6777c2f821c3a0679',
+//     app_pwd: '60a7b01e91cf29e3ade371b7f8a369dc'
 // }
+
+// 魔筷线上
+const appInfo = {
+    baseURI: 'http://api.minibar.mockuai.com',
+    app_key: '1435a07bcf93045ee631619978ef18ec',
+    app_pwd: '2a94f6b9b969b3e01e32acb18d0c605a'
+}
 
 function utf8_encode(argString) {
     if (argString === null || typeof argString === 'undefined') {

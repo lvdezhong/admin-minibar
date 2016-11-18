@@ -79,7 +79,7 @@ var config = {
     output: {
         path: outputDir,                                                        // 输出文件夹
         filename: isProduction ? '[name].[chunkhash:8].js' : '[name].js',       // 如果是生产环境加上hash
-        publicPath: isProduction ? 'http://yatong.boss.minibar.mockuai.com/' : 'http://localhost:8000/' // 配置资源加载的路径
+        publicPath: isProduction ? 'http://boss.minibar.mockuai.com/' : 'http://localhost:8000/' // 配置资源加载的路径
     },
     module: {                                                                   // 各种loader
         loaders: [{
