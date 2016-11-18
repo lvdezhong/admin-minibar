@@ -337,7 +337,7 @@ class GiftDetail extends React.Component {
                         </Row>
                     </div>
                     <div>
-                        <Table columns={columns} dataSource={goods.item_list} pagination={pagination} size="middle" />
+                        <Table columns={columns} dataSource={goods.item_list} pagination={pagination} scroll={{ y: 250 }} size="middle" />
                     </div>
                 </Modal>
             </div>

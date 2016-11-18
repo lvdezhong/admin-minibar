@@ -42,9 +42,9 @@ class TaskNew extends React.Component {
 
             this.props.action.getAuthorizeInfo({
                 auth_code: this.auth_code
-            });
-
-            browserHistory.push('/task/detail');
+            }).then(() => {
+                browserHistory.push('/task/detail');
+            })
         } else {
             this.props.form.validateFields((errors, values) => {
                 if (errors) {

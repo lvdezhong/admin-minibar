@@ -623,7 +623,7 @@ class GridForm extends React.Component {
                                 </Row>
                             </div>
                             <div>
-                                <Table columns={columnsGoods} dataSource={goods.item_list} pagination={paginationGoods} size="middle" />
+                                <Table columns={columnsGoods} dataSource={goods.item_list} pagination={paginationGoods} scroll={{ y: 250 }} size="middle" />
                             </div>
                         </TabPane>
                         <TabPane tab="营销" key="1">
@@ -639,7 +639,7 @@ class GridForm extends React.Component {
                                 </Row>
                             </div>
                             <div>
-                                <Table columns={columnsTask} dataSource={task.task_list} pagination={paginationTask} size="middle" />
+                                <Table columns={columnsTask} dataSource={task.task_list} pagination={paginationTask} scroll={{ y: 250 }} size="middle" />
                             </div>
                         </TabPane>
                     </Tabs>

@@ -2,7 +2,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
-import { Button, Row, Col, Form, Modal, Input, Table, DatePicker, message, Tabs } from 'antd'
+import { Button, Row, Col, Form, Modal, Input, Table, DatePicker, message, Tabs, Upload, Icon } from 'antd'
 import moment from 'moment';
 
 import action from '../../../store/actions'
@@ -14,6 +14,8 @@ import { price } from '../../../utils'
 
 import 'wangeditor/dist/css/wangEditor.min.css'
 import 'wangeditor'
+
+import './index.less'
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -110,17 +112,11 @@ class TaskDetail extends React.Component {
         this.props.action.getCurrentGift({
             id: item.id
         }).then(data => {
-            const { code, msg } = data.value;
+            this.setState({
+                selectedArr: data.value.data.gift_group.gift_list
+            })
 
-            if (code == 10000) {
-                this.setState({
-                    selectedArr: data.value.data.gift_group.gift_list
-                })
-
-                message.success(`已选择赠品库 ${item.name} 中的所有商品！`);
-            } else {
-                message.error(msg);
-            }
+            message.success(`已选择赠品库 ${item.name} 中的所有商品！`);
         });
     }
 
@@ -165,14 +161,8 @@ class TaskDetail extends React.Component {
             currentGoods: 1
         });
 
-        this.props.action.getGoods(this.paginationCfgGoods).then(function(data) {
-            const { code, msg } = data.value;
-
-            if (code == 10000) {
-                message.success('刷新成功！')
-            } else {
-                message.error(msg)
-            }
+        this.props.action.getGoods(this.paginationCfgGoods).then(() => {
+            message.success('刷新成功！')
         });
     }
 
@@ -196,14 +186,8 @@ class TaskDetail extends React.Component {
             currentGift: 1
         });
 
-        this.props.action.getGift(this.paginationCfgGift).then(data => {
-            const { code, msg } = data.value;
-
-            if (code == 10000) {
-                message.success('刷新成功！')
-            } else {
-                message.error(msg)
-            }
+        this.props.action.getGift(this.paginationCfgGift).then(() => {
+            message.success('刷新成功！')
         });
     }
 
@@ -258,9 +242,13 @@ class TaskDetail extends React.Component {
                 values.id = this.id;
                 this.props.action.updateTask(values).then(() => {
                     this.fetchLock = false;
+                }).catch(() => {
+                    this.fetchLock = false;
                 });
             } else {
                 this.props.action.addTask(values).then(() => {
+                    this.fetchLock = false;
+                }).catch(() => {
                     this.fetchLock = false;
                 });
             }
@@ -274,6 +262,28 @@ class TaskDetail extends React.Component {
         this.props.action.updateTaskItemList(selectedArr);
     }
 
+    handleChange(info) {
+        let file = info.file;
+
+        if (file.status === 'done') {
+            message.success(`${file.name} 上传成功！`);
+        } else if (file.status === 'error') {
+            message.error(`${file.name} 上传失败！`);
+        }
+
+        if (file.response && file.response.code == 10000) {
+            file.url = file.response.data.url;
+
+            this.setState({
+                shareImg: file.url
+            });
+
+            this.props.form.setFieldsValue({
+                share_image: file.url
+            });
+        }
+    }
+
     componentDidMount() {
         this.id = this.props.params.id;
         this.disabled = this.props.params.disabled;
@@ -285,15 +295,7 @@ class TaskDetail extends React.Component {
             this.props.action.getCurrentTask({
                 id: this.id
             }).then((data) => {
-                const { code, msg } = data.value;
-
-                if (code == 10000) {
-                    if (data.value.data.content) {
-                        this.editor.$txt.html(data.value.data.content);
-                    }
-                } else {
-                    message.error(msg)
-                }
+                this.editor.$txt.html(data.value.data.content);
             });
         } else {
             this.props.action.getNewTask();
@@ -336,6 +338,12 @@ class TaskDetail extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { task } = nextProps.state;
 
+        if (nextProps.state.task.currentTask != this.props.state.task.currentTask) {
+            this.setState({
+                shareImg: task.currentTask.share_image
+            });
+        }
+
         if (task.status == 'success') {
             message.success(task.msg);
             browserHistory.push('/task/list')
@@ -350,6 +358,7 @@ class TaskDetail extends React.Component {
         const { goods } = this.props.state.goods;
         const { gift } = this.props.state.gift;
         const { currentTask } = this.props.state.task;
+        const { shareImg } = this.state;
 
         const formItemLayout = {
             labelCol: { span: 4 },
@@ -449,9 +458,22 @@ class TaskDetail extends React.Component {
             }
         }]
 
+        const props_upload = {
+            action: 'http://media.mockuai.com/upload.php',
+            data: {
+                user_id: 2088575
+            },
+            headers:{
+                "X-Requested-With": null
+            },
+            accept: ".jpg,.png",
+            showUploadList: false,
+            onChange: this.handleChange.bind(this)
+        }
+
         const paginationGift = {
             current: this.state.currentGift,
-            total: goods.total_count,
+            total: gift.total_count,
             onChange(page) {
                 self.paginationCfgGift.offset = (page - 1) * self.paginationCfgGift.count;
                 self.postDataGift = Object.assign(self.postDataGift, self.paginationCfgGift);
@@ -499,6 +521,43 @@ class TaskDetail extends React.Component {
                         ]
                     })(
                         this.isEdit ? <Input placeholder="请输入链接" disabled /> : <Input placeholder="请输入链接" />
+                    )}
+                </FormItem>
+                <FormItem {...formItemLayout} label="微信分享图片">
+                    {getFieldDecorator('share_image', {
+                        initialValue: shareImg,
+                        rules: [
+                            { required: true, message: '微信分享图片不能为空' }
+                        ]
+                    })(
+                        <Input style={{display: 'none'}}/>
+                    )}
+                    <Upload className="shareimg-uploader" {...props_upload}>
+                        {
+                            shareImg ?
+                            <img src={shareImg} className="shareimg" /> :
+                            <Icon type="plus" className="shareimg-uploader-trigger" />
+                        }
+                    </Upload>
+                </FormItem>
+                <FormItem {...formItemLayout} label="微信分享标题">
+                    {getFieldDecorator('share_title', {
+                        initialValue: currentTask.share_title,
+                        rules: [
+                            { required: true, message: '微信分享标题不能为空' }
+                        ]
+                    })(
+                        <Input placeholder="请输入标题" />
+                    )}
+                </FormItem>
+                <FormItem {...formItemLayout} label="微信分享描述">
+                    {getFieldDecorator('share_desc', {
+                        initialValue: currentTask.share_desc,
+                        rules: [
+                            { required: true, message: '微信分享描述不能为空' }
+                        ]
+                    })(
+                        <Input type="textarea" placeholder="请输入描述" />
                     )}
                 </FormItem>
             </div>
@@ -595,7 +654,7 @@ class TaskDetail extends React.Component {
                                 </Row>
                             </div>
                             <div>
-                                <Table columns={columnsGoods} dataSource={goods.item_list} pagination={paginationGoods} size="middle" />
+                                <Table columns={columnsGoods} dataSource={goods.item_list} pagination={paginationGoods} scroll={{ y: 250 }} size="middle" />
                             </div>
                         </TabPane>
                         <TabPane tab="全部赠品" key="2">
@@ -618,7 +677,7 @@ class TaskDetail extends React.Component {
                                 </Row>
                             </div>
                             <div>
-                                <Table columns={columnsGift} dataSource={gift.gift_group_list} pagination={paginationGift} size="middle" />
+                                <Table columns={columnsGift} dataSource={gift.gift_group_list} pagination={paginationGift} scroll={{ y: 250 }} size="middle" />
                             </div>
                         </TabPane>
                     </Tabs>

@@ -14,26 +14,10 @@ const appInfo = {
 }
 
 function utf8_encode(argString) {
-    // discuss at: http://phpjs.org/functions/utf8_encode/
-    // original by: Webtoolkit.info (http://www.webtoolkit.info/)
-    // improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // improved by: sowberry
-    // improved by: Jack
-    // improved by: Yves Sucaet
-    // improved by: kirilloid
-    // bugfixed by: Onno Marsman
-    // bugfixed by: Onno Marsman
-    // bugfixed by: Ulrich
-    // bugfixed by: Rafal Kukawski
-    // bugfixed by: kirilloid
-    // example 1: utf8_encode('Kevin van Zonneveld');
-    // returns 1: 'Kevin van Zonneveld'
-
     if (argString === null || typeof argString === 'undefined') {
         return '';
     }
 
-    // .replace(/\r\n/g, "\n").replace(/\r/g, "\n");
     var string = (argString + '');
     var utftext = '',
         start, end, stringl = 0;
@@ -55,7 +39,6 @@ function utf8_encode(argString) {
                 (c1 >> 12) | 224, ((c1 >> 6) & 63) | 128, (c1 & 63) | 128
             );
         } else {
-            // surrogate pairs
             if ((c1 & 0xFC00) != 0xD800) {
                 throw new RangeError('Unmatched trail surrogate at ' + n);
             }
@@ -85,17 +68,6 @@ function utf8_encode(argString) {
 }
 
 function md5(str) {
-    // discuss at: http://phpjs.org/functions/md5/
-    // original by: Webtoolkit.info (http://www.webtoolkit.info/)
-    // improved by: Michael White (http://getsprink.com)
-    // improved by: Jack
-    // improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // input by: Brett Zamir (http://brett-zamir.me)
-    // bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // depends on: utf8_encode
-    // example 1: md5('Kevin van Zonneveld');
-    // returns 1: '6e658d4bfcb59cc13f96c14450ac40b9'
-
     var xl;
 
     var rotateLeft = function (lValue, iShiftBits) {
@@ -340,17 +312,17 @@ function handleResponse(data, resolve, reject) {
         case 50002:
             // 缺少参数session_token
             getSession(true);
-            return resolve(data);
+            return reject(data);
             break;
         case 50003:
         case 50004:
             // 缺少access_token
             browserHistory.push('/login');
-            return resolve(data);
+            return reject(data);
             break;
         default:
             // 其他情况
-            return resolve(data);
+            return reject(data);
     }
 }
 
