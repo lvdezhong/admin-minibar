@@ -28,29 +28,25 @@ class Login extends React.Component {
         this.props.action.login({
             mobile: data.user,
             password: data.password
-        }).then(function(data) {
-            const { code, msg } = data.value;
+        }).then((data) => {
+            const { access_token, user } = data.value.data;
 
-            if (code == 10000) {
-                const { access_token, user } = data.value.data;
+            localStorage.setItem('access_token', access_token);
+            localStorage.setItem('uid', user.id);
+            localStorage.setItem('mobile', user.mobile);
 
-                localStorage.setItem('access_token', access_token);
-                localStorage.setItem('uid', user.id);
-                localStorage.setItem('mobile', user.mobile);
+            notification.success({
+                message: '登录成功',
+                description: 'Welcome ' + user.mobile
+            });
 
-                notification.success({
-                    message: '登录成功',
-                    description: 'Welcome ' + user.mobile
-                });
-
-                browserHistory.push('/device/list');
-            } else {
-                notification.error({
-                    message: '登录失败',
-                    description: msg
-                });
-            }
-        })
+            browserHistory.push('/device/list');
+        }).catch((data) => {
+            notification.error({
+                message: '登录失败',
+                description: data.msg
+            });
+        });
     }
 
     render() {
