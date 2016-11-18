@@ -31,7 +31,7 @@ class GridForm extends React.Component {
             selectedTask: null,
             pageGoods: 1,
             pageTask: 1,
-            type: 0
+            key: '0'
         }
 
         this.paginationCfgGoods = {
@@ -59,7 +59,8 @@ class GridForm extends React.Component {
         this.setState({
             visible: true,
             selectedGoods: null,
-            selectedTask: null
+            selectedTask: null,
+            key: '0'
         });
 
         this.postDataGoods = Object.assign(this.postDataGoods, this.paginationCfgGoods);
@@ -84,7 +85,8 @@ class GridForm extends React.Component {
     handleOk() {
         const { item_list } = this.props.state.goods.goods;
         const { task_list } = this.props.state.task.task;
-        const { selectedGoods, selectedTask, currentIndex } = this.state;
+        const { selectedGoods, selectedTask, currentIndex, key } = this.state;
+        this.type = Number(key);
 
         if (selectedGoods != null) {
             const item = {
@@ -107,8 +109,7 @@ class GridForm extends React.Component {
             });
 
             this.setState({
-                visible: false,
-                type: this.type
+                visible: false
             });
         } else if (selectedTask != null) {
             const item = {
@@ -132,8 +133,7 @@ class GridForm extends React.Component {
             });
 
             this.setState({
-                visible: false,
-                type: this.type
+                visible: false
             });
         } else {
             message.warning('请选择一个商品或营销活动！');
@@ -255,17 +255,18 @@ class GridForm extends React.Component {
         });
     }
 
-    handleChange(type) {
-        this.type = type
+    handleChange(key) {
+        this.setState({
+            key: key
+        })
     }
 
     checkStock(rule, value, callback) {
         const { validateFields } = this.props.form;
-        const { type } = this.state;
 
-        if (value && type == 0) {
+        if (value && this.type == 0) {
             validateFields(['goods_max_stock_num'], { force: true });
-        } else if (value && type == 1) {
+        } else if (value && this.type == 1) {
             validateFields(['task_max_stock_num'], { force: true });
         }
         callback();
@@ -273,11 +274,10 @@ class GridForm extends React.Component {
 
     checkMaxStock(rule, value, callback) {
         const { getFieldValue } = this.props.form;
-        const { type } = this.state;
 
-        if (value && type == 0 && value < getFieldValue('goods_stock_num')) {
+        if (value && this.type == 0 && value < getFieldValue('goods_stock_num')) {
             callback('最大库存不能小于库存');
-        } else if (value && type == 1 && value < getFieldValue('task_stock_num')) {
+        } else if (value && this.type == 1 && value < getFieldValue('task_stock_num')) {
             callback('最大库存不能小于库存');
         } else {
             callback();
@@ -336,9 +336,7 @@ class GridForm extends React.Component {
                 });
             }
 
-            this.setState({
-                type: currentGoods.content_type
-            });
+            this.type = currentGoods.content_type;
         });
 
         PubSub.publish(CLICK_GOODS_ITEM, {
@@ -364,7 +362,7 @@ class GridForm extends React.Component {
         const self = this;
         const { goods } = this.props.state.goods;
         const { task } = this.props.state.task;
-        const { currentIndex } = this.state;
+        const { currentIndex, key } = this.state;
         const currentGoods = this.goodsCache[currentIndex];
 
         const formItemLayout = {
@@ -610,7 +608,7 @@ class GridForm extends React.Component {
                         <Button key="ok" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
                     ]}
                 >
-                    <Tabs defaultActiveKey="0" size="small" onChange={this.handleChange.bind(this)}>
+                    <Tabs activeKey={key} size="small" onChange={this.handleChange.bind(this)}>
                         <TabPane tab="商品" key="0">
                             <div className="ui-box">
                                 <Row>
