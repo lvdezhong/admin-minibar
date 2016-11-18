@@ -55,72 +55,7 @@ class Chart extends React.Component {
         this.hotelData.hotel_id_list = JSON.stringify(arrVal);
         this.postData = Object.assign(this.postData, this.hotelData);
     }
-    //处理图表数据
-    handleLine(_obj){
-        var lineData = [];
-        var lineObj= {
-            name:'',
-            values:[],
-            strokeWidth: 3
-        }
-        var obj = {
-            x: null,
-            y:null
-        }
-        var arr=[];
-        _obj.data.forEach(function(item,index){
-            lineObj= {
-                name:'',
-                values:[],
-                strokeWidth: null
-            }
-            arr=[];
-            if(_obj.type == 'hourCount'){
-                item.point.forEach(function(v,i){
-                    obj = {
-                        x: null,
-                        y:null
-                    }
-                    obj.x=v*1;
-                    obj.y=item.hourCount[i];
-                    arr.push(obj);
-                    lineObj.values = arr;
-                });
-            }else{
-                item.date.forEach(function(v,i){
-                    obj = {
-                        x: null,
-                        y:null
-                    }
-                    obj.x=v*1;
-                    switch (_obj.type){
-                        case 'peopleLine':
-                            obj.y=item.people[i];
-                            break;
-                        case 'countLine':
-                            obj.y=item.count[i];
-                            break;
-                        case 'buyLine':
-                            obj.y=item.buy[i];
-                            break;
-                    }
-                    arr.push(obj);
-                    lineObj.values = arr;
-                });
-            }
-            lineObj.name = item.name;
-            lineData.push(lineObj);
-        });
-        return lineData;
-    }
-    //图一表线选择
-    //onChangeLineType(e){
-    //    if(e.target.value == 'people'){
-    //
-    //    }else{
-    //
-    //    }
-    //}
+
     //筛选按钮
     handleSubmit(e) {
         e.preventDefault();
