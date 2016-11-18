@@ -30,30 +30,113 @@ class Chart extends React.Component {
             end_time: ''
         }
         this.hotelData = {
-            hotel_id_list:''
+            hotel_id_list: ''
         }
         this.postData = {
-            task_id : ''
+            task_id: ''
         }
-        this.chartOne=[]
-        this.chartTwo=[]
-        this.chartThree=[]
-
+        this.chartOne = []
+        this.chartTwo = []
+        this.chartThree = []
+        this.state = {
+            value: "1"
+        }
     }
+
     //时间选择
     handleTimeChange(dates, dateStrings) {
         this.timeData.start_time = dateStrings[0] + ' 00:00:00';
         this.timeData.end_time = dateStrings[1] + ' 00:00:00';
         this.postData = Object.assign(this.postData, this.timeData);
     }
+
     //酒店列表
-    handleChangeSelect(value){
-        var arrVal=[];
-        value.forEach(function(v,i){
-            arrVal.push(v*1);
+    handleChangeSelect(value) {
+        var arrVal = [];
+        value.forEach(function (v, i) {
+            arrVal.push(v * 1);
         });
         this.hotelData.hotel_id_list = JSON.stringify(arrVal);
         this.postData = Object.assign(this.postData, this.hotelData);
+    }
+
+    //图形切换
+    onChangeLineType(e) {
+        const {chart, hotel } = this.props.state.chart;
+        this.setState({
+            value: e.target.value
+        });
+        if (e.target.value == 1) {
+            this.chartOne = this.handleLine({
+                data: chart.hotel,
+                type: 'peopleLine'
+            });
+        } else {
+            this.chartOne = this.handleLine({
+                data: chart.hotel,
+                type: 'countLine'
+            });
+        }
+        console.log(this.chartOne);
+    }
+
+    //处理数据
+    handleLine(_obj) {
+        var lineData = [];
+        var lineObj = {
+            name: '',
+            values: [],
+            strokeWidth: 3
+        }
+        var obj = {
+            x: null,
+            y: null
+        }
+        var arr = [];
+        _obj.data.forEach(function (item, index) {
+            lineObj = {
+                name: '',
+                values: [],
+                strokeWidth: null
+            }
+            arr = [];
+            if (_obj.type == 'hourCount') {
+                item.point.forEach(function (v, i) {
+                    obj = {
+                        x: null,
+                        y: null
+                    }
+                    obj.x = v * 1;
+                    obj.y = item.hourCount[i];
+                    arr.push(obj);
+                    lineObj.values = arr;
+                });
+            } else {
+                item.date.forEach(function (v, i) {
+                    obj = {
+                        x: null,
+                        y: null
+                    }
+                    obj.x = v * 1;
+                    switch (_obj.type) {
+                        case 'peopleLine':
+                            obj.y = item.people[i];
+                            break;
+                        case 'countLine':
+                            obj.y = item.count[i];
+                            break;
+                        case 'buyLine':
+                            obj.y = item.buy[i];
+                            break;
+                    }
+                    arr.push(obj);
+                    lineObj.values = arr;
+                });
+            }
+            lineObj.name = item.name;
+            lineData.push(lineObj);
+        });
+        return lineData;
     }
 
     //筛选按钮
@@ -72,14 +155,14 @@ class Chart extends React.Component {
         this.props.action.getHotel({
             offset: 0,
             count: 1000
-        }).then((data)=>{
-            data.value.data.hotel_list.forEach(function(val,index){
-                arrHotelList.push(val.id*1);
+        }).then((data)=> {
+            data.value.data.hotel_list.forEach(function (val, index) {
+                arrHotelList.push(val.id * 1);
             });
             this.props.action.getChart({
-                start_time:'2016-11-02 00:00:00',
-                end_time:'2016-11-18 00:00:00',
-                hotel_id_list:JSON.stringify(arrHotelList),
+                start_time: '2016-11-02 00:00:00',
+                end_time: '2016-11-18 00:00:00',
+                hotel_id_list: JSON.stringify(arrHotelList),
                 task_id: this.postData.task_id
             }).catch((data) => {
                 message.error(data.msg);
@@ -95,9 +178,11 @@ class Chart extends React.Component {
         }
         return result;
     }
+
     disabledDate = function (current) {
         return current && current.valueOf() > Date.now();
     };
+
     disabledTime(time, type) {
         var that = this;
         if (type === 'start') {
@@ -141,95 +226,44 @@ class Chart extends React.Component {
             )
         });
         let hotelId = [];
-        hotelList.forEach(function(val,index){
+        hotelList.forEach(function (val, index) {
             hotelId.push(val.id.toString());
         });
 
-        function handleLine(_obj){
-            var lineData = [];
-            var lineObj= {
-                name:'',
-                values:[],
-                strokeWidth: 3
-            }
-            var obj = {
-                x: null,
-                y:null
-            }
-            var arr=[];
-            _obj.data.forEach(function(item,index){
-                lineObj= {
-                    name:'',
-                    values:[],
-                    strokeWidth: null
-                }
-                arr=[];
-                if(_obj.type == 'hourCount'){
-                    item.point.forEach(function(v,i){
-                        obj = {
-                            x: null,
-                            y:null
-                        }
-                        obj.x=v*1;
-                        obj.y=item.hourCount[i];
-                        arr.push(obj);
-                        lineObj.values = arr;
-                    });
-                }else{
-                    item.date.forEach(function(v,i){
-                        obj = {
-                            x: null,
-                            y:null
-                        }
-                        obj.x=v*1;
-                        switch (_obj.type){
-                            case 'peopleLine':
-                                obj.y=item.people[i];
-                                break;
-                            case 'countLine':
-                                obj.y=item.count[i];
-                                break;
-                            case 'buyLine':
-                                obj.y=item.buy[i];
-                                break;
-                        }
-                        arr.push(obj);
-                        lineObj.values = arr;
-                    });
-                }
-                lineObj.name = item.name;
-                lineData.push(lineObj);
-            });
-            return lineData;
-        }
-        if(chart.hotel){
-            this.chartOne = handleLine({
+        if (chart.hotel) {
+            this.chartOne = this.handleLine({
                 data: chart.hotel,
-                type:'peopleLine'
+                type: 'peopleLine'
             });
-            this.chartTwo = handleLine({
+            this.chartTwo = this.handleLine({
                 data: chart.hotel,
-                type:'countLine'
+                type: 'countLine'
             });
-            this.chartThree = handleLine({
+            this.chartThree = this.handleLine({
                 data: chart.hotel,
-                type:'hourCount'
+                type: 'hourCount'
             });
         }
-        return (
-            <div>
+
+        if (chart.hotel && chart.hotel.length == 0) {
+            var elem = <div>暂无活动数据</div>
+        } else {
+            var elem = <div>
                 <div className="ui-box">
                     <Form className="ant-advanced-search-form" onSubmit={this.handleSubmit.bind(this)}>
                         <Row gutter={25}>
                             <Col sm={8}>
                                 <FormItem label="活动时间" {...formItemLayout}>
-                                    <RangePicker style={{ width: 200 }} disabledDate={this.disabledDate} disabledTime={this.disabledTime}  onChange={this.handleTimeChange.bind(this)}/>
+                                    <RangePicker style={{ width: 200 }} disabledDate={this.disabledDate}
+                                                 disabledTime={this.disabledTime}
+                                                 onChange={this.handleTimeChange.bind(this)}/>
                                 </FormItem>
                             </Col>
                             <Col sm={12}>
                                 <FormItem label="酒店名称" labelCol={{ span: 6 }}>
                                     {getFieldDecorator('hotel_id_list', {initialValue: hotelId})(
-                                        <Select style={{width:'75%'}} multiple onChange={this.handleChangeSelect.bind(this)}>
+                                        <Select style={{width:'75%'}} multiple
+                                                onChange={this.handleChangeSelect.bind(this)}>
                                             {options}
                                         </Select>
                                     )}
@@ -243,52 +277,53 @@ class Chart extends React.Component {
                 </div>
 
                 <div className="ui-box">
+
                     <LineChart
-                    legend={true}
-                    data={this.chartOne}
-                    width= {800}
-                    height={400}
-                    viewBoxObject={{
-                            x: 0,
-                            y: 0,
-                            width: 800,
-                            height: 400
-                        }}
-                    title="酒店维度，活动参与人数，次数日变化折线图"
-                    yAxisLabel="活动参与次数"
-                    xAxisLabel="日期"
-                    xAccessor={(d)=> {
-                        return new Date(d.x);
+                        legend={true}
+                        data={this.chartOne}
+                        width={800}
+                        height={400}
+                        viewBoxObject={{
+                                x: 0,
+                                y: 0,
+                                width: 800,
+                                height: 400
+                            }}
+                        title="酒店维度，活动参与人数，次数日变化折线图"
+                        yAxisLabel="活动参与次数"
+                        xAxisLabel="日期"
+                        xAccessor={(d)=> {
+                            return new Date(d.x);
+                            }
                         }
-                    }
-                    tickStroke = {'#666'}
-                    gridHorizontal={true}
-                    gridVertical={true}
-                    gridHorizontalStroke={'#000'}
-                    gridVerticalStrokeDash={'1, 0'}
+                        tickStroke={'#666'}
+                        gridHorizontal={true}
+                        gridVertical={true}
+                        gridHorizontalStroke={'#000'}
+                        gridVerticalStrokeDash={'1, 0'}
                     />
                 </div>
                 <div className="ui-box">
                     <LineChart
                         legend={true}
                         data={this.chartTwo}
-                        width= {800}
+                        width={800}
                         height={400}
                         viewBoxObject={{
-                            x: 0,
-                            y: 0,
-                            width: 700,
-                            height: 400
-                        }}
+                                x: 0,
+                                y: 0,
+                                width: 700,
+                                height: 400
+                            }}
                         title="酒店维度，购买人数与活动参与人数比率日变化折线图"
                         yAxisLabel="活动参与人数"
                         xAxisLabel="日期"
                         xAccessor={(d)=> {
-                            return new Date(d.x);
+                                return new Date(d.x);
+                                }
                             }
-                        }
                         yAccessor={(d)=>d.y}
-                        tickStroke = {'#666'}
+                        tickStroke={'#666'}
                         gridHorizontal={true}
                         gridVertical={true}
                         gridHorizontalStroke={'#000'}
@@ -299,24 +334,30 @@ class Chart extends React.Component {
                     <LineChart
                         legend={true}
                         data={this.chartThree}
-                        width= {800}
+                        width={800}
                         height={400}
                         viewBoxObject={{
-                            x: 0,
-                            y: 0,
-                            width: 700,
-                            height: 400
-                        }}
+                                x: 0,
+                                y: 0,
+                                width: 700,
+                                height: 400
+                            }}
                         title="酒店维度，全天活跃度变化曲线图"
                         yAxisLabel="活动参与人数"
                         xAxisLabel="小时"
-                        tickStroke = {'#666'}
+                        tickStroke={'#666'}
                         gridHorizontal={true}
                         gridVertical={true}
                         gridHorizontalStroke={'#000'}
                         gridVerticalStrokeDash={'1, 0'}
                     />
                 </div>
+            </div>
+        }
+
+        return (
+            <div>
+                {elem}
             </div>
         )
     }
