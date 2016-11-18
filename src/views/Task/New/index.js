@@ -73,9 +73,9 @@ class TaskNew extends React.Component {
             window.open(url);
         }
 
-        if (task.status == 'success') {
+        if (nextProps.state.task.status != this.props.state.task.status && nextProps.state.task.status == 'success') {
             message.success(task.msg);
-        } else if (task.status == 'fail') {
+        } else if (nextProps.state.task.status != this.props.state.task.status && nextProps.state.task.status == 'fail') {
             message.error(task.msg);
         }
     }

@@ -214,10 +214,10 @@ class GiftDetail extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { gift } = nextProps.state;
 
-        if (gift.status == 'success') {
+        if (nextProps.state.gift.status != this.props.state.gift.status && nextProps.state.gift.status == 'success') {
             message.success(gift.msg);
             browserHistory.push('/gift/list');
-        } else if (gift.status == 'fail') {
+        } else if (nextProps.state.gift.status != this.props.state.gift.status && nextProps.state.gift.status == 'fail') {
             message.error(gift.msg);
         }
     }

@@ -70,11 +70,11 @@ class TaskList extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { task } = nextProps.state;
 
-        if (task.status == 'success') {
+        if (nextProps.state.task.status != this.props.state.task.status && nextProps.state.task.status == 'success') {
             message.success(task.msg);
             this.postData = Object.assign(this.postData, this.paginationCfg);
             this.props.action.getTask(this.postData);
-        } else if (task.status == 'fail') {
+        } else if (nextProps.state.task.status != this.props.state.task.status && nextProps.state.task.status == 'fail') {
             message.error(task.msg);
         }
     }
