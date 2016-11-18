@@ -1,16 +1,32 @@
 import { toQueryString } from '../utils'
 import { browserHistory } from 'react-router'
 
+// 本地
 // const appInfo = {
 //     baseURI: 'http://api.mockuai.com:8091',
 //     app_key: '5b036edd2fe8730db1983368a122fb45',
 //     app_pwd: '84ef0ca439e44fa93c4375ff94b420c7'
 // }
 
+// 测试环境
+// const appInfo = {
+//     baseURI: 'http://api.minibar.mockuai.com:8091',
+//     app_key: '3fc22da4e4b7bb17d04d1bcb5510ed8c',
+//     app_pwd: 'd8f2622865f31f0b6788e14a9d05acaa'
+// }
+
+// 亚通线上
+// const appInfo = {
+//     baseURI: 'http://api.minibar.mockuai.com',
+//     app_key: '732107fc97120ce6777c2f821c3a0679',
+//     app_pwd: '60a7b01e91cf29e3ade371b7f8a369dc'
+// }
+
+// 魔筷线上
 const appInfo = {
-    baseURI: 'http://api.minibar.mockuai.com:8091',
-    app_key: '3fc22da4e4b7bb17d04d1bcb5510ed8c',
-    app_pwd: 'd8f2622865f31f0b6788e14a9d05acaa'
+    baseURI: 'http://api.minibar.mockuai.com',
+    app_key: '1435a07bcf93045ee631619978ef18ec',
+    app_pwd: '2a94f6b9b969b3e01e32acb18d0c605a'
 }
 
 function utf8_encode(argString) {
