@@ -35,7 +35,8 @@ class TaskDetail extends React.Component {
             visible: false,
             selectedArr: [],
             currentGoods: 1,
-            currentGift: 1
+            currentGift: 1,
+            key: '1'
         }
 
         this.paginationCfgGoods = {
@@ -76,7 +77,8 @@ class TaskDetail extends React.Component {
 
         this.setState({
             visible: true,
-            selectedArr: _task_item_list
+            selectedArr: _task_item_list,
+            key: '1'
         });
 
         this.props.action.getGoods(this.paginationCfgGoods);
@@ -113,7 +115,8 @@ class TaskDetail extends React.Component {
             id: item.id
         }).then(data => {
             this.setState({
-                selectedArr: data.value.data.gift_group.gift_list
+                selectedArr: data.value.data.gift_group.gift_list,
+                key: '1'
             })
 
             message.success(`已选择赠品库 ${item.name} 中的所有商品！`);
@@ -284,6 +287,16 @@ class TaskDetail extends React.Component {
         }
     }
 
+    handleStartUpload() {
+        message.warning('上传中...');
+    }
+
+    handleChangeTab(key) {
+        this.setState({
+            key: key
+        })
+    }
+
     componentDidMount() {
         this.id = this.props.params.id;
         this.disabled = this.props.params.disabled;
@@ -317,6 +330,7 @@ class TaskDetail extends React.Component {
             'aligncenter',
             'alignright'
         ];
+        this.editor.config.menuFixed = false;
         this.editor.create();
     }
 
@@ -358,7 +372,7 @@ class TaskDetail extends React.Component {
         const { goods } = this.props.state.goods;
         const { gift } = this.props.state.gift;
         const { currentTask } = this.props.state.task;
-        const { shareImg } = this.state;
+        const { shareImg, key } = this.state;
 
         const formItemLayout = {
             labelCol: { span: 4 },
@@ -468,7 +482,8 @@ class TaskDetail extends React.Component {
             },
             accept: ".jpg,.png",
             showUploadList: false,
-            onChange: this.handleChange.bind(this)
+            onChange: this.handleChange.bind(this),
+            beforeUpload: this.handleStartUpload.bind(this)
         }
 
         const paginationGift = {
@@ -628,12 +643,13 @@ class TaskDetail extends React.Component {
                     title="选择商品"
                     visible={this.state.visible}
                     onCancel={this.handleCancel.bind(this)}
+                    style={{top: '30px'}}
                     footer={[
                         <Button key="ok" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
                     ]}
                     width={700}
                 >
-                    <Tabs defaultActiveKey="1" size="small">
+                    <Tabs activeKey={key} onChange={this.handleChangeTab.bind(this)} size="small">
                         <TabPane tab="全部商品" key="1">
                             <div className="ui-box">
                                 <Row>

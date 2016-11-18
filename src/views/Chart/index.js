@@ -61,7 +61,9 @@ class Chart extends React.Component {
         e.preventDefault();
         this.handleChangeSelect(this.props.form.getFieldsValue().hotel_id_list);
         this.postData = Object.assign(this.postData, this.timeData);
-        this.props.action.getChart(this.postData);
+        this.props.action.getChart(this.postData).catch((err) => {
+            console.log(err)
+        });
     }
 
     componentDidMount() {
@@ -79,6 +81,8 @@ class Chart extends React.Component {
                 end_time:'2016-11-18 00:00:00',
                 hotel_id_list:JSON.stringify(arrHotelList),
                 task_id: this.postData.task_id
+            }).catch((data) => {
+                console.log(data)
             });
         });
     }
