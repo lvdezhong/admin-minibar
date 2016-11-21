@@ -1,0 +1,11 @@
+{
+    "code": 10000,
+    "msg": "success",
+    "data": {
+        "wechat_open": {
+            "id": 1,
+            "nick_name": "hahahaha",
+            "head_img": ""
+        }
+    }
+}

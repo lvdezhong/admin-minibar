@@ -2,10 +2,11 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { Form, Input, Row, Col, Radio, Button, Modal, Table, Tag, message } from 'antd'
+import { Form, Input, Row, Col, Radio, Button, Modal, Table, Tag, message, Tabs } from 'antd'
 import PubSub from 'pubsub-js'
 
 import action from '../../store/actions'
+import GoodsItem from '../GoodsItem'
 
 import { CLICK_GOODS_ITEM, UPDATE_GOODS_ITEM, price } from '../../utils'
 
@@ -13,6 +14,7 @@ import SearchInput from '../SearchInput'
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+const TabPane = Tabs.TabPane;
 
 @connect(
     state => ({state: state}),
@@ -24,66 +26,117 @@ class GridForm extends React.Component {
         super(props)
         this.state = {
             visible: false,
-            index: null,
             currentIndex: 0,
-            current: 1
+            selectedGoods: null,
+            selectedTask: null,
+            pageGoods: 1,
+            pageTask: 1,
+            key: '0'
         }
 
-        this.paginationCfg = {
+        this.paginationCfgGoods = {
            count: 10,
            offset: 0
         }
 
-        this.postData = {}
-
-        switch (props.keyword) {
-            case 'device':
-                const { machine_item_list } = props.state.device.currentDevice;
-                this.goodsCache = machine_item_list.slice(0);
-                break;
-            case 'maintpl':
-                const { tmpl_item_list } = props.state.maintpl.currentMainTpl;
-                this.goodsCache = tmpl_item_list.slice(0);
-                break;
+        this.paginationCfgTask = {
+           count: 10,
+           offset: 0
         }
+
+        this.postDataGoods = {}
+
+        this.postDataTask = {
+            lifecycle: 10
+        }
+
+        this.type = 0;
+
+        this.goodsCache = _.clone(props.dataSource, true);
     }
 
     showModal() {
         this.setState({
             visible: true,
-            index: null
+            selectedGoods: null,
+            selectedTask: null,
+            key: '0'
         });
 
-        this.props.action.getGoods(this.paginationCfg);
+        this.postDataGoods = Object.assign(this.postDataGoods, this.paginationCfgGoods);
+        this.postDataTask = Object.assign(this.postDataTask, this.paginationCfgTask);
+
+        this.props.action.getGoods(this.postDataGoods);
+        this.props.action.getTask(this.postDataTask);
     }
 
-    goodsItemClick(selected, index) {
+    goodsItemClick(index) {
         this.setState({
-            index: index
+            selectedGoods: index
+        });
+    }
+
+    taskItemClick(index) {
+        this.setState({
+            selectedTask: index
         });
     }
 
     handleOk() {
-        const { goods } = this.props.state.goods;
-        const { index, currentIndex } = this.state;
+        const { item_list } = this.props.state.goods.goods;
+        const { task_list } = this.props.state.task.task;
+        const { selectedGoods, selectedTask, currentIndex, key } = this.state;
+        this.type = Number(key);
 
-        if (index != null) {
+        if (selectedGoods != null) {
             const item = {
-                origin_item_id: goods.item_list[index].id,
-                name: goods.item_list[index].name,
-                image_horizontal: goods.item_list[index].image_horizontal,
-                image_vertical: goods.item_list[index].image_vertical,
-                origin_price: goods.item_list[index].origin_price,
-                isDefault: false
+                origin_item_id: item_list[selectedGoods].id,
+                name: item_list[selectedGoods].name,
+                image_horizontal: item_list[selectedGoods].image_horizontal,
+                image_vertical: item_list[selectedGoods].image_vertical,
+                origin_price: item_list[selectedGoods].origin_price,
+                isDefault: false,
+                content_type: this.type
             }
 
             this.goodsCache[currentIndex] = Object.assign({}, this.goodsCache[currentIndex], item)
+
+            this.props.form.setFieldsValue({
+                price: price('GET', this.goodsCache[currentIndex].price),
+                goods_stock_num: this.goodsCache[currentIndex].stock_num.toString(),
+                goods_max_stock_num: this.goodsCache[currentIndex].max_stock_num.toString(),
+                goods_status: `${this.goodsCache[currentIndex].status}`
+            });
+
+            this.setState({
+                visible: false
+            });
+        } else if (selectedTask != null) {
+            const item = {
+                task_id: task_list[selectedTask].id,
+                isDefault: false,
+                content_type: this.type,
+                extro_info: {
+                    title: task_list[selectedTask].title,
+                    start_time: task_list[selectedTask].start_time,
+                    end_time: task_list[selectedTask].end_time,
+                    task_item_list: task_list[selectedTask].task_item_list
+                }
+            }
+
+            this.goodsCache[currentIndex] = Object.assign({}, this.goodsCache[currentIndex], item)
+
+            this.props.form.setFieldsValue({
+                task_stock_num: this.goodsCache[currentIndex].stock_num.toString(),
+                task_max_stock_num: this.goodsCache[currentIndex].max_stock_num.toString(),
+                task_status: `${this.goodsCache[currentIndex].status}`
+            });
 
             this.setState({
                 visible: false
             });
         } else {
-            message.warning('请选择一个商品！');
+            message.warning('请选择一个商品或营销活动！');
         }
     }
 
@@ -96,26 +149,36 @@ class GridForm extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const { keyword } = this.props;
-        const { currentIndex, index } = this.state;
+        const { currentIndex } = this.state;
         const currentGoods = this.goodsCache[currentIndex];
 
         if (currentGoods.isDefault == true) {
-             message.error('请选择一个商品！');
+             message.error('请选择一个商品或营销活动！');
              return
         }
 
         this.props.form.validateFields((errors, values) => {
             if (errors) {
-                message.error('请正确填写商品信息！');
+                message.error('请正确填写表单信息！');
                 return;
             }
 
-            values.price = Number(price('POST', values.price));
-            values.stock_num = Number(values.stock_num);
-            values.max_stock_num = Number(values.max_stock_num);
-            values.status = Number(values.status);
+            if (currentGoods.content_type == 0) {
+                var formData = {
+                    price: Number(price('POST', values.price)),
+                    stock_num: Number(values.goods_stock_num),
+                    max_stock_num: Number(values.goods_max_stock_num),
+                    status: Number(values.goods_status)
+                }
+            } else {
+                var formData = {
+                    stock_num: Number(values.task_stock_num),
+                    max_stock_num: Number(values.task_max_stock_num),
+                    status: Number(values.task_status)
+                }
+            }
 
-            const pushData = Object.assign({}, currentGoods, values)
+            var pushData = Object.assign({}, currentGoods, formData);
 
             PubSub.publish(UPDATE_GOODS_ITEM, currentIndex);
             switch (keyword) {
@@ -130,28 +193,41 @@ class GridForm extends React.Component {
         })
     }
 
-    handleSearch(value) {
-        this.paginationCfg.offset = 0;
-        this.postData = Object.assign({
+    handleSearchGoods(value) {
+        this.paginationCfgGoods.offset = 0;
+        this.postDataGoods = Object.assign({
             name: value
-        }, this.paginationCfg);
+        }, this.paginationCfgGoods);
 
         this.setState({
-            current: 1
+            pageGoods: 1
         });
 
-        this.props.action.getGoods(this.postData);
+        this.props.action.getGoods(this.postDataGoods);
     }
 
-    handleRefresh() {
-        this.paginationCfg.offset = 0;
+    handleSearchTask(value) {
+        this.paginationCfgTask.offset = 0;
+        this.postDataTask = Object.assign({
+            title: value
+        }, this.paginationCfgTask);
 
         this.setState({
-            current: 1
+            pageTask: 1
         });
 
-        this.props.action.getGoods(this.paginationCfg).payload.promise.then(function(data) {
-            const { code, msg } = data.payload;
+        this.props.action.getTask(this.postDataTask);
+    }
+
+    handleRefreshGoods() {
+        this.paginationCfgGoods.offset = 0;
+
+        this.setState({
+            pageGoods: 1
+        });
+
+        this.props.action.getGoods(this.paginationCfgGoods).then(function(data) {
+            const { code, msg } = data.value;
 
             if (code == 10000) {
                 message.success('刷新成功！')
@@ -161,11 +237,37 @@ class GridForm extends React.Component {
         });
     }
 
+    handleRefreshTask() {
+        this.paginationCfgTask.offset = 0;
+
+        this.setState({
+            pageTask: 1
+        });
+
+        this.props.action.getTask(this.paginationCfgTask).then(function(data) {
+            const { code, msg } = data.value;
+
+            if (code == 10000) {
+                message.success('刷新成功！')
+            } else {
+                message.error(msg)
+            }
+        });
+    }
+
+    handleChange(key) {
+        this.setState({
+            key: key
+        })
+    }
+
     checkStock(rule, value, callback) {
         const { validateFields } = this.props.form;
 
-        if (value) {
-          validateFields(['max_stock_num'], { force: true });
+        if (value && this.type == 0) {
+            validateFields(['goods_max_stock_num'], { force: true });
+        } else if (value && this.type == 1) {
+            validateFields(['task_max_stock_num'], { force: true });
         }
         callback();
     }
@@ -173,7 +275,9 @@ class GridForm extends React.Component {
     checkMaxStock(rule, value, callback) {
         const { getFieldValue } = this.props.form;
 
-        if (value && value < getFieldValue('stock_num')) {
+        if (value && this.type == 0 && value < getFieldValue('goods_stock_num')) {
+            callback('最大库存不能小于库存');
+        } else if (value && this.type == 1 && value < getFieldValue('task_stock_num')) {
             callback('最大库存不能小于库存');
         } else {
             callback();
@@ -181,49 +285,73 @@ class GridForm extends React.Component {
     }
 
     componentWillUpdate(nextProps, nextState) {
-        const index = this.state.index;
-        const nextIndex = nextState.index;
-        var nextGoods = nextProps.state.goods.goods.item_list;
+        var { item_list } = nextProps.state.goods.goods;
+        var { task_list } = nextProps.state.task.task;
 
-        if (nextIndex != null && index != nextIndex) {
-            for (let i = 0; i < nextGoods.length; i ++) {
-                nextGoods[i].selected = false;
-            }
-            nextGoods[nextIndex].selected = true;
+        if (nextState.selectedGoods != null && this.state.selectedGoods != nextState.selectedGoods) {
+            _.forEach(item_list, function(item) {
+                item.selected = false;
+            })
+            _.forEach(task_list, function(item) {
+                item.selected = false;
+            })
+            item_list[nextState.selectedGoods].selected = true;
+        }
+
+        if (nextState.selectedTask != null && this.state.selectedTask != nextState.selectedTask) {
+            _.forEach(task_list, function(item) {
+                item.selected = false;
+            })
+            _.forEach(item_list, function(item) {
+                item.selected = false;
+            })
+            task_list[nextState.selectedTask].selected = true;
         }
     }
 
     componentDidMount() {
-        this.pubsub_token = PubSub.subscribe(CLICK_GOODS_ITEM, function(msg, data) {
+        this.pubsub_token = PubSub.subscribe(CLICK_GOODS_ITEM, (msg, data) => {
             this.setState({
-                currentIndex: data,
-                index: null
+                currentIndex: data.index,
+                selectedGoods: null,
+                selectedTask: null
             });
 
-            const { keyword } = this.props;
+            const currentGoods = this.props.dataSource[data.index];
 
-            switch (keyword) {
-                case 'device':
-                    const { machine_item_list } = this.props.state.device.currentDevice
-                    var currentGoods = machine_item_list[data];
-                    break;
-                case 'maintpl':
-                    const { tmpl_item_list } = this.props.state.maintpl.currentMainTpl;
-                    var currentGoods = tmpl_item_list[data];
-                    break;
+            this.goodsCache[data.index] = currentGoods;
+
+            if (currentGoods.content_type == 0) {
+                this.props.form.setFieldsValue({
+                    price: price('GET', currentGoods.price),
+                    goods_stock_num: currentGoods.stock_num.toString(),
+                    goods_max_stock_num: currentGoods.max_stock_num.toString(),
+                    goods_status: `${currentGoods.status}`
+                });
+            } else {
+                this.props.form.setFieldsValue({
+                    task_stock_num: currentGoods.stock_num.toString(),
+                    task_max_stock_num: currentGoods.max_stock_num.toString(),
+                    task_status: `${currentGoods.status}`
+                });
             }
 
-            this.goodsCache[data] = currentGoods;
+            this.type = currentGoods.content_type;
+        });
 
-            this.props.form.setFieldsValue({
-                price: price('GET', currentGoods.price),
-                stock_num: currentGoods.stock_num.toString(),
-                max_stock_num: currentGoods.max_stock_num.toString(),
-                status: `${currentGoods.status}`
+        PubSub.publish(CLICK_GOODS_ITEM, {
+            index: this.state.currentIndex
+        });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.dataSource != nextProps.dataSource) {
+            this.goodsCache = _.clone(nextProps.dataSource, true);
+
+            PubSub.publish(CLICK_GOODS_ITEM, {
+                index: this.state.currentIndex
             });
-        }.bind(this));
-
-        PubSub.publish(CLICK_GOODS_ITEM, this.state.currentIndex);
+        }
     }
 
     componentWillUnmount() {
@@ -232,9 +360,9 @@ class GridForm extends React.Component {
 
     render() {
         const self = this;
-
         const { goods } = this.props.state.goods;
-        const { currentIndex } = this.state;
+        const { task } = this.props.state.task;
+        const { currentIndex, key } = this.state;
         const currentGoods = this.goodsCache[currentIndex];
 
         const formItemLayout = {
@@ -244,7 +372,7 @@ class GridForm extends React.Component {
 
         const { getFieldDecorator } = this.props.form;
 
-        const columns = [{
+        const columnsGoods = [{
             title: '商品名称',
             dataIndex: 'name',
             key: 'name',
@@ -270,99 +398,250 @@ class GridForm extends React.Component {
             render(text, record, index) {
                 let elem;
                 if (record.selected) {
-                    elem = <Button type="primary" size="small" onClick={() => self.goodsItemClick(record.select, index)}>选择</Button>
+                    elem = <Button type="primary" size="small" onClick={() => self.goodsItemClick(index)}>选择</Button>
                 } else {
-                    elem = <Button type="default" size="small" onClick={() => self.goodsItemClick(record.select, index)}>选择</Button>
+                    elem = <Button type="default" size="small" onClick={() => self.goodsItemClick(index)}>选择</Button>
                 }
                 return elem;
             }
         }]
 
-        const pagination = {
-            current: this.state.current,
+        const paginationGoods = {
+            current: this.state.pageGoods,
             total: goods.total_count,
             onChange(page) {
-                self.paginationCfg.offset = (page - 1) * self.paginationCfg.count;
-                self.postData = Object.assign(self.postData, self.paginationCfg);
+                self.paginationCfgGoods.offset = (page - 1) * self.paginationCfgGoods.count;
+                self.postDataGoods = Object.assign(self.postDataGoods, self.paginationCfgGoods);
 
                 self.setState({
-                    current: page,
+                    pageGoods: page,
                 });
 
-                self.props.action.getGoods(self.postData);
+                self.props.action.getGoods(self.postDataGoods);
             }
+        }
+
+        const columnsTask = [{
+            title: '标题',
+            dataIndex: 'title',
+            key: 'title',
+            width: '20%'
+        }, {
+            title: '任务类型',
+            dataIndex: 'type',
+            key: 'type',
+            width: '20%',
+            render(text) {
+                if (text == 1) {
+                    return '分享链接'
+                } else {
+                    return '关注公众号'
+                }
+            }
+        }, {
+            title: '有效期',
+            key: 'time',
+            width: '50%',
+            render(text, record) {
+                return (
+                    `${record.start_time} 至 ${record.end_time}`
+                )
+            }
+        }, {
+            title: '操作',
+            dataIndex: 'id',
+            key: 'operate',
+            width: '10%',
+            render(text, record, index) {
+                let elem;
+                if (record.selected) {
+                    elem = <Button type="primary" size="small" onClick={() => self.taskItemClick(index)}>选择</Button>
+                } else {
+                    elem = <Button type="default" size="small" onClick={() => self.taskItemClick(index)}>选择</Button>
+                }
+                return elem;
+            }
+        }]
+
+        const paginationTask = {
+            current: this.state.pageTask,
+            total: task.total_count,
+            onChange(page) {
+                self.paginationCfgTask.offset = (page - 1) * self.paginationCfgTask.count;
+                self.postDataTask = Object.assign(self.postDataTask, self.paginationCfgTask);
+
+                self.setState({
+                    pageTask: page
+                });
+
+                self.props.action.getTask(self.postDataTask);
+            }
+        }
+
+        if (currentGoods.content_type == 0) {
+            var elem = <div>
+                <FormItem {...formItemLayout} label="商品名称">
+                    <p className="ant-form-text">{currentGoods.name}</p>
+                    <Button type="primary" size="small" onClick={this.showModal.bind(this)}>选择商品/营销活动</Button>
+                </FormItem>
+                <FormItem {...formItemLayout} label="价格">
+                    <p className="ant-form-text">{price('GET', currentGoods.origin_price)}</p>
+                </FormItem>
+                <FormItem {...formItemLayout} label="现价">
+                    {getFieldDecorator('price', {
+                        rules: [
+                            { required: true, message: '商品现价不能为空' },
+                            { pattern: /^\d+(?:\.\d{1,2})?$/, message: '价格不能超过两位小数' }
+                        ]
+                    })(
+                        <Input />
+                    )}
+                </FormItem>
+                <FormItem {...formItemLayout} label="库存">
+                    {getFieldDecorator('goods_stock_num', {
+                        rules: [
+                            { required: true, message: '商品库存不能为空' },
+                            { pattern: /^[1-9]\d*$/, message: '商品库存请填写数字' },
+                            { validator: this.checkStock.bind(this) }
+                        ]
+                    })(
+                        <Input />
+                    )}
+                    <span>当前剩余库存：{currentGoods.stock_num}</span>
+                </FormItem>
+                <FormItem {...formItemLayout} label="最大库存">
+                    {getFieldDecorator('goods_max_stock_num', {
+                        rules: [
+                            { required: true, message: '最大库存不能为空' },
+                            { pattern: /^[1-9]\d*$/, message: '商品库存请填写数字' },
+                            { validator: this.checkMaxStock.bind(this) }
+                        ]
+                    })(
+                        <Input placeholder="最大库存用于补货端批量补货" />
+                    )}
+                </FormItem>
+                <FormItem {...formItemLayout} label="状态">
+                    {getFieldDecorator('goods_status')(
+                        <RadioGroup>
+                            <Radio value="1">启用</Radio>
+                            <Radio value="0">禁用</Radio>
+                        </RadioGroup>
+                    )}
+                </FormItem>
+            </div>
+        } else {
+            var giftList = [];
+            if (currentGoods.extro_info) {
+                giftList = _.map(currentGoods.extro_info.task_item_list, (item, index) => {
+                    let itemData = {
+                        name: item.name,
+                        price: item.origin_price,
+                        img: item.image_horizontal
+                    }
+
+                    return (
+                        <GoodsItem key={item.id} dataSource={itemData} closable={false} />
+                    )
+                })
+            }
+
+            var elem = <div>
+                <FormItem {...formItemLayout} label="活动名称">
+                    <p className="ant-form-text">{currentGoods.extro_info && currentGoods.extro_info.title}</p>
+                    <Button type="primary" size="small" onClick={this.showModal.bind(this)}>选择商品/营销活动</Button>
+                </FormItem>
+                <FormItem {...formItemLayout} label="有效期">
+                    <p className="ant-form-text">{`${currentGoods.extro_info && currentGoods.extro_info.start_time} 到 ${currentGoods.extro_info && currentGoods.extro_info.end_time}`}</p>
+                </FormItem>
+                <FormItem {...formItemLayout} label="库存">
+                    {getFieldDecorator('task_stock_num', {
+                        rules: [
+                            { required: true, message: '商品库存不能为空' },
+                            { pattern: /^[1-9]\d*$/, message: '商品库存请填写数字' },
+                            { validator: this.checkStock.bind(this) }
+                        ]
+                    })(
+                        <Input />
+                    )}
+                    <span>当前剩余库存：{currentGoods.stock_num}</span>
+                </FormItem>
+                <FormItem {...formItemLayout} label="最大库存">
+                    {getFieldDecorator('task_max_stock_num', {
+                        rules: [
+                            { required: true, message: '最大库存不能为空' },
+                            { pattern: /^[1-9]\d*$/, message: '商品库存请填写数字' },
+                            { validator: this.checkMaxStock.bind(this) }
+                        ]
+                    })(
+                        <Input placeholder="最大库存用于补货端批量补货" />
+                    )}
+                </FormItem>
+                <FormItem {...formItemLayout} label="状态">
+                    {getFieldDecorator('task_status')(
+                        <RadioGroup>
+                            <Radio value="1">启用</Radio>
+                            <Radio value="0">禁用</Radio>
+                        </RadioGroup>
+                    )}
+                </FormItem>
+                <FormItem {...formItemLayout} label="赠送商品">
+                    {giftList}
+                </FormItem>
+            </div>
         }
 
         return (
             <div>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                    <FormItem {...formItemLayout} label="商品名称">
-                        <p className="ant-form-text">{currentGoods.name}</p>
-                        <Button type="primary" size="small" onClick={this.showModal.bind(this)}>选择商品</Button>
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="价格">
-                        <p className="ant-form-text">{price('GET', currentGoods.origin_price)}</p>
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="现价">
-                        {getFieldDecorator('price', {
-                            rules: [
-                                { required: true, message: '商品现价不能为空' },
-                                { pattern: /^\d+(?:\.\d{1,2})?$/, message: '价格不能超过两位小数' }
-                            ]
-                        })(
-                            <Input />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="库存">
-                        {getFieldDecorator('stock_num', {
-                            rules: [
-                                { required: true, message: '商品库存不能为空' },
-                                { pattern: /^[1-9]\d*$/, message: '商品库存请填写数字' },
-                                { validator: this.checkStock.bind(this) }
-                            ]
-                        })(
-                            <Input />
-                        )}
-                        <span>当前剩余库存：{currentGoods.stock_num}</span>
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="最大库存">
-                        {getFieldDecorator('max_stock_num', {
-                            rules: [
-                                { required: true, message: '最大库存不能为空' },
-                                { pattern: /^[1-9]\d*$/, message: '商品库存请填写数字' },
-                                { validator: this.checkMaxStock.bind(this) }
-                            ]
-                        })(
-                            <Input placeholder="最大库存用于补货端批量补货" />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="状态">
-                        {getFieldDecorator('status')(
-                            <RadioGroup>
-                                <Radio value="1">启用</Radio>
-                                <Radio value="0">禁用</Radio>
-                            </RadioGroup>
-                        )}
-                    </FormItem>
+                    {elem}
                     <FormItem wrapperCol={{ span: 20, offset: 4 }}>
                         <Button type="primary" htmlType="submit" size="default">确定</Button>
                     </FormItem>
                 </Form>
-                <Modal title="选择商品" width={700} visible={this.state.visible} onCancel={this.handleCancel.bind(this)} footer={[<Button key="ok" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>]}>
-                    <div className="ui-box">
-                        <Row>
-                            <Col span={12}>
-                                <Button type="primary"><Link target="_blank" to="/goods/detail">添加</Link></Button>&nbsp;
-                                <Button type="primary" onClick={this.handleRefresh.bind(this)}>刷新</Button>
-                            </Col>
-                            <Col span={12}>
-                                <SearchInput placeholder="请输入商品名称" onSearch={value => this.handleSearch(value)} style={{ width: 200, float: 'right' }} />
-                            </Col>
-                        </Row>
-                    </div>
-                    <div>
-                        <Table columns={columns} dataSource={goods.item_list} pagination={pagination} size="middle" />
-                    </div>
+                <Modal
+                    title="选择商品"
+                    visible={this.state.visible}
+                    onCancel={this.handleCancel.bind(this)}
+                    width={700}
+                    style={{top: '30px'}}
+                    footer={[
+                        <Button key="ok" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                    ]}
+                >
+                    <Tabs activeKey={key} size="small" onChange={this.handleChange.bind(this)}>
+                        <TabPane tab="商品" key="0">
+                            <div className="ui-box">
+                                <Row>
+                                    <Col span={12}>
+                                        <Button type="primary"><Link target="_blank" to="/goods/detail">添加</Link></Button>&nbsp;
+                                        <Button type="primary" onClick={this.handleRefreshGoods.bind(this)}>刷新</Button>
+                                    </Col>
+                                    <Col span={12}>
+                                        <SearchInput placeholder="请输入商品名称" onSearch={value => this.handleSearchGoods(value)} style={{ width: 200, float: 'right' }} />
+                                    </Col>
+                                </Row>
+                            </div>
+                            <div>
+                                <Table columns={columnsGoods} dataSource={goods.item_list} pagination={paginationGoods} scroll={{ y: 250 }} size="middle" />
+                            </div>
+                        </TabPane>
+                        <TabPane tab="营销" key="1">
+                            <div className="ui-box">
+                                <Row>
+                                    <Col span={12}>
+                                        <Button type="primary"><Link target="_blank" to="/task/new">添加</Link></Button>&nbsp;
+                                        <Button type="primary" onClick={this.handleRefreshTask.bind(this)}>刷新</Button>
+                                    </Col>
+                                    <Col span={12}>
+                                        <SearchInput placeholder="请输入商品名称" onSearch={value => this.handleSearchTask(value)} style={{ width: 200, float: 'right' }} />
+                                    </Col>
+                                </Row>
+                            </div>
+                            <div>
+                                <Table columns={columnsTask} dataSource={task.task_list} pagination={paginationTask} scroll={{ y: 250 }} size="middle" />
+                            </div>
+                        </TabPane>
+                    </Tabs>
                 </Modal>
             </div>
         )

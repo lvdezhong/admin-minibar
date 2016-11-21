@@ -5,12 +5,6 @@ function toQueryPair(key, value) {
     return key + '=' + encodeURIComponent(value === null ? '' : String(value));
 }
 
-export function isPromise(value) {
-    if (value !== null && typeof value === 'object') {
-        return value.promise && typeof value.promise.then === 'function';
-    }
-}
-
 export function toQueryString(obj) {
     let ret = [];
     for (let key in obj) {
@@ -19,6 +13,13 @@ export function toQueryString(obj) {
         ret.push(toQueryPair(key, values));
     }
     return ret.join('&');
+}
+
+export function getQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]);
+    return null;
 }
 
 export function price(type, price) {

@@ -70,7 +70,9 @@ class OrderList extends React.Component {
     }
 
     componentDidMount() {
-        this.props.action.getOrder(this.postData, this.paginationCfg);
+        this.postData = Object.assign(this.postData, this.paginationCfg);
+
+        this.props.action.getOrder(this.postData);
         this.props.action.getAllDevice({
             offset: 0,
             count: 1000

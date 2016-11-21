@@ -28,7 +28,7 @@ const goods = (state = [], action) => {
 const currentGoods = (state = {}, action) => {
     switch (action.type) {
         case GET_GOODS_ITEM_SUCCESS:
-            return action.payload.data;
+            return action.payload.data.item;
         case GET_NEW_GOODS:
             return {}
         default:

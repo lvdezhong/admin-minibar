@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
@@ -49,8 +49,8 @@ class GoodsList extends React.Component {
     doDelete(idList) {
         this.props.action.deleteGoods({
             id_list: JSON.stringify(idList)
-        }).payload.promise.then(function(data) {
-            const { code, msg } = data.payload;
+        }).then(function(data) {
+            const { code, msg } = data.value;
 
             if (code == 10000) {
                 message.success('操作成功！');
@@ -98,7 +98,7 @@ class GoodsList extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.isUpdate) {
+        if (nextProps.state.goods.isUpdate) {
             this.paginationCfg.offset = 0;
 
             this.setState({
