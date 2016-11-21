@@ -70,11 +70,11 @@ class TaskList extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { task } = nextProps.state;
 
-        if (task.status == 'success') {
+        if (nextProps.state.task.status != this.props.state.task.status && nextProps.state.task.status == 'success') {
             message.success(task.msg);
             this.postData = Object.assign(this.postData, this.paginationCfg);
             this.props.action.getTask(this.postData);
-        } else if (task.status == 'fail') {
+        } else if (nextProps.state.task.status != this.props.state.task.status && nextProps.state.task.status == 'fail') {
             message.error(task.msg);
         }
     }
@@ -129,20 +129,20 @@ class TaskList extends React.Component {
                 if (record.status == 0) {
                     if (record.lifecycle == 1) {
                         elem = <div>
-                            <Link to={`/task/detail/${text}`}>活动数据</Link>-
+                            <Link to={`/chart/${text}`}>活动数据</Link>-
                             <Link to={`/task/detail/${text}`}>编辑</Link>-
                             <Link onClick={self.handleInvalid.bind(self, text)}>使失效</Link>
                         </div>
                     } else {
                         elem = <div>
-                            <Link to={`/task/detail/${text}`}>活动数据</Link>-
+                            <Link to={`/chart/${text}`}>活动数据</Link>-
                             <Link to={`/task/detail/${text}/1`}>查看</Link>-
                             <Link onClick={self.handleInvalid.bind(self, text)}>使失效</Link>
                         </div>
                     }
                 } else {
                     elem = <div>
-                        <Link to={`/task/detail/${text}`}>活动数据</Link>-
+                        <Link to={`/chart/${text}`}>活动数据</Link>-
                         <Link to={`/task/detail/${text}/1`}>查看</Link>-
                         <Link>已失效</Link>
                     </div>

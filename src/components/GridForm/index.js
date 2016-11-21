@@ -31,7 +31,7 @@ class GridForm extends React.Component {
             selectedTask: null,
             pageGoods: 1,
             pageTask: 1,
-            type: 0
+            key: '0'
         }
 
         this.paginationCfgGoods = {
@@ -47,32 +47,27 @@ class GridForm extends React.Component {
         this.postDataGoods = {}
 
         this.postDataTask = {
-            lifecycle: 2
+            lifecycle: 10
         }
 
         this.type = 0;
 
-        switch (props.keyword) {
-            case 'device':
-                const { machine_item_list } = props.state.device.currentDevice;
-                this.goodsCache = _.clone(machine_item_list, true);
-                break;
-            case 'maintpl':
-                const { tmpl_item_list } = props.state.maintpl.currentMainTpl;
-                this.goodsCache = _.clone(tmpl_item_list, true);
-                break;
-        }
+        this.goodsCache = _.clone(props.dataSource, true);
     }
 
     showModal() {
         this.setState({
             visible: true,
             selectedGoods: null,
-            selectedTask: null
+            selectedTask: null,
+            key: '0'
         });
 
-        this.props.action.getGoods(this.paginationCfgGoods);
-        this.props.action.getTask(this.paginationCfgTask);
+        this.postDataGoods = Object.assign(this.postDataGoods, this.paginationCfgGoods);
+        this.postDataTask = Object.assign(this.postDataTask, this.paginationCfgTask);
+
+        this.props.action.getGoods(this.postDataGoods);
+        this.props.action.getTask(this.postDataTask);
     }
 
     goodsItemClick(index) {
@@ -90,7 +85,8 @@ class GridForm extends React.Component {
     handleOk() {
         const { item_list } = this.props.state.goods.goods;
         const { task_list } = this.props.state.task.task;
-        const { selectedGoods, selectedTask, currentIndex } = this.state;
+        const { selectedGoods, selectedTask, currentIndex, key } = this.state;
+        this.type = Number(key);
 
         if (selectedGoods != null) {
             const item = {
@@ -105,9 +101,15 @@ class GridForm extends React.Component {
 
             this.goodsCache[currentIndex] = Object.assign({}, this.goodsCache[currentIndex], item)
 
+            this.props.form.setFieldsValue({
+                price: price('GET', this.goodsCache[currentIndex].price),
+                goods_stock_num: this.goodsCache[currentIndex].stock_num.toString(),
+                goods_max_stock_num: this.goodsCache[currentIndex].max_stock_num.toString(),
+                goods_status: `${this.goodsCache[currentIndex].status}`
+            });
+
             this.setState({
-                visible: false,
-                type: this.type
+                visible: false
             });
         } else if (selectedTask != null) {
             const item = {
@@ -122,14 +124,16 @@ class GridForm extends React.Component {
                 }
             }
 
-            delete this.goodsCache[currentIndex].origin_price;
-            delete this.goodsCache[currentIndex].price;
-
             this.goodsCache[currentIndex] = Object.assign({}, this.goodsCache[currentIndex], item)
 
+            this.props.form.setFieldsValue({
+                task_stock_num: this.goodsCache[currentIndex].stock_num.toString(),
+                task_max_stock_num: this.goodsCache[currentIndex].max_stock_num.toString(),
+                task_status: `${this.goodsCache[currentIndex].status}`
+            });
+
             this.setState({
-                visible: false,
-                type: this.type
+                visible: false
             });
         } else {
             message.warning('请选择一个商品或营销活动！');
@@ -145,7 +149,7 @@ class GridForm extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const { keyword } = this.props;
-        const { currentIndex, type } = this.state;
+        const { currentIndex } = this.state;
         const currentGoods = this.goodsCache[currentIndex];
 
         if (currentGoods.isDefault == true) {
@@ -159,7 +163,7 @@ class GridForm extends React.Component {
                 return;
             }
 
-            if (type == 0) {
+            if (currentGoods.content_type == 0) {
                 var formData = {
                     price: Number(price('POST', values.price)),
                     stock_num: Number(values.goods_stock_num),
@@ -222,8 +226,8 @@ class GridForm extends React.Component {
             pageGoods: 1
         });
 
-        this.props.action.getGoods(this.paginationCfgGoods).payload.promise.then(function(data) {
-            const { code, msg } = data.payload;
+        this.props.action.getGoods(this.paginationCfgGoods).then(function(data) {
+            const { code, msg } = data.value;
 
             if (code == 10000) {
                 message.success('刷新成功！')
@@ -240,8 +244,8 @@ class GridForm extends React.Component {
             pageTask: 1
         });
 
-        this.props.action.getTask(this.paginationCfgTask).payload.promise.then(function(data) {
-            const { code, msg } = data.payload;
+        this.props.action.getTask(this.paginationCfgTask).then(function(data) {
+            const { code, msg } = data.value;
 
             if (code == 10000) {
                 message.success('刷新成功！')
@@ -251,17 +255,18 @@ class GridForm extends React.Component {
         });
     }
 
-    handleChange(type) {
-        this.type = type
+    handleChange(key) {
+        this.setState({
+            key: key
+        })
     }
 
     checkStock(rule, value, callback) {
         const { validateFields } = this.props.form;
-        const { type } = this.state;
 
-        if (value && type == 0) {
+        if (value && this.type == 0) {
             validateFields(['goods_max_stock_num'], { force: true });
-        } else if (value && type == 1) {
+        } else if (value && this.type == 1) {
             validateFields(['task_max_stock_num'], { force: true });
         }
         callback();
@@ -269,11 +274,10 @@ class GridForm extends React.Component {
 
     checkMaxStock(rule, value, callback) {
         const { getFieldValue } = this.props.form;
-        const { type } = this.state;
 
-        if (value && type == 0 && value < getFieldValue('goods_stock_num')) {
+        if (value && this.type == 0 && value < getFieldValue('goods_stock_num')) {
             callback('最大库存不能小于库存');
-        } else if (value && type == 1 && value < getFieldValue('task_stock_num')) {
+        } else if (value && this.type == 1 && value < getFieldValue('task_stock_num')) {
             callback('最大库存不能小于库存');
         } else {
             callback();
@@ -309,27 +313,15 @@ class GridForm extends React.Component {
         this.pubsub_token = PubSub.subscribe(CLICK_GOODS_ITEM, (msg, data) => {
             this.setState({
                 currentIndex: data.index,
-                type: data.type,
                 selectedGoods: null,
                 selectedTask: null
             });
 
-            const { keyword } = this.props;
-
-            switch (keyword) {
-                case 'device':
-                    const { machine_item_list } = this.props.state.device.currentDevice
-                    var currentGoods = machine_item_list[data.index];
-                    break;
-                case 'maintpl':
-                    const { tmpl_item_list } = this.props.state.maintpl.currentMainTpl;
-                    var currentGoods = tmpl_item_list[data.index];
-                    break;
-            }
+            const currentGoods = this.props.dataSource[data.index];
 
             this.goodsCache[data.index] = currentGoods;
 
-            if (data.type == 0) {
+            if (currentGoods.content_type == 0) {
                 this.props.form.setFieldsValue({
                     price: price('GET', currentGoods.price),
                     goods_stock_num: currentGoods.stock_num.toString(),
@@ -343,7 +335,23 @@ class GridForm extends React.Component {
                     task_status: `${currentGoods.status}`
                 });
             }
+
+            this.type = currentGoods.content_type;
         });
+
+        PubSub.publish(CLICK_GOODS_ITEM, {
+            index: this.state.currentIndex
+        });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.dataSource != nextProps.dataSource) {
+            this.goodsCache = _.clone(nextProps.dataSource, true);
+
+            PubSub.publish(CLICK_GOODS_ITEM, {
+                index: this.state.currentIndex
+            });
+        }
     }
 
     componentWillUnmount() {
@@ -354,7 +362,7 @@ class GridForm extends React.Component {
         const self = this;
         const { goods } = this.props.state.goods;
         const { task } = this.props.state.task;
-        const { currentIndex, type } = this.state;
+        const { currentIndex, key } = this.state;
         const currentGoods = this.goodsCache[currentIndex];
 
         const formItemLayout = {
@@ -433,22 +441,12 @@ class GridForm extends React.Component {
         }, {
             title: '有效期',
             key: 'time',
-            width: '30%',
+            width: '50%',
             render(text, record) {
                 return (
                     `${record.start_time} 至 ${record.end_time}`
                 )
             }
-        }, {
-            title: '参与次数',
-            dataIndex: 'join_count',
-            key: 'join_count',
-            width: '10%'
-        }, {
-            title: '兑换次数',
-            dataIndex: 'accomplish_count',
-            key: 'accomplish_count',
-            width: '10%'
         }, {
             title: '操作',
             dataIndex: 'id',
@@ -480,7 +478,7 @@ class GridForm extends React.Component {
             }
         }
 
-        if (type == 0) {
+        if (currentGoods.content_type == 0) {
             var elem = <div>
                 <FormItem {...formItemLayout} label="商品名称">
                     <p className="ant-form-text">{currentGoods.name}</p>
@@ -605,11 +603,12 @@ class GridForm extends React.Component {
                     visible={this.state.visible}
                     onCancel={this.handleCancel.bind(this)}
                     width={700}
+                    style={{top: '30px'}}
                     footer={[
                         <Button key="ok" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
                     ]}
                 >
-                    <Tabs defaultActiveKey="0" size="small" onChange={this.handleChange.bind(this)}>
+                    <Tabs activeKey={key} size="small" onChange={this.handleChange.bind(this)}>
                         <TabPane tab="商品" key="0">
                             <div className="ui-box">
                                 <Row>
@@ -623,7 +622,7 @@ class GridForm extends React.Component {
                                 </Row>
                             </div>
                             <div>
-                                <Table columns={columnsGoods} dataSource={goods.item_list} pagination={paginationGoods} size="middle" />
+                                <Table columns={columnsGoods} dataSource={goods.item_list} pagination={paginationGoods} scroll={{ y: 250 }} size="middle" />
                             </div>
                         </TabPane>
                         <TabPane tab="营销" key="1">
@@ -639,7 +638,7 @@ class GridForm extends React.Component {
                                 </Row>
                             </div>
                             <div>
-                                <Table columns={columnsTask} dataSource={task.task_list} pagination={paginationTask} size="middle" />
+                                <Table columns={columnsTask} dataSource={task.task_list} pagination={paginationTask} scroll={{ y: 250 }} size="middle" />
                             </div>
                         </TabPane>
                     </Tabs>

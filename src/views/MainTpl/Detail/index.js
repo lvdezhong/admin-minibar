@@ -51,6 +51,8 @@ class MainTplDetail extends React.Component {
                     message.error('商品未添加完全！');
                     return
                 }
+
+                tmplItemList[i].extro_info && delete tmplItemList[i].extro_info;
             }
 
             if (this.isEdit) {
@@ -58,8 +60,8 @@ class MainTplDetail extends React.Component {
                     id: this.id,
                     name: values.name,
                     tmpl_item_list: JSON.stringify(tmplItemList)
-                }).payload.promise.then(function(data) {
-                    const { code, msg } = data.payload;
+                }).then(function(data) {
+                    const { code, msg } = data.value;
 
                     if (code == 10000) {
                         message.success('保存成功！');
@@ -72,8 +74,8 @@ class MainTplDetail extends React.Component {
                 this.props.action.addMainTpl({
                     name: values.name,
                     tmpl_item_list: JSON.stringify(tmplItemList)
-                }).payload.promise.then(function(data) {
-                    const { code, msg } = data.payload;
+                }).then(function(data) {
+                    const { code, msg } = data.value;
 
                     if (code == 10000) {
                         message.success('保存成功！');

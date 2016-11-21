@@ -2,7 +2,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
-import { Button, Row, Col, Form, Modal, Input, Table, DatePicker, message, Tabs } from 'antd'
+import { Button, Row, Col, Form, Modal, Input, Table, DatePicker, message, Tabs, Upload, Icon } from 'antd'
 import moment from 'moment';
 
 import action from '../../../store/actions'
@@ -11,6 +11,11 @@ import SearchInput from '../../../components/SearchInput'
 import GoodsItem from '../../../components/GoodsItem'
 
 import { price } from '../../../utils'
+
+import 'wangeditor/dist/css/wangEditor.min.css'
+import 'wangeditor'
+
+import './index.less'
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -30,7 +35,8 @@ class TaskDetail extends React.Component {
             visible: false,
             selectedArr: [],
             currentGoods: 1,
-            currentGift: 1
+            currentGift: 1,
+            key: '1'
         }
 
         this.paginationCfgGoods = {
@@ -45,6 +51,8 @@ class TaskDetail extends React.Component {
 
         this.postDataGoods = {}
         this.postDataGift = {}
+
+        this.fetchLock = false;
     }
 
     getIndex(arr, id) {
@@ -69,7 +77,8 @@ class TaskDetail extends React.Component {
 
         this.setState({
             visible: true,
-            selectedArr: _task_item_list
+            selectedArr: _task_item_list,
+            key: '1'
         });
 
         this.props.action.getGoods(this.paginationCfgGoods);
@@ -104,18 +113,13 @@ class TaskDetail extends React.Component {
     giftItemClick(item) {
         this.props.action.getCurrentGift({
             id: item.id
-        }).payload.promise.then((data) => {
-            const { code, msg } = data.payload;
+        }).then(data => {
+            this.setState({
+                selectedArr: data.value.data.gift_group.gift_list,
+                key: '1'
+            })
 
-            if (code == 10000) {
-                this.setState({
-                    selectedArr: data.payload.data.gift_group.gift_list
-                })
-
-                message.success(`已选择赠品库 ${item.name} 中的所有商品！`);
-            } else {
-                message.error(msg);
-            }
+            message.success(`已选择赠品库 ${item.name} 中的所有商品！`);
         });
     }
 
@@ -160,14 +164,8 @@ class TaskDetail extends React.Component {
             currentGoods: 1
         });
 
-        this.props.action.getGoods(this.paginationCfgGoods).payload.promise.then(function(data) {
-            const { code, msg } = data.payload;
-
-            if (code == 10000) {
-                message.success('刷新成功！')
-            } else {
-                message.error(msg)
-            }
+        this.props.action.getGoods(this.paginationCfgGoods).then(() => {
+            message.success('刷新成功！')
         });
     }
 
@@ -191,35 +189,45 @@ class TaskDetail extends React.Component {
             currentGift: 1
         });
 
-        this.props.action.getGift(this.paginationCfgGift).payload.promise.then(function(data) {
-            const { code, msg } = data.payload;
-
-            if (code == 10000) {
-                message.success('刷新成功！')
-            } else {
-                message.error(msg)
-            }
+        this.props.action.getGift(this.paginationCfgGift).then(() => {
+            message.success('刷新成功！')
         });
     }
 
     handleSubmit(e) {
         e.preventDefault();
 
+        if (this.fetchLock) {
+            return;
+        }
+
         const { task } = this.props.state;
 
         this.props.form.validateFields((errors, values) => {
+            const editorTxt = this.editor.$txt.text();
+            const editorHtml = this.editor.$txt.html();
+
             if (errors) {
                 message.error('请正确填写表单！');
                 return;
             }
 
-            if (!task.currentTask.task_item_list) {
+            if (!task.currentTask.task_item_list || task.currentTask.task_item_list.length == 0 ) {
                 message.error('请至少选择一件商品！');
                 return;
             }
 
-            values.start_time = values.time[0].format('YYYY-MM-DD') + ' 00:00:00';
-            values.end_time = values.time[1].format('YYYY-MM-DD') + ' 00:00:00';
+            if (editorTxt.length != 0) {
+                if (editorTxt.length > 200) {
+                    message.error('任务说明不能多于200个字！');
+                    return;
+                } else {
+                    values.content = editorHtml;
+                }
+            }
+
+            values.start_time = values.time[0].format('YYYY-MM-DD HH:mm:ss');
+            values.end_time = values.time[1].format('YYYY-MM-DD HH:mm:ss');
             values.type = task.type;
             values.task_item_list = JSON.stringify(task.currentTask.task_item_list);
             delete values.time;
@@ -231,11 +239,21 @@ class TaskDetail extends React.Component {
                 values.count = task.shareInfo.count;
             }
 
+            this.fetchLock = true;
+
             if (this.isEdit) {
                 values.id = this.id;
-                this.props.action.updateTask(values);
+                this.props.action.updateTask(values).then(() => {
+                    this.fetchLock = false;
+                }).catch(() => {
+                    this.fetchLock = false;
+                });
             } else {
-                this.props.action.addTask(values);
+                this.props.action.addTask(values).then(() => {
+                    this.fetchLock = false;
+                }).catch(() => {
+                    this.fetchLock = false;
+                });
             }
         });
     }
@@ -245,6 +263,38 @@ class TaskDetail extends React.Component {
         selectedArr.splice(index, 1);
 
         this.props.action.updateTaskItemList(selectedArr);
+    }
+
+    handleChange(info) {
+        let file = info.file;
+
+        if (file.status === 'done') {
+            message.success(`${file.name} 上传成功！`);
+        } else if (file.status === 'error') {
+            message.error(`${file.name} 上传失败！`);
+        }
+
+        if (file.response && file.response.code == 10000) {
+            file.url = file.response.data.url;
+
+            this.setState({
+                shareImg: file.url
+            });
+
+            this.props.form.setFieldsValue({
+                share_image: file.url
+            });
+        }
+    }
+
+    handleStartUpload() {
+        message.warning('上传中...');
+    }
+
+    handleChangeTab(key) {
+        this.setState({
+            key: key
+        })
     }
 
     componentDidMount() {
@@ -257,8 +307,31 @@ class TaskDetail extends React.Component {
         if (this.isEdit) {
             this.props.action.getCurrentTask({
                 id: this.id
+            }).then((data) => {
+                this.editor.$txt.html(data.value.data.content);
             });
+        } else {
+            this.props.action.getNewTask();
         }
+
+        // 富文本编辑器插件
+        var editorContainer = document.getElementById('editor');
+        this.editor = new wangEditor(editorContainer);
+        this.editor.config.menus = [
+            'source',
+            '|',
+            'fontsize',
+            'bold',
+            'underline',
+            'italic',
+            'forecolor',
+            '|',
+            'alignleft',
+            'aligncenter',
+            'alignright'
+        ];
+        this.editor.config.menuFixed = false;
+        this.editor.create();
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -279,10 +352,16 @@ class TaskDetail extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { task } = nextProps.state;
 
-        if (task.status == 'success') {
+        if (nextProps.state.task.currentTask != this.props.state.task.currentTask) {
+            this.setState({
+                shareImg: task.currentTask.share_image
+            });
+        }
+
+        if (nextProps.state.task.status != this.props.state.task.status && nextProps.state.task.status == 'success') {
             message.success(task.msg);
             browserHistory.push('/task/list')
-        } else if (task.status == 'fail') {
+        } else if (nextProps.state.task.status != this.props.state.task.status && nextProps.state.task.status == 'fail') {
             message.error(task.msg);
         }
     }
@@ -293,6 +372,7 @@ class TaskDetail extends React.Component {
         const { goods } = this.props.state.goods;
         const { gift } = this.props.state.gift;
         const { currentTask } = this.props.state.task;
+        const { shareImg, key } = this.state;
 
         const formItemLayout = {
             labelCol: { span: 4 },
@@ -392,9 +472,23 @@ class TaskDetail extends React.Component {
             }
         }]
 
+        const props_upload = {
+            action: 'http://media.mockuai.com/upload.php',
+            data: {
+                user_id: 2088575
+            },
+            headers:{
+                "X-Requested-With": null
+            },
+            accept: ".jpg,.png",
+            showUploadList: false,
+            onChange: this.handleChange.bind(this),
+            beforeUpload: this.handleStartUpload.bind(this)
+        }
+
         const paginationGift = {
             current: this.state.currentGift,
-            total: goods.total_count,
+            total: gift.total_count,
             onChange(page) {
                 self.paginationCfgGift.offset = (page - 1) * self.paginationCfgGift.count;
                 self.postDataGift = Object.assign(self.postDataGift, self.paginationCfgGift);
@@ -427,7 +521,8 @@ class TaskDetail extends React.Component {
                     {getFieldDecorator('count', {
                         initialValue: task.shareInfo && task.shareInfo.count.toString(),
                         rules: [
-                            { required: true, message: '分享人数不能为空' }
+                            { required: true, message: '分享人数不能为空' },
+                            { pattern: /^[1-9]\d*$/, message: '分享人数请填写数字' }
                         ]
                     })(
                         this.isEdit ? <Input placeholder="请输入人数" disabled /> : <Input placeholder="请输入人数" />
@@ -443,7 +538,55 @@ class TaskDetail extends React.Component {
                         this.isEdit ? <Input placeholder="请输入链接" disabled /> : <Input placeholder="请输入链接" />
                     )}
                 </FormItem>
+                <FormItem {...formItemLayout} label="微信分享图片">
+                    {getFieldDecorator('share_image', {
+                        initialValue: shareImg,
+                        rules: [
+                            { required: true, message: '微信分享图片不能为空' }
+                        ]
+                    })(
+                        <Input style={{display: 'none'}}/>
+                    )}
+                    <Upload className="shareimg-uploader" {...props_upload}>
+                        {
+                            shareImg ?
+                            <img src={shareImg} className="shareimg" /> :
+                            <Icon type="plus" className="shareimg-uploader-trigger" />
+                        }
+                    </Upload>
+                </FormItem>
+                <FormItem {...formItemLayout} label="微信分享标题">
+                    {getFieldDecorator('share_title', {
+                        initialValue: currentTask.share_title,
+                        rules: [
+                            { required: true, message: '微信分享标题不能为空' }
+                        ]
+                    })(
+                        <Input placeholder="请输入标题" />
+                    )}
+                </FormItem>
+                <FormItem {...formItemLayout} label="微信分享描述">
+                    {getFieldDecorator('share_desc', {
+                        initialValue: currentTask.share_desc,
+                        rules: [
+                            { required: true, message: '微信分享描述不能为空' }
+                        ]
+                    })(
+                        <Input type="textarea" placeholder="请输入描述" />
+                    )}
+                </FormItem>
             </div>
+        }
+
+        var defaultTime = []
+        if (currentTask.start_time && currentTask.start_time) {
+            defaultTime = [moment(currentTask.start_time), moment(currentTask.end_time)];
+        } else {
+            var date1 = new Date();
+            var date2 = new Date(date1);
+            date2.setDate(date1.getDate() + 7);
+
+            defaultTime = [moment(date1), moment(date2)]
         }
 
         return (
@@ -454,7 +597,8 @@ class TaskDetail extends React.Component {
                         {getFieldDecorator('title', {
                             initialValue: currentTask.title,
                             rules: [
-                                { required: true, message: '活动名称不能为空' }
+                                { required: true, message: '活动名称不能为空' },
+                                { max: 20, message: '活动名称不能超过20个字' }
                             ]
                         })(
                             <Input placeholder="请输入活动名称" />
@@ -462,12 +606,12 @@ class TaskDetail extends React.Component {
                     </FormItem>
                     <FormItem {...formItemLayout} label="有效期">
                         {getFieldDecorator('time', {
-                            initialValue: [moment(currentTask.start_time), moment(currentTask.end_time)],
+                            initialValue: defaultTime,
                             rules: [
                                 { required: true, type: 'array', message: '有效期不能为空' }
                             ]
                         })(
-                            <RangePicker style={{ width: 200 }} />
+                            <RangePicker showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm" />
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout} label="赠送商品">
@@ -478,20 +622,17 @@ class TaskDetail extends React.Component {
                         </div>
                     </FormItem>
                     <FormItem {...formItemLayout} label="任务说明">
-                        {getFieldDecorator('content', {
-                            initialValue: currentTask.content
-                        })(
-                            <Input type="textarea" rows={4} />
-                        )}
+                        <div id="editor" style={{height: '150px'}}></div>
                     </FormItem>
                     <FormItem {...formItemLayout} label="参与次数">
                         {getFieldDecorator('user_limit', {
-                            initialValue: currentTask.user_limit && currentTask.user_limit.toString(),
+                            initialValue: task.type == 2 ? '1' : currentTask.user_limit && currentTask.user_limit.toString(),
                             rules: [
-                                { required: true, message: '参与次数不能为空' }
+                                { required: true, message: '参与次数不能为空' },
+                                { pattern: /^[1-9]\d*$/, message: '参与次数请填写数字' }
                             ]
                         })(
-                            <Input placeholder="每个用户限参与的次数" />
+                            task.type == 2 ? <Input placeholder="每个用户限参与的次数" disabled /> : <Input placeholder="每个用户限参与的次数" />
                         )}
                     </FormItem>
                     <FormItem wrapperCol={{ span: 20, offset: 4 }}>
@@ -502,12 +643,13 @@ class TaskDetail extends React.Component {
                     title="选择商品"
                     visible={this.state.visible}
                     onCancel={this.handleCancel.bind(this)}
+                    style={{top: '30px'}}
                     footer={[
                         <Button key="ok" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
                     ]}
                     width={700}
                 >
-                    <Tabs defaultActiveKey="1" size="small">
+                    <Tabs activeKey={key} onChange={this.handleChangeTab.bind(this)} size="small">
                         <TabPane tab="全部商品" key="1">
                             <div className="ui-box">
                                 <Row>
@@ -528,7 +670,7 @@ class TaskDetail extends React.Component {
                                 </Row>
                             </div>
                             <div>
-                                <Table columns={columnsGoods} dataSource={goods.item_list} pagination={paginationGoods} size="middle" />
+                                <Table columns={columnsGoods} dataSource={goods.item_list} pagination={paginationGoods} scroll={{ y: 250 }} size="middle" />
                             </div>
                         </TabPane>
                         <TabPane tab="全部赠品" key="2">
@@ -551,7 +693,7 @@ class TaskDetail extends React.Component {
                                 </Row>
                             </div>
                             <div>
-                                <Table columns={columnsGift} dataSource={gift.gift_group_list} pagination={paginationGift} size="middle" />
+                                <Table columns={columnsGift} dataSource={gift.gift_group_list} pagination={paginationGift} scroll={{ y: 250 }} size="middle" />
                             </div>
                         </TabPane>
                     </Tabs>

@@ -19,7 +19,8 @@ var plugins = [
         inject: true
     }),
     new webpack.ProvidePlugin({                                                 // 将lodash放到全局的window对象中
-        _ : 'lodash'
+        _: 'lodash',
+        $: 'jquery'
     })
 ]
 
@@ -64,11 +65,14 @@ var config = {
             'react-router',
             'react-redux',
             'redux',
+            'redux-promise-middleware',
             'redux-thunk',
             'lodash',
             'pubsub-js',
             'mirrorkey',
             'classnames',
+            'jquery',
+            'wangeditor',
             'd3'
         ]
     },
@@ -93,11 +97,15 @@ var config = {
             loader: isProduction ? ExtractTextPlugin.extract('style', 'css!less') : 'style!css!less',
             include: __dirname
         }, {
+            test: /\.css$/,
+            loader: 'style!css',
+            include: __dirname
+        }, {
             test: /\.(png|jpg)$/,
-            loader: 'url',
-            query: {
-                limit: 8192
-            }
+            loader: 'url?limit=8192'
+        }, {
+            test: /\.(woff|svg|eot|ttf)\??.*$/,
+            loader: 'url?limit=50000&name=[name].[ext]'
         }]
     },
     plugins: plugins,

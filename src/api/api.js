@@ -1,39 +1,39 @@
 import { toQueryString } from '../utils'
 import { browserHistory } from 'react-router'
 
-const appInfo = {
-    baseURI: 'http://api.mockuai.com:8091',
-    app_key: '5b036edd2fe8730db1983368a122fb45',
-    app_pwd: '84ef0ca439e44fa93c4375ff94b420c7'
-}
-
+// 本地
 // const appInfo = {
-//     baseURI: 'http://api.minibar.mockuai.com',
-//     app_key: '1435a07bcf93045ee631619978ef18ec',
-//     app_pwd: '2a94f6b9b969b3e01e32acb18d0c605a'
+//     baseURI: 'http://api.mockuai.com:8091',
+//     app_key: '5b036edd2fe8730db1983368a122fb45',
+//     app_pwd: '84ef0ca439e44fa93c4375ff94b420c7'
 // }
 
-function utf8_encode(argString) {
-    // discuss at: http://phpjs.org/functions/utf8_encode/
-    // original by: Webtoolkit.info (http://www.webtoolkit.info/)
-    // improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // improved by: sowberry
-    // improved by: Jack
-    // improved by: Yves Sucaet
-    // improved by: kirilloid
-    // bugfixed by: Onno Marsman
-    // bugfixed by: Onno Marsman
-    // bugfixed by: Ulrich
-    // bugfixed by: Rafal Kukawski
-    // bugfixed by: kirilloid
-    // example 1: utf8_encode('Kevin van Zonneveld');
-    // returns 1: 'Kevin van Zonneveld'
+// 测试环境
+// const appInfo = {
+//     baseURI: 'http://api.minibar.mockuai.com:8091',
+//     app_key: '3fc22da4e4b7bb17d04d1bcb5510ed8c',
+//     app_pwd: 'd8f2622865f31f0b6788e14a9d05acaa'
+// }
 
+// 亚通线上
+// const appInfo = {
+//     baseURI: 'http://api.minibar.mockuai.com',
+//     app_key: '732107fc97120ce6777c2f821c3a0679',
+//     app_pwd: '60a7b01e91cf29e3ade371b7f8a369dc'
+// }
+
+// 魔筷线上
+const appInfo = {
+    baseURI: 'http://api.minibar.mockuai.com',
+    app_key: '1435a07bcf93045ee631619978ef18ec',
+    app_pwd: '2a94f6b9b969b3e01e32acb18d0c605a'
+}
+
+function utf8_encode(argString) {
     if (argString === null || typeof argString === 'undefined') {
         return '';
     }
 
-    // .replace(/\r\n/g, "\n").replace(/\r/g, "\n");
     var string = (argString + '');
     var utftext = '',
         start, end, stringl = 0;
@@ -55,7 +55,6 @@ function utf8_encode(argString) {
                 (c1 >> 12) | 224, ((c1 >> 6) & 63) | 128, (c1 & 63) | 128
             );
         } else {
-            // surrogate pairs
             if ((c1 & 0xFC00) != 0xD800) {
                 throw new RangeError('Unmatched trail surrogate at ' + n);
             }
@@ -85,17 +84,6 @@ function utf8_encode(argString) {
 }
 
 function md5(str) {
-    // discuss at: http://phpjs.org/functions/md5/
-    // original by: Webtoolkit.info (http://www.webtoolkit.info/)
-    // improved by: Michael White (http://getsprink.com)
-    // improved by: Jack
-    // improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // input by: Brett Zamir (http://brett-zamir.me)
-    // bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // depends on: utf8_encode
-    // example 1: md5('Kevin van Zonneveld');
-    // returns 1: '6e658d4bfcb59cc13f96c14450ac40b9'
-
     var xl;
 
     var rotateLeft = function (lValue, iShiftBits) {

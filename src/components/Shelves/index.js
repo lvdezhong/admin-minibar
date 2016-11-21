@@ -38,7 +38,6 @@ class Shelves extends React.Component {
 
     componentWillUpdate(nextProps) {
         const { keyword } = nextProps;
-
         switch (keyword) {
             case 'device':
                 const machine_item_list = nextProps.state.device.currentDevice.machine_item_list || [];
@@ -110,7 +109,7 @@ class Shelves extends React.Component {
                     </Row>
                 </div>
                 <div className="vending-form">
-                    <GridForm keyword={keyword} />
+                    <GridForm keyword={keyword} dataSource={goods} />
                 </div>
             </div>
         )

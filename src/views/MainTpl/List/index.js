@@ -32,8 +32,8 @@ class MainTplList extends React.Component {
         this.showConfirm('复制模版？', () => {
             this.props.action.copyMainTpl({
                 id: id
-            }).payload.promise.then(function(data) {
-                const { code, msg } = data.payload;
+            }).then(function(data) {
+                const { code, msg } = data.value;
 
                 if (code == 10000) {
                     message.success('操作成功！');
@@ -48,8 +48,8 @@ class MainTplList extends React.Component {
         this.showConfirm('你确定要删除？', () => {
             this.props.action.deleteMainTpl({
                 id: id
-            }).payload.promise.then(data => {
-                const { code, msg } = data.payload;
+            }).then(data => {
+                const { code, msg } = data.value;
 
                 if (code == 10000) {
                     message.success('操作成功！');
@@ -64,8 +64,8 @@ class MainTplList extends React.Component {
         this.showConfirm('设为默认？', () => {
             this.props.action.setMainTpl({
                 id: id
-            }).payload.promise.then(function(data) {
-                const { code, msg } = data.payload;
+            }).then(function(data) {
+                const { code, msg } = data.value;
 
                 if (code == 10000) {
                     message.success('操作成功！');

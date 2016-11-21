@@ -42,9 +42,9 @@ class TaskNew extends React.Component {
 
             this.props.action.getAuthorizeInfo({
                 auth_code: this.auth_code
-            });
-
-            browserHistory.push('/task/detail');
+            }).then(() => {
+                browserHistory.push('/task/detail');
+            })
         } else {
             this.props.form.validateFields((errors, values) => {
                 if (errors) {
@@ -73,9 +73,9 @@ class TaskNew extends React.Component {
             window.open(url);
         }
 
-        if (task.status == 'success') {
+        if (nextProps.state.task.status != this.props.state.task.status && nextProps.state.task.status == 'success') {
             message.success(task.msg);
-        } else if (task.status == 'fail') {
+        } else if (nextProps.state.task.status != this.props.state.task.status && nextProps.state.task.status == 'fail') {
             message.error(task.msg);
         }
     }
@@ -97,10 +97,11 @@ class TaskNew extends React.Component {
                             {getFieldDecorator('count', {
                                 initialValue: '',
                                 rules: [
-                                    { required: true, message: '人数不能为空！' }
+                                    { required: true, message: '分享人数不能为空' },
+                                    { pattern: /^[1-9]\d*$/, message: '分享人数请填写数字' }
                                 ]
                             })(
-                                <Input />
+                                <Input placeholder="请输入分享人数"/>
                             )}
                         </FormItem>
                     </Col>
@@ -112,10 +113,10 @@ class TaskNew extends React.Component {
                     {getFieldDecorator('share_url', {
                         initialValue: '',
                         rules: [
-                            { required: true, message: '分享链接不能为空！' }
+                            { required: true, message: '分享链接不能为空' }
                         ]
                     })(
-                        <Input placeholder="请输入需要分享的链接" />
+                        <Input placeholder="请输入分享链接" />
                     )}
                 </FormItem>
             </div>
@@ -133,7 +134,7 @@ class TaskNew extends React.Component {
                 <Row type="flex" justify="center">
                     <Col span={12}>
                         <div className="ui-box task-new-select">
-                            <Select defaultValue={task.type} onChange={this.handleChange.bind(this)}>
+                            <Select defaultValue={`${task.type}`} onChange={this.handleChange.bind(this)}>
                                 <Option value="2">关注公众号</Option>
                                 <Option value="1">分享链接</Option>
                             </Select>

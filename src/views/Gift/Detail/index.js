@@ -158,8 +158,8 @@ class GiftDetail extends React.Component {
             current: 1
         });
 
-        this.props.action.getGoods(this.paginationCfg).payload.promise.then(function(data) {
-            const { code, msg } = data.payload;
+        this.props.action.getGoods(this.paginationCfg).then(function(data) {
+            const { code, msg } = data.value;
 
             if (code == 10000) {
                 message.success('刷新成功！')
@@ -183,7 +183,7 @@ class GiftDetail extends React.Component {
         if (this.isEdit) {
             this.props.action.getCurrentGift({
                 id: this.id
-            }).payload.promise.then(() => {
+            }).then(() => {
                 const gift_list = this.props.state.gift.currentGift.gift_list || [];
                 const _giftList = _.clone(gift_list, true);
 
@@ -214,10 +214,10 @@ class GiftDetail extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { gift } = nextProps.state;
 
-        if (gift.status == 'success') {
+        if (nextProps.state.gift.status != this.props.state.gift.status && nextProps.state.gift.status == 'success') {
             message.success(gift.msg);
             browserHistory.push('/gift/list');
-        } else if (gift.status == 'fail') {
+        } else if (nextProps.state.gift.status != this.props.state.gift.status && nextProps.state.gift.status == 'fail') {
             message.error(gift.msg);
         }
     }
@@ -241,7 +241,7 @@ class GiftDetail extends React.Component {
                     price: item.origin_price,
                     img: item.image_horizontal
                 }
-                
+
                 return (
                     <GoodsItem key={item.item_id} dataSource={itemData} onCancel={this.handleGoodsItemCancel.bind(this, index)} />
                 )
@@ -324,7 +324,16 @@ class GiftDetail extends React.Component {
                     </FormItem>
                 </Form>
 
-                <Modal title="选择商品" width={700} visible={this.state.visible} onCancel={this.handleCancel.bind(this)} footer={[<Button key="ok" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>]}>
+                <Modal
+                    title="选择商品"
+                    width={700}
+                    visible={this.state.visible}
+                    onCancel={this.handleCancel.bind(this)}
+                    style={{top: '30px'}}
+                    footer={[
+                        <Button key="ok" type="primary" onClick={this.handleOk.bind(this)}>确定</Button>
+                    ]}
+                >
                     <div className="ui-box">
                         <Row>
                             <Col span={12}>
@@ -337,7 +346,7 @@ class GiftDetail extends React.Component {
                         </Row>
                     </div>
                     <div>
-                        <Table columns={columns} dataSource={goods.item_list} pagination={pagination} size="middle" />
+                        <Table columns={columns} dataSource={goods.item_list} pagination={pagination} scroll={{ y: 250 }} size="middle" />
                     </div>
                 </Modal>
             </div>
