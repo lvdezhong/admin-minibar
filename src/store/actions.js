@@ -7,6 +7,7 @@ import * as userAction from './modules/user/userAction'
 import * as giftAction from './modules/gift/giftAction'
 import * as taskAction from './modules/task/taskAction'
 import * as chartAction from './modules/chart/chartAction'
+import * as logAction from './modules/log/logAction'
 
 export default {
     ...deviceAction,
@@ -17,5 +18,6 @@ export default {
     ...userAction,
     ...giftAction,
     ...taskAction,
-    ...chartAction
+    ...chartAction,
+    ...logAction
 }

@@ -9,11 +9,11 @@ import { browserHistory } from 'react-router'
 // }
 
 // 测试环境
-// const appInfo = {
-//     baseURI: 'http://api.minibar.mockuai.com:8091',
-//     app_key: '3fc22da4e4b7bb17d04d1bcb5510ed8c',
-//     app_pwd: 'd8f2622865f31f0b6788e14a9d05acaa'
-// }
+const appInfo = {
+    baseURI: 'http://api.minibar.mockuai.com:8091',
+    app_key: '3fc22da4e4b7bb17d04d1bcb5510ed8c',
+    app_pwd: 'd8f2622865f31f0b6788e14a9d05acaa'
+}
 
 // 亚通线上
 // const appInfo = {
@@ -23,11 +23,11 @@ import { browserHistory } from 'react-router'
 // }
 
 // 魔筷线上
-const appInfo = {
-    baseURI: 'http://api.minibar.mockuai.com',
-    app_key: '1435a07bcf93045ee631619978ef18ec',
-    app_pwd: '2a94f6b9b969b3e01e32acb18d0c605a'
-}
+// const appInfo = {
+//     baseURI: 'http://api.minibar.mockuai.com',
+//     app_key: '1435a07bcf93045ee631619978ef18ec',
+//     app_pwd: '2a94f6b9b969b3e01e32acb18d0c605a'
+// }
 
 function utf8_encode(argString) {
     if (argString === null || typeof argString === 'undefined') {
