@@ -35,6 +35,13 @@ class LogList extends React.Component {
         this.props.action.getLog(this.paginationCfg);
     }
 
+    componentWillReceiveProps(nextProps) {
+        const { errors } = nextProps.state.log;
+        if (errors != null) {
+            message.error(errors);
+        }
+    }
+
     handleSubmit(e) {
         e.preventDefault();
 
@@ -48,8 +55,6 @@ class LogList extends React.Component {
 
         this.paginationCfg.offset = 0;
         this.postData = Object.assign(formData, this.paginationCfg);
-
-        console.log(this.postData);
 
         this.setState({
             current: 1
