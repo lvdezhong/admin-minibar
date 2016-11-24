@@ -7,9 +7,5 @@ export const GET_ORDER_ERROR = 'GET_ORDER_ERROR';
 
 export const getOrder = (params) => ({
     type: GET_ORDER,
-    payload: {
-        promise: api.get('/minibar/trade/seller_order/list', {
-            params: params
-        })
-    }
+    payload: api.get('/minibar/trade/seller_order/list', params)
 })

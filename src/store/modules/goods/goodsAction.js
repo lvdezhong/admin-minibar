@@ -34,29 +34,17 @@ export const GET_NEW_GOODS = 'GET_NEW_GOODS';
 
 export const getGoods = (params) => ({
     type: GET_GOODS,
-    payload: {
-        promise: api.post('/minibar/manager/item/list', {
-            params: params
-        })
-    }
+    payload: api.post('/minibar/manager/item/list', params)
 })
 
 export const deleteGoods = (params) => ({
     type: DELETE_GOODS,
-    payload: {
-        promise: api.post('/minibar/manager/item/delete', {
-            params: params
-        })
-    }
+    payload: api.post('/minibar/manager/item/delete', params)
 })
 
 export const getCurrentGoods = (params) => ({
     type: GET_GOODS_ITEM,
-    payload: {
-        promise: api.get('/minibar/manager/item/get', {
-            params: params
-        })
-    }
+    payload: api.get('/minibar/manager/item/get', params)
 })
 
 export const getNewGoods = () => ({
@@ -65,27 +53,15 @@ export const getNewGoods = () => ({
 
 export const getCategory = (params) => ({
     type: GET_CATEGORY,
-    payload: {
-        promise: api.post('/minibar/manager/item/category/list', {
-            params: params
-        })
-    }
+    payload: api.post('/minibar/manager/item/category/list', params)
 })
 
 export const addGoods = (params) => ({
     type: ADD_GOODS,
-    payload: {
-        promise: api.post('/minibar/manager/item/add', {
-            params: params
-        })
-    }
+    payload: api.post('/minibar/manager/item/add', params)
 })
 
 export const updateGoods = (params) => ({
     type: UPDATE_GOODS,
-    payload: {
-        promise: api.post('/minibar/manager/item/update', {
-            params: params
-        })
-    }
+    payload: api.post('/minibar/manager/item/update', params)
 })
