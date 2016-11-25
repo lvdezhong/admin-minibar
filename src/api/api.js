@@ -1,5 +1,6 @@
 import { toQueryString, md5, sortObject } from '../utils'
 import { browserHistory } from 'react-router'
+import mock from '../mock/index.json'
 
 // 本地
 // const appInfo = {
@@ -109,7 +110,13 @@ class Api {
     constructor(opts) {
         this.opts = opts || {};
 
-        methods.forEach(method => this[method] = (path, params = {}) => new Promise((resolve, reject) => {
+        methods.forEach(method => this[method] = (path, params = {}, isMock = false) => new Promise((resolve, reject) => {
+            if (isMock) {
+                let data = mock[path];
+                handleResponse(data.code, this.opts.baseURI) ? resolve(data) : reject(data);
+                return;
+            }
+
             getSession(this.opts.baseURI, false, () => {
                 const session_token = localStorage.getItem('session_token') || '';
                 const access_token = localStorage.getItem('access_token') || '';
@@ -137,7 +144,7 @@ class Api {
                 .then(status)
                 .then(json)
                 .then(data => {
-                    handleResponse(data.code, this.opts.baseURI) ? resolve(data) : reject(data)
+                    handleResponse(data.code, this.opts.baseURI) ? resolve(data) : reject(data);
                 })
             })
         }))
