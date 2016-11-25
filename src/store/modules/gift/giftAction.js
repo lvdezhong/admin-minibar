@@ -1,10 +1,6 @@
 import api from '../../../api'
 import types from './giftType'
 
-import gift_list from '../../../mock/gift_list.json'
-import gift_item from '../../../mock/gift_item.json'
-import result from '../../../mock/result.json'
-
 export const getGift = (params) => ({
     type: types.GET_GIFT,
     payload: api.post('/minibar/manager/item/gift_group/list', params)

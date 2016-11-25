@@ -1,12 +1,6 @@
 import api from '../../../api'
 import types from './taskType'
 
-import task_list from '../../../mock/task_list.json'
-import result from '../../../mock/result.json'
-import login_url from '../../../mock/login_url.json'
-import authorize_info from '../../../mock/authorize_info.json'
-import task_item from '../../../mock/task_item.json'
-
 export const getTask = (params) => ({
     type: types.GET_TASK,
     payload: api.get('/minibar/task/list', params)
