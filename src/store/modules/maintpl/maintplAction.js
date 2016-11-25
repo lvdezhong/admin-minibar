@@ -52,83 +52,47 @@ export const PUSH_MAINTPL_GOODS_ITEM = 'PUSH_MAINTPL_GOODS_ITEM';
 
 export const getMainTpl = (params) => ({
     type: GET_MAINTPL,
-    payload: {
-        promise: api.post('/minibar/manager/machine_tmpl/list', {
-            params: params
-        })
-    }
+    payload: api.post('/minibar/manager/machine_tmpl/list', params)
 })
 
 export const getAllMainTpl = (params) => ({
     type: GET_ALL_MAINTPL,
-    payload: {
-        promise: api.post('/minibar/manager/machine_tmpl/list', {
-            params: params
-        })
-    }
+    payload: api.post('/minibar/manager/machine_tmpl/list', params)
 })
 
 export const copyMainTpl = (params) => ({
     type: COPY_MAINTPL,
-    payload: {
-        promise: api.get('/minibar/manager/machine_tmpl/copy', {
-            params: params
-        })
-    }
+    payload: api.get('/minibar/manager/machine_tmpl/copy', params)
 })
 
 export const deleteMainTpl = (params) => ({
     type: DELETE_MAINTPL,
-    payload: {
-        promise: api.post('/minibar/manager/machine_tmpl/delete', {
-            params: params
-        })
-    }
+    payload: api.post('/minibar/manager/machine_tmpl/delete', params)
 })
 
 export const setMainTpl = (params) => ({
     type: SET_MAINTPL,
-    payload: {
-        promise: api.get('/minibar/manager/machine_tmpl/default_set', {
-            params: params
-        })
-    }
+    payload: api.get('/minibar/manager/machine_tmpl/default_set', params)
 })
 
 export const getCurrentMainTpl = (params) => ({
     type: GET_MAINTPL_ITEM,
-    payload: {
-        promise: api.get('/minibar/manager/machine_tmpl/get', {
-            params: params
-        })
-    }
+    payload: api.get('/minibar/manager/machine_tmpl/get', params)
 })
 
 export const getCurrentMainTplGoods = (params) => ({
     type: GET_MAINTPL_GOODS,
-    payload: {
-        promise: api.get('/minibar/manager/machine_tmpl/get', {
-            params: params
-        })
-    }
+    payload: api.get('/minibar/manager/machine_tmpl/get', params)
 })
 
 export const addMainTpl = (params) => ({
     type: ADD_MAINTPL,
-    payload: {
-        promise: api.post('/minibar/manager/machine_tmpl/add', {
-            params: params
-        })
-    }
+    payload: api.post('/minibar/manager/machine_tmpl/add', params)
 })
 
 export const updateMainTpl = (params) => ({
     type: UPDATE_MAINTPL,
-    payload: {
-        promise: api.post('/minibar/manager/machine_tmpl/update', {
-            params: params
-        })
-    }
+    payload: api.post('/minibar/manager/machine_tmpl/update', params)
 })
 
 export const getNewMainTpl = () => ({

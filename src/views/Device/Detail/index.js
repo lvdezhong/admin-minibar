@@ -9,8 +9,6 @@ import action from '../../../store/actions'
 
 import Shelves from '../../../components/Shelves'
 
-import { UPDATE_GOODS_ITEM } from '../../../utils'
-
 import './index.less'
 
 const FormItem = Form.Item;
@@ -83,7 +81,7 @@ class DeviceDetail extends React.Component {
             id: id
         }));
 
-        this.pubsub_token = PubSub.subscribe(UPDATE_GOODS_ITEM, function(msg, data) {
+        this.pubsub_token = PubSub.subscribe('updateGoodsItem', function(msg, data) {
             this.props.form.setFieldsValue({
                 tmpl_id: '0',
             });

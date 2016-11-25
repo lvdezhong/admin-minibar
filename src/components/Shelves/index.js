@@ -5,7 +5,6 @@ import { Row, Col } from 'antd'
 import PubSub from 'pubsub-js'
 
 import action from '../../store/actions'
-import { CLICK_GOODS_ITEM } from '../../utils'
 
 import GridBox from '../GridBox'
 import GridForm from '../GridForm'
@@ -57,7 +56,7 @@ class Shelves extends React.Component {
     }
 
     componentDidMount() {
-        this.pubsub_token = PubSub.subscribe(CLICK_GOODS_ITEM, function(msg, data) {
+        this.pubsub_token = PubSub.subscribe('clickGoodsItem', function(msg, data) {
             this.setState({
                 active: data.index
             });

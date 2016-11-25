@@ -25,29 +25,17 @@ export const GET_ALL_DEVICE_ERROR = 'GET_ALL_DEVICE_ERROR';
 
 export const getDevice = (params) => ({
     type: GET_DEVICE,
-    payload: {
-        promise: api.post('/minibar/manager/machine/list', {
-            params: params
-        })
-    }
+    payload: api.post('/minibar/manager/machine/list', params)
 })
 
 export const getAllDevice = (params) => ({
     type: GET_ALL_DEVICE,
-    payload: {
-        promise: api.post('/minibar/manager/machine/list', {
-            params: params
-        })
-    }
+    payload: api.post('/minibar/manager/machine/list', params)
 })
 
 export const getCurrentDevice = (params) => ({
     type: GET_DEVICE_ITEM,
-    payload: {
-        promise: api.get('/minibar/manager/machine/get', {
-            params: params
-        })
-    }
+    payload: api.get('/minibar/manager/machine/get', params)
 })
 
 export const pushDeviceDefaultItem = (defaultItem, length) => ({
@@ -68,9 +56,5 @@ export const pushDeviceGoodsItem = (index, item) => ({
 
 export const updateDevice = (params) => ({
     type: UPDATE_DEVICE,
-    payload: {
-        promise: api.post('/minibar/manager/machine/update', {
-            params: params
-        })
-    }
+    payload: api.post('/minibar/manager/machine/update', params)
 })

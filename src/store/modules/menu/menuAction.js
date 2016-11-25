@@ -3,18 +3,14 @@ import api from '../../../api'
 export const GET_ALL_MENU = 'GET_ALL_MENU';
 export const UPDATE_NAVPATH = 'UPDATE_NAVPATH';
 
-export function updateNavPath(path, key) {
-    return {
-        type: UPDATE_NAVPATH,
-        payload: {
-            data: path,
-            key: key
-        }
+export const updateNavPath = (path, key) => ({
+    type: UPDATE_NAVPATH,
+    payload: {
+        path,
+        key
     }
-}
+})
 
-export function getAllMenu() {
-    return {
-        type: GET_ALL_MENU
-    }
-}
+export const getAllMenu = () => ({
+    type: GET_ALL_MENU
+})

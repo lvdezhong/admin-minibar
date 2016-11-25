@@ -9,6 +9,7 @@ import order from './modules/order/orderReducer'
 import gift from './modules/gift/giftReducer'
 import task from './modules/task/taskReducer'
 import chart from './modules/chart/chartReducer'
+import log from './modules/log/logReducer'
 
 export default combineReducers({
     user,
@@ -19,5 +20,6 @@ export default combineReducers({
     order,
     gift,
     task,
-    chart
+    chart,
+    log
 });

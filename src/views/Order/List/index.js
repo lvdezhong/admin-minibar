@@ -141,11 +141,11 @@ class OrderList extends React.Component {
 
         let options = device.map((item) => {
             return (
-                <Option key={item.id} value={item.id.toString()}>{`${item.hotel.name}-${item.room_number}`}</Option>
+                <Option key={item.id}>{`${item.hotel.name}-${item.room_number}`}</Option>
             )
         });
 
-        options.unshift(<Option key="0" value="">全部</Option>);
+        options.unshift(<Option key={0} value="">全部</Option>);
 
         return (
             <div>

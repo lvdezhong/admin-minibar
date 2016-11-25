@@ -8,7 +8,7 @@ import PubSub from 'pubsub-js'
 import action from '../../store/actions'
 import GoodsItem from '../GoodsItem'
 
-import { CLICK_GOODS_ITEM, UPDATE_GOODS_ITEM, price } from '../../utils'
+import { price } from '../../utils'
 
 import SearchInput from '../SearchInput'
 
@@ -180,7 +180,7 @@ class GridForm extends React.Component {
 
             var pushData = Object.assign({}, currentGoods, formData);
 
-            PubSub.publish(UPDATE_GOODS_ITEM, currentIndex);
+            PubSub.publish('updateGoodsItem', currentIndex);
             switch (keyword) {
                 case 'device':
                     this.props.action.pushDeviceGoodsItem(currentIndex, pushData);
@@ -310,7 +310,7 @@ class GridForm extends React.Component {
     }
 
     componentDidMount() {
-        this.pubsub_token = PubSub.subscribe(CLICK_GOODS_ITEM, (msg, data) => {
+        this.pubsub_token = PubSub.subscribe('clickGoodsItem', (msg, data) => {
             this.setState({
                 currentIndex: data.index,
                 selectedGoods: null,
@@ -339,7 +339,7 @@ class GridForm extends React.Component {
             this.type = currentGoods.content_type;
         });
 
-        PubSub.publish(CLICK_GOODS_ITEM, {
+        PubSub.publish('clickGoodsItem', {
             index: this.state.currentIndex
         });
     }
@@ -348,7 +348,7 @@ class GridForm extends React.Component {
         if (this.props.dataSource != nextProps.dataSource) {
             this.goodsCache = _.clone(nextProps.dataSource, true);
 
-            PubSub.publish(CLICK_GOODS_ITEM, {
+            PubSub.publish('clickGoodsItem', {
                 index: this.state.currentIndex
             });
         }
