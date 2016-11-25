@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PubSub from 'pubsub-js'
 import { Icon } from 'antd'
-import { CLICK_GOODS_ITEM, price } from '../../utils'
+import { price } from '../../utils'
 
 import './index.less'
 
@@ -16,7 +16,7 @@ class GridBox extends React.Component {
     }
 
     handleClick(type) {
-        PubSub.publish(CLICK_GOODS_ITEM, {
+        PubSub.publish('clickGoodsItem', {
             index: this.props.currentIndex
         });
     }

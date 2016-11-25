@@ -42,6 +42,15 @@ const data = [{
         "key": 401,
         "link": "/task/list"
     }]
+}, {
+    "key": 5,
+    "name": "操作日志",
+    "icon": "pushpin-o",
+    "child": [{
+        "name": "操作日志",
+        "key": 501,
+        "link": "/log/list"
+    }]
 }]
 
 export default data;

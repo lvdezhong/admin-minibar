@@ -11,14 +11,10 @@ export const GET_HOTEL_ERROR = 'GET_HOTEL_ERROR';
 
 export const getChart = (params) => ({
     type: GET_CHART,
-    payload: api.get('/minibar/task/data/list', {
-        params: params
-    })
+    payload: api.get('/minibar/task/data/list', params)
 });
 
 export const getHotel = (params) => ({
     type: GET_HOTEL,
-    payload: api.post('/minibar/machine/hotel/list', {
-        params: params
-    })
+    payload: api.post('/minibar/machine/hotel/list', params)
 })

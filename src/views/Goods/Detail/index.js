@@ -234,7 +234,7 @@ class GoodsDetail extends React.Component {
             });
         }
 
-        options.unshift(<Option key="0" value="">请选择类目</Option>);
+        options.unshift(<Option key={0} value="">请选择类目</Option>);
 
         const props_horizontal = {
             action: 'http://media.mockuai.com/upload.php',

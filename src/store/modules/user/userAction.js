@@ -17,7 +17,7 @@ export const LOGOUT_PENDING = 'LOGOUT_PENDING';
 export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 export const LOGOUT_ERROR = 'LOGOUT_ERROR';
 
-export function fetchProfile(params) {
+export const fetchProfile = () => {
     let uid = localStorage.getItem('uid');
     let mobile = localStorage.getItem('mobile');
 
@@ -30,24 +30,18 @@ export function fetchProfile(params) {
     return {
         type: FETCH_PROFILE,
         payload: {
-            id: uid,
-            mobile: mobile
+            uid,
+            mobile
         }
     }
 }
 
 export const login = (params) => ({
     type: LOGIN,
-    payload: {
-        promise: api.post('/minibar/user/login', {
-            params: params
-        })
-    }
+    payload: api.post('/minibar/user/login', params)
 })
 
 export const logout = (params) => ({
     type: LOGOUT,
-    payload: {
-        promise: api.post('/minibar/user/logout')
-    }
+    payload: api.post('/minibar/user/logout')
 })
