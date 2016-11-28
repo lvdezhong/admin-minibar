@@ -9,10 +9,10 @@ import mock from '../mock/index.json'
 // }
 
 // 测试环境
-const appInfo = {
-    app_key: '3fc22da4e4b7bb17d04d1bcb5510ed8c',
-    app_pwd: 'd8f2622865f31f0b6788e14a9d05acaa'
-}
+// const appInfo = {
+//     app_key: '3fc22da4e4b7bb17d04d1bcb5510ed8c',
+//     app_pwd: 'd8f2622865f31f0b6788e14a9d05acaa'
+// }
 
 // 亚通线上
 // const appInfo = {
@@ -21,10 +21,10 @@ const appInfo = {
 // }
 
 // 魔筷线上
-// const appInfo = {
-//     app_key: '1435a07bcf93045ee631619978ef18ec',
-//     app_pwd: '2a94f6b9b969b3e01e32acb18d0c605a'
-// }
+const appInfo = {
+    app_key: '1435a07bcf93045ee631619978ef18ec',
+    app_pwd: '2a94f6b9b969b3e01e32acb18d0c605a'
+}
 
 function makeSign(params) {
     const app_pwd = appInfo.app_pwd;
