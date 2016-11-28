@@ -3,12 +3,12 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { Form, Row, Col, Input, Select, Button, Radio, Table, Tag, Pagination, DatePicker, message } from 'antd'
-var LineChart = require('../../components/lineChart');
+var LineChart = require('../../../components/lineChart');
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-import action from '../../store/actions'
+import action from '../../../store/actions'
 
-import { price } from '../../utils'
+import { price } from '../../../utils'
 
 import './index.less'
 

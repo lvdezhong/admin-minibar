@@ -44,11 +44,24 @@ const data = [{
     }]
 }, {
     "key": 5,
+    "name": "统计",
+    "icon": "line-chart",
+    "child": [{
+        "name": "交易",
+        "key": 501,
+        "link": "/chart/trade"
+    }, {
+        "name": "商品",
+        "key": 502,
+        "link": "/chart/trade"
+    }]
+}, {
+    "key": 6,
     "name": "操作日志",
     "icon": "pushpin-o",
     "child": [{
         "name": "操作日志",
-        "key": 501,
+        "key": 601,
         "link": "/log/list"
     }]
 }]
