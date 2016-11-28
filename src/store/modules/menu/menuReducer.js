@@ -20,8 +20,8 @@ export default function menu(state = initialState, action = {}) {
         case UPDATE_NAVPATH:
             let navpath = [],
                 tmpOb, tmpKey, child;
-            if (action.payload.data) {
-                action.payload.data.reverse().map((item) => {
+            if (action.payload.path) {
+                action.payload.path.reverse().map((item) => {
                     if (item.indexOf('sub') != -1) {
                         tmpKey = item.replace('sub', '');
                         tmpOb = _.find(state.items, function(o) {
