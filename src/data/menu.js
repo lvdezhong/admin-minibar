@@ -53,7 +53,7 @@ const data = [{
     }, {
         "name": "商品",
         "key": 502,
-        "link": "/chart/trade"
+        "link": "/chart/goods"
     }]
 }, {
     "key": 6,

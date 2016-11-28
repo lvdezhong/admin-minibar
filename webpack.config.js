@@ -73,7 +73,8 @@ var config = {
             'classnames',
             'jquery',
             'wangeditor',
-            'd3'
+            'd3',
+            'recharts'
         ]
     },
     output: {

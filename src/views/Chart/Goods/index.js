@@ -2,7 +2,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Form, Button, Card, Row, Col, DatePicker, message, Radio } from 'antd'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 
 import action from '../../../store/actions'
 
@@ -16,7 +16,7 @@ const RadioGroup = Radio.Group;
     dispatch => ({action: bindActionCreators(action, dispatch)})
 )
 
-class tradeChart extends React.Component {
+class goodsChart extends React.Component {
     constructor() {
         super()
     }
@@ -36,31 +36,29 @@ class tradeChart extends React.Component {
             wrapperCol: { span: 17 }
         }
         const data1 = [
-            {time: '2016-12-23', home: 4000, detail: 2400, pay: 2400},
-            {time: '2016-12-24', home: 3000, detail: 1398, pay: 2210},
-            {time: '2016-12-25', home: 2000, detail: 9800, pay: 2290},
-            {time: '2016-12-26', home: 2780, detail: 3908, pay: 2000},
-            {time: '2016-12-27', home: 1890, detail: 4800, pay: 2181},
-            {time: '2016-12-28', home: 2390, detail: 3800, pay: 2500},
-            {time: '2016-12-29', home: 3490, detail: 4300, pay: 2100},
+            {goods: '香蕉', look: 4000},
+            {goods: '苹果', look: 3000},
+            {goods: '梨子', look: 2000},
+            {goods: '西瓜', look: 2780},
+            {goods: '橘子', look: 1890},
         ]
         const data2 = [
-            {time: '2016-12-23', price: 4000},
-            {time: '2016-12-24', price: 3000},
-            {time: '2016-12-25', price: 2000},
-            {time: '2016-12-26', price: 2780},
-            {time: '2016-12-27', price: 1890},
-            {time: '2016-12-28', price: 2390},
-            {time: '2016-12-29', price: 3490},
+            {goods: '香蕉', pay: 4000},
+            {goods: '苹果', pay: 3000},
+            {goods: '梨子', pay: 2000},
+            {goods: '西瓜', pay: 2780},
+            {goods: '橘子', pay: 1890},
+        ]
+        const data3 = [
+            {goods: '香蕉', price: 4000},
+            {goods: '苹果', price: 3000},
+            {goods: '梨子', price: 2000},
+            {goods: '西瓜', price: 2780},
+            {goods: '橘子', price: 1890},
         ]
 
         return (
             <div>
-                <div className="ui-box">
-                    <Card title="概况">
-                        哈哈说
-                    </Card>
-                </div>
                 <div className="ui-box">
                     <Form className="ant-advanced-search-form" onSubmit={this.handleSubmit.bind(this)}>
                         <Row gutter={40}>
@@ -78,52 +76,66 @@ class tradeChart extends React.Component {
                     </Form>
                 </div>
                 <div className="ui-box">
-                    <Card title="统计">
-                        哈哈说
-                    </Card>
-                </div>
-                <div className="ui-box">
-                    <Card title="趋势">
+                    <Card title="分布">
                         <div className="ui-box">
                             <div style={{textAlign: 'right', marginBottom: '20px'}}>
                                 <RadioGroup defaultValue="1" onChange={this.handleChange.bind(this)}>
-                                    <RadioButton value="1">浏览人数</RadioButton>
-                                    <RadioButton value="2">转化率</RadioButton>
+                                    <RadioButton value="1">TOP10</RadioButton>
+                                    <RadioButton value="2">TOP30</RadioButton>
                                 </RadioGroup>
                             </div>
-                            <LineChart
+                            <BarChart
                                 width={1000}
                                 height={350}
                                 data={data1}
                             >
-                                <XAxis dataKey="time" />
+                                <XAxis dataKey="goods" />
                                 <YAxis />
                                 <CartesianGrid strokeDasharray="3" />
                                 <Tooltip />
                                 <Legend />
-                                <Line type="monotone" dataKey="home" name="首页" stroke="#8884d8" />
-                                <Line type="monotone" dataKey="detail" name="详情页" stroke="#82ca9d" />
-                                <Line type="monotone" dataKey="pay" name="付款人数" stroke="#ff7300" />
-                            </LineChart>
+                                <Bar dataKey="look" name="浏览次数" fill="#8884d8" />
+                            </BarChart>
                         </div>
                         <div className="ui-box">
                             <div style={{textAlign: 'right', marginBottom: '20px'}}>
-                                <RadioGroup defaultValue="1">
-                                    <RadioButton value="1">客单价</RadioButton>
+                                <RadioGroup defaultValue="1" onChange={this.handleChange.bind(this)}>
+                                    <RadioButton value="1">TOP10</RadioButton>
+                                    <RadioButton value="2">TOP30</RadioButton>
                                 </RadioGroup>
                             </div>
-                            <LineChart
+                            <BarChart
                                 width={1000}
                                 height={350}
                                 data={data2}
                             >
-                                <XAxis dataKey="time" />
+                                <XAxis dataKey="goods" />
                                 <YAxis />
                                 <CartesianGrid strokeDasharray="3" />
                                 <Tooltip />
                                 <Legend />
-                                <Line type="monotone" dataKey="price" name="客单价" stroke="#8884d8" />
-                            </LineChart>
+                                <Bar dataKey="pay" name="支付次数" fill="#8884d8" />
+                            </BarChart>
+                        </div>
+                        <div className="ui-box">
+                            <div style={{textAlign: 'right', marginBottom: '20px'}}>
+                                <RadioGroup defaultValue="1" onChange={this.handleChange.bind(this)}>
+                                    <RadioButton value="1">TOP10</RadioButton>
+                                    <RadioButton value="2">TOP30</RadioButton>
+                                </RadioGroup>
+                            </div>
+                            <BarChart
+                                width={1000}
+                                height={350}
+                                data={data3}
+                            >
+                                <XAxis dataKey="goods" />
+                                <YAxis />
+                                <CartesianGrid strokeDasharray="3" />
+                                <Tooltip />
+                                <Legend />
+                                <Bar dataKey="price" name="成交额" fill="#8884d8" />
+                            </BarChart>
                         </div>
                     </Card>
                 </div>
@@ -132,6 +144,6 @@ class tradeChart extends React.Component {
     }
 }
 
-tradeChart = Form.create()(tradeChart);
+goodsChart = Form.create()(goodsChart);
 
-export default tradeChart;
+export default goodsChart;

@@ -28,6 +28,7 @@ import TaskDetail from './views/Task/Detail'
 
 import activityChart from './views/Chart/Activity'
 import tradeChart from './views/Chart/Trade'
+import goodsChart from './views/Chart/Goods'
 
 import LogList from './views/Log/List'
 
@@ -75,6 +76,7 @@ ReactDOM.render(
                     <Redirect from="chart" to="chart/trade" />
                     <Route path="chart/activity/:id" component={activityChart}/>
                     <Route path="chart/trade" component={tradeChart}/>
+                    <Route path="chart/goods" component={goodsChart}/>
 
                     <Route path="log/list" component={LogList}/>
                 </Route>
