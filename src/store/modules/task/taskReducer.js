@@ -5,7 +5,7 @@ import { combineReducers } from 'redux'
 const itemList = (state = [], action) => {
     switch (action.type) {
         case types.UPDATE_TASK_ITEM_LIST:
-            return action.data
+            return action.payload.data
         case types.GET_AUTHORIZE_INFO_SUCCESS:
         case types.GET_SHARE_INFO:
             return [];
@@ -43,7 +43,7 @@ const currentTask = (state = {}, action) => {
 const type = (state = '2', action) => {
     switch (action.type) {
         case types.SET_TASK_TYPE:
-            return action.data;
+            return action.payload.data;
         case types.GET_TASK_ITEM_SUCCESS:
             return action.payload.data.type;
         default:
@@ -77,7 +77,7 @@ const authorizeInfo = (state = null, action) => {
 const shareInfo = (state = null, action) => {
     switch (action.type) {
         case types.GET_SHARE_INFO:
-            return action.data;
+            return action.payload.data;
         case types.GET_TASK_ITEM_SUCCESS:
             return {
                 count: action.payload.data.count,

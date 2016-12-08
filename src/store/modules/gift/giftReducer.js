@@ -5,7 +5,7 @@ import { combineReducers } from 'redux'
 const giftList = (state = [], action) => {
     switch (action.type) {
         case types.UPDATE_GIFT_LIST:
-            return action.data
+            return action.payload.data
         default:
             return state;
     }
@@ -26,7 +26,7 @@ const currentGift = (state = {}, action) => {
             return action.payload.data.gift_group;
         case types.UPDATE_GIFT_LIST:
             return Object.assign({}, state, {
-                [action.key]: giftList(state[action.key], action)
+                [action.payload.key]: giftList(state[action.payload.key], action)
             });
         case types.GET_NEW_GIFT:
             return {}

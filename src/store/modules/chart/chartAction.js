@@ -1,20 +1,42 @@
 import api from '../../../api'
-
-export const GET_CHART = 'GET_CHART';
-export const GET_CHART_PENDING = 'GET_CHART_PENDING';
-export const GET_CHART_SUCCESS = 'GET_CHART_SUCCESS';
-export const GET_CHART_ERROR = 'GET_CHART_ERROR';
-export const GET_HOTEL = 'GET_HOTEL';
-export const GET_HOTEL_PENDING = 'GET_HOTEL_PENDING';
-export const GET_HOTEL_SUCCESS = 'GET_HOTEL_SUCCESS';
-export const GET_HOTEL_ERROR = 'GET_HOTEL_ERROR';
+import types from './chartType'
 
 export const getChart = (params) => ({
-    type: GET_CHART,
+    type: types.GET_CHART,
     payload: api.get('/minibar/task/data/list', params)
 });
 
 export const getHotel = (params) => ({
-    type: GET_HOTEL,
+    type: types.GET_HOTEL,
     payload: api.post('/minibar/machine/hotel/list', params)
-})
+});
+
+export const getGlobalData = (params) => ({
+    type: types.GET_GLOBAL_DATA,
+    payload: api.get('/minibar/data/tmpl/get', params)
+});
+
+export const getStatisData = (params) => ({
+    type: types.GET_STATIS_DATA,
+    payload: api.get('/minibar/data/tmpl/get', params)
+});
+
+export const getTrendData = (params) => ({
+    type: types.GET_TREND_DATA,
+    payload: api.get('/minibar/data/tmpl/get', params)
+});
+
+export const getGoodsViewData = (params) => ({
+    type: types.GET_GOODS_VIEW_DATA,
+    payload: api.get('/minibar/data/tmpl/get', params)
+});
+
+export const getGoodsPayData = (params) => ({
+    type: types.GET_GOODS_PAY_DATA,
+    payload: api.get('/minibar/data/tmpl/get', params)
+});
+
+export const getGoodsAmountData = (params) => ({
+    type: types.GET_GOODS_AMOUNT_DATA,
+    payload: api.get('/minibar/data/tmpl/get', params)
+});

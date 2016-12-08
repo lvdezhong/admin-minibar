@@ -4,8 +4,8 @@ import mock from '../mock/index.json'
 
 // 本地
 // const appInfo = {
-//     app_key: '5b036edd2fe8730db1983368a122fb45',
-//     app_pwd: '84ef0ca439e44fa93c4375ff94b420c7'
+//     app_key: '6f766c9fca88f9eec851dcd8959286fb',
+//     app_pwd: '4e3a0efde66e3367c42a977b2a89664c'
 // }
 
 // 测试环境
