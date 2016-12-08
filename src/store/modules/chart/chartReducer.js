@@ -15,18 +15,18 @@ const initialState = {
     errors: null
 }
 
-const chart = (state = initialState.chart, action) => {
+const hotel = (state = initialState.hotel, action) => {
     switch (action.type) {
-        case types.GET_CHART_SUCCESS:
-            return action.payload.data;
+        case types.GET_HOTEL_SUCCESS:
+            return action.payload.data.hotel_list;
         default:
             return state;
     }
 }
 
-const hotel = (state = initialState.hotel, action) => {
+const chart = (state = initialState.chart, action) => {
     switch (action.type) {
-        case types.GET_HOTEL_SUCCESS:
+        case types.GET_CHART_SUCCESS:
             return action.payload.data;
         default:
             return state;

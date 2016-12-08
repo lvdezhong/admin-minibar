@@ -1,15 +1,15 @@
 import keyMirror from 'mirrorkey'
 
 export default keyMirror({
-    GET_CHART: null,
-    GET_CHART_PENDING: null,
-    GET_CHART_SUCCESS: null,
-    GET_CHART_ERROR: null,
-
     GET_HOTEL: null,
     GET_HOTEL_PENDING: null,
     GET_HOTEL_SUCCESS: null,
     GET_HOTEL_ERROR: null,
+
+    GET_ACTIVITY_DATA: null,
+    GET_ACTIVITY_DATA_PENDING: null,
+    GET_ACTIVITY_DATA_SUCCESS: null,
+    GET_ACTIVITY_DATA_ERROR: null,
 
     GET_GLOBAL_DATA: null,
     GET_GLOBAL_DATA_PENDING: null,

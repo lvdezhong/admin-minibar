@@ -2,7 +2,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Form, Button, Select, Card, Row, Col, DatePicker, message, Radio } from 'antd'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 import moment from 'moment';
 
 import action from '../../../store/actions'
@@ -26,11 +26,34 @@ class activityChart extends React.Component {
     }
 
     componentDidMount() {
+        this.id = this.props.params.id;
 
+        this.props.action.getHotel({
+            offset: 0,
+            count: 1000
+        }).then((data) => {
+            const formData = this.getFormData();
+
+            this.props.action.getActivityData({
+                start_time: formData.start_time,
+                end_time: formData.end_time,
+                hotel_id_list: JSON.stringify(formData.hotel),
+                task_id: this.id
+            })
+        })
     }
 
-    handleSubmit() {
+    handleSubmit(e) {
+        e.preventDefault();
 
+        const formData = this.getFormData();
+
+        this.props.action.getActivityData({
+            start_time: formData.start_time,
+            end_time: formData.end_time,
+            hotel_id_list: JSON.stringify(formData.hotel),
+            task_id: this.id
+        });
     }
 
     handleClick(AddDayCount) {
@@ -39,13 +62,34 @@ class activityChart extends React.Component {
         });
     }
 
+    getFormData() {
+        let formData = this.props.form.getFieldsValue();
+        formData.start_time = formData.end_time = '';
+
+        if (formData.time != '') {
+            formData.start_time = formData.time[0].format('YYYY-MM-DD');
+            formData.end_time = formData.time[1].format('YYYY-MM-DD');
+        }
+        delete formData.time;
+
+        return formData
+    }
+
     render() {
+        const { hotel } = this.props.state.chart;
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 5 },
             wrapperCol: { span: 19 }
         };
         const defaultTime = [moment(getDayCount(-7)), moment(new Date())];
+        const options = [];
+        const defaultValue = [];
+
+        _.each(hotel, (item) => {
+            options.push(<Option key={item.id}>{item.name}</Option>);
+            defaultValue.push(item.id.toString());
+        });
 
         return (
             <div>
@@ -67,11 +111,9 @@ class activityChart extends React.Component {
                             </Col>
                             <Col span={12}>
                                 <FormItem label="酒店名称" {...formItemLayout}>
-                                    {getFieldDecorator('hotel', { initialValue: '' })(
-                                        <Select size="default">
-                                            <Option value="">全部</Option>
-                                            <Option value="1">成功</Option>
-                                            <Option value="0">失败</Option>
+                                    {getFieldDecorator('hotel', { initialValue: defaultValue })(
+                                        <Select multiple>
+                                            {options}
                                         </Select>
                                     )}
                                 </FormItem>
@@ -82,7 +124,7 @@ class activityChart extends React.Component {
                         </Row>
                     </Form>
                 </div>
-
+                
             </div>
         )
     }
