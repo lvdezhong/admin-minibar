@@ -124,7 +124,7 @@ class activityChart extends React.Component {
                         </Row>
                     </Form>
                 </div>
-                
+
             </div>
         )
     }
