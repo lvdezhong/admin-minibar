@@ -12,7 +12,6 @@
   "dependencies": {
     "antd": "^2.5.0",
     "classnames": "^2.2.5",
-    "d3": "^3.5.0",
     "lodash": "^4.16.4",
     "mirrorkey": "^1.2.0",
     "pubsub-js": "^1.5.3",

@@ -1,9 +1,11 @@
 import types from './chartType'
 import { combineReducers } from 'redux'
-import { price } from '../../../utils'
+import { price, gradientColor } from '../../../utils'
 
 const initialState = {
-    chart: {},
+    activityPart: {},
+    activityLive: {},
+    activityRatio: {},
     hotel: [],
     global: [],
     statis: [],
@@ -24,10 +26,109 @@ const hotel = (state = initialState.hotel, action) => {
     }
 }
 
-const chart = (state = initialState.chart, action) => {
+const activityPart = (state = initialState.activityPart, action) => {
     switch (action.type) {
-        case types.GET_CHART_SUCCESS:
-            return action.payload.data;
+        case types.GET_ACTIVITY_PART_DATA_SUCCESS:
+            let data = [];
+            let hotel = [];
+            let result = action.payload.data;
+            let gradient = new gradientColor('#e82400', '#8ae800', result.num_rows / 2); 
+
+            _.each(result.series, (item, index) => {
+                data.push({
+                    time: item
+                });
+
+                _.each(result.rows, (obj, i) => {
+                    if (i < result.num_rows / 2) {
+                        data[index]['hotel_' + i + '_people'] = obj.values[index];
+                    } else {
+                        data[index]['hotel_' + (i - (result.num_rows / 2)) + '_num'] = obj.values[index];
+                    }
+                });
+            });
+
+            _.each(result.rows, (item, index) => {
+                if (index < result.num_rows / 2) {
+                    hotel.push({
+                        name: item.by_values[0],
+                        color: gradient[index]
+                    });
+                }
+            });
+
+            return {
+                data,
+                hotel
+            }
+        default:
+            return state;
+    }
+}
+
+const activityLive = (state = initialState.activityLive, action) => {
+    switch (action.type) {
+        case types.GET_ACTIVITY_LIVE_DATA_SUCCESS:
+            let data = [];
+            let hotel = [];
+            let result = action.payload.data;
+            let gradient = new gradientColor('#e82400', '#8ae800', result.num_rows);
+
+            _.each(result.series, (item, index) => {
+                data.push({
+                    time: item
+                });
+
+                _.each(result.rows, (obj, i) => {
+                    data[index]['hotel_' + i + '_num'] = obj.values[index];
+                });
+            });
+
+            _.each(result.rows, (item, index) => {
+                hotel.push({
+                    name: item.by_values[0],
+                    color: gradient[index]
+                });
+            });
+
+            return {
+                data,
+                hotel
+            }
+        default:
+            return state;
+    }
+}
+
+const activityRatio = (state = initialState.activityRatio, action) => {
+    switch (action.type) {
+        case types.GET_ACTIVITY_RATIO_DATA_SUCCESS:
+            let data = [];
+            let hotel = [];
+            let result = action.payload.data;
+            let gradient = new gradientColor('#e82400', '#8ae800', result.num_rows);
+
+            _.each(result.series, (item, index) => {
+                data.push({
+                    time: item
+                });
+
+                _.each(result.rows, (obj, i) => {
+                    data[index]['hotel_' + i + '_num'] = obj.values[index];
+                });
+            });
+
+            _.each(result.rows, (item, index) => {
+                hotel.push({
+                    name: item.by_values[0],
+                    color: gradient[index]
+                });
+            });
+
+            return {
+                data,
+                hotel
+            }
         default:
             return state;
     }
@@ -150,6 +251,9 @@ const isPending = (state = initialState.isPending, action) => {
         case types.GET_GOODS_VIEW_DATA_PENDING:
         case types.GET_GOODS_PAY_DATA_PENDING:
         case types.GET_GOODS_AMOUNT_DATA_PENDING:
+        case types.GET_ACTIVITY_PART_DATA_PENDING:
+        case types.GET_ACTIVITY_LIVE_DATA_PENDING:
+        case types.GET_ACTIVITY_RATIO_DATA_PENDING:
             return true;
         default:
             return false;
@@ -166,6 +270,9 @@ const errors = (state = initialState.errors, action = {}) => {
         case types.GET_GOODS_VIEW_DATA_ERROR:
         case types.GET_GOODS_PAY_DATA_ERROR:
         case types.GET_GOODS_AMOUNT_DATA_ERROR:
+        case types.GET_ACTIVITY_PART_DATA_ERROR:
+        case types.GET_ACTIVITY_LIVE_DATA_ERROR:
+        case types.GET_ACTIVITY_RATIO_DATA_ERROR:
             return action.payload.msg;
         default:
             return null;
@@ -173,7 +280,9 @@ const errors = (state = initialState.errors, action = {}) => {
 }
 
 const chartReducer = combineReducers({
-    chart,
+    activityPart,
+    activityLive,
+    activityRatio,
     hotel,
     global,
     statis,
