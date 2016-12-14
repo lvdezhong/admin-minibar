@@ -46,37 +46,37 @@ class goodsChart extends React.Component {
     }
 
     componentDidMount() {
-        const formData = this.getFormData();
-
-        this.props.action.getGoodsViewData({
-            code: 'distribute',
-            from_date: formData.start_time,
-            to_date: formData.end_time,
-            type: 0
-        }).then(() => {
-            this.setState({
-                viewType: 1
-            })
-        });
-        this.props.action.getGoodsPayData({
-            code: 'distribute',
-            from_date: formData.start_time,
-            to_date: formData.end_time,
-            type: 1
-        }).then(() => {
-            this.setState({
-                payType: 1
-            })
-        });
-        this.props.action.getGoodsAmountData({
-            code: 'distribute',
-            from_date: formData.start_time,
-            to_date: formData.end_time,
-            type: 2
-        }).then(() => {
-            this.setState({
-                amountType: 1
-            })
+        this.getFormData(data => {
+            this.props.action.getGoodsViewData({
+                code: 'distribute',
+                from_date: data.start_time,
+                to_date: data.end_time,
+                type: 0
+            }).then(() => {
+                this.setState({
+                    viewType: 1
+                })
+            });
+            this.props.action.getGoodsPayData({
+                code: 'distribute',
+                from_date: data.start_time,
+                to_date: data.end_time,
+                type: 1
+            }).then(() => {
+                this.setState({
+                    payType: 1
+                })
+            });
+            this.props.action.getGoodsAmountData({
+                code: 'distribute',
+                from_date: data.start_time,
+                to_date: data.end_time,
+                type: 2
+            }).then(() => {
+                this.setState({
+                    amountType: 1
+                })
+            });
         });
     }
 
@@ -117,56 +117,62 @@ class goodsChart extends React.Component {
         }
     }
 
-    getFormData() {
-        let formData = this.props.form.getFieldsValue();
-        formData.start_time = formData.end_time = '';
+    getFormData(cb) {
+        this.props.form.validateFields((errors, values) => {
+            if (errors) {
+                message.error('请正确填写筛选条件');
+                return;
+            }
 
-        if (formData.time != '') {
-            formData.start_time = formData.time[0].format('YYYY-MM-DD');
-            formData.end_time = formData.time[1].format('YYYY-MM-DD');
-        }
-        delete formData.time;
+            values.start_time = values.end_time = '';
 
-        return formData
+            if (values.time != '') {
+                values.start_time = values.time[0].format('YYYY-MM-DD');
+                values.end_time = values.time[1].format('YYYY-MM-DD');
+            }
+            delete values.time;
+
+            cb && cb(values)
+        });
     }
 
     handleSubmit(e) {
         e.preventDefault();
 
-        const formData = this.getFormData();
-
-        this.props.action.getGoodsViewData({
-            code: 'distribute',
-            from_date: formData.start_time,
-            to_date: formData.end_time,
-            type: 0
-        }).then(() => {
-            this.isSubmit = true;
-            this.setState({
-                viewType: 1
-            })
-        });
-        this.props.action.getGoodsPayData({
-            code: 'distribute',
-            from_date: formData.start_time,
-            to_date: formData.end_time,
-            type: 1
-        }).then(() => {
-            this.isSubmit = true;
-            this.setState({
-                payType: 1
-            })
-        });
-        this.props.action.getGoodsAmountData({
-            code: 'distribute',
-            from_date: formData.start_time,
-            to_date: formData.end_time,
-            type: 2
-        }).then(() => {
-            this.isSubmit = true;
-            this.setState({
-                amountType: 1
-            })
+        this.getFormData(data => {
+            this.props.action.getGoodsViewData({
+                code: 'distribute',
+                from_date: data.start_time,
+                to_date: data.end_time,
+                type: 0
+            }).then(() => {
+                this.isSubmit = true;
+                this.setState({
+                    viewType: 1
+                })
+            });
+            this.props.action.getGoodsPayData({
+                code: 'distribute',
+                from_date: data.start_time,
+                to_date: data.end_time,
+                type: 1
+            }).then(() => {
+                this.isSubmit = true;
+                this.setState({
+                    payType: 1
+                })
+            });
+            this.props.action.getGoodsAmountData({
+                code: 'distribute',
+                from_date: data.start_time,
+                to_date: data.end_time,
+                type: 2
+            }).then(() => {
+                this.isSubmit = true;
+                this.setState({
+                    amountType: 1
+                })
+            });
         });
     }
 
@@ -260,7 +266,12 @@ class goodsChart extends React.Component {
                         <Row gutter={40}>
                             <Col span={16}>
                                 <FormItem label="操作时间" {...formItemLayout} style={{ marginBottom: '0' }}>
-                                    {getFieldDecorator('time', { initialValue: defaultTime })(
+                                    {getFieldDecorator('time', {
+                                        initialValue: defaultTime,
+                                        rules: [
+                                            { required: true, type: 'array', message: '操作时间不能为空' }
+                                        ]
+                                    })(
                                         <RangePicker style={{ width: 200 }} />
                                     )}
                                     <span className="ant-form-text" style={{paddingLeft: '8px'}}>

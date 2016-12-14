@@ -30,20 +30,21 @@ class tradeChart extends React.Component {
     }
 
     componentDidMount() {
-        const formData = this.getFormData();
-
         this.props.action.getGlobalData({
             code: 'general'
         });
-        this.props.action.getStatisData({
-            code: 'statistics',
-            from_date: formData.start_time,
-            to_date: formData.end_time
-        });
-        this.props.action.getTrendData({
-            code: 'tendency',
-            from_date: formData.start_time,
-            to_date: formData.end_time
+
+        this.getFormData(data => {
+            this.props.action.getStatisData({
+                code: 'statistics',
+                from_date: data.start_time,
+                to_date: data.end_time
+            });
+            this.props.action.getTrendData({
+                code: 'tendency',
+                from_date: data.start_time,
+                to_date: data.end_time
+            });
         });
     }
 
@@ -54,33 +55,39 @@ class tradeChart extends React.Component {
         }
     }
 
-    getFormData() {
-        let formData = this.props.form.getFieldsValue();
-        formData.start_time = formData.end_time = '';
+    getFormData(cb) {
+        this.props.form.validateFields((errors, values) => {
+            if (errors) {
+                message.error('请正确填写筛选条件');
+                return;
+            }
 
-        if (formData.time != '') {
-            formData.start_time = formData.time[0].format('YYYY-MM-DD');
-            formData.end_time = formData.time[1].format('YYYY-MM-DD');
-        }
-        delete formData.time;
+            values.start_time = values.end_time = '';
 
-        return formData
+            if (values.time != '') {
+                values.start_time = values.time[0].format('YYYY-MM-DD');
+                values.end_time = values.time[1].format('YYYY-MM-DD');
+            }
+            delete values.time;
+
+            cb && cb(values)
+        });
     }
 
     handleSubmit(e) {
         e.preventDefault();
 
-        const formData = this.getFormData();
-
-        this.props.action.getStatisData({
-            code: 'statistics',
-            from_date: formData.start_time,
-            to_date: formData.end_time
-        });
-        this.props.action.getTrendData({
-            code: 'tendency',
-            from_date: formData.start_time,
-            to_date: formData.end_time
+        this.getFormData(data => {
+            this.props.action.getStatisData({
+                code: 'statistics',
+                from_date: data.start_time,
+                to_date: data.end_time
+            });
+            this.props.action.getTrendData({
+                code: 'tendency',
+                from_date: data.start_time,
+                to_date: data.end_time
+            });
         });
     }
 
@@ -204,7 +211,12 @@ class tradeChart extends React.Component {
                         <Row gutter={40}>
                             <Col span={16}>
                                 <FormItem label="操作时间" {...formItemLayout} style={{ marginBottom: '0' }}>
-                                    {getFieldDecorator('time', { initialValue: defaultTime })(
+                                    {getFieldDecorator('time', {
+                                        initialValue: defaultTime,
+                                        rules: [
+                                            { required: true, type: 'array', message: '操作时间不能为空' }
+                                        ]
+                                    })(
                                         <RangePicker style={{ width: 200 }} />
                                     )}
                                     <span className="ant-form-text" style={{paddingLeft: '8px'}}>

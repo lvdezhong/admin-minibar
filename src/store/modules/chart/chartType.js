@@ -1,15 +1,25 @@
 import keyMirror from 'mirrorkey'
 
 export default keyMirror({
-    GET_CHART: null,
-    GET_CHART_PENDING: null,
-    GET_CHART_SUCCESS: null,
-    GET_CHART_ERROR: null,
-
     GET_HOTEL: null,
     GET_HOTEL_PENDING: null,
     GET_HOTEL_SUCCESS: null,
     GET_HOTEL_ERROR: null,
+
+    GET_ACTIVITY_PART_DATA: null,
+    GET_ACTIVITY_PART_DATA_PENDING: null,
+    GET_ACTIVITY_PART_DATA_SUCCESS: null,
+    GET_ACTIVITY_PART_DATA_ERROR: null,
+
+    GET_ACTIVITY_LIVE_DATA: null,
+    GET_ACTIVITY_LIVE_DATA_PENDING: null,
+    GET_ACTIVITY_LIVE_DATA_SUCCESS: null,
+    GET_ACTIVITY_LIVE_DATA_ERROR: null,
+
+    GET_ACTIVITY_RATIO_DATA: null,
+    GET_ACTIVITY_RATIO_DATA_PENDING: null,
+    GET_ACTIVITY_RATIO_DATA_SUCCESS: null,
+    GET_ACTIVITY_RATIO_DATA_ERROR: null,
 
     GET_GLOBAL_DATA: null,
     GET_GLOBAL_DATA_PENDING: null,

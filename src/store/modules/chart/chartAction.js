@@ -1,14 +1,24 @@
 import api from '../../../api'
 import types from './chartType'
 
-export const getChart = (params) => ({
-    type: types.GET_CHART,
-    payload: api.get('/minibar/task/data/list', params)
-});
-
 export const getHotel = (params) => ({
     type: types.GET_HOTEL,
     payload: api.post('/minibar/machine/hotel/list', params)
+});
+
+export const getActivityPartData = (params) => ({
+    type: types.GET_ACTIVITY_PART_DATA,
+    payload: api.get('/minibar/data/tmpl/get', params)
+});
+
+export const getActivityLiveData = (params) => ({
+    type: types.GET_ACTIVITY_LIVE_DATA,
+    payload: api.get('/minibar/data/tmpl/get', params)
+});
+
+export const getActivityRatioData = (params) => ({
+    type: types.GET_ACTIVITY_RATIO_DATA,
+    payload: api.get('/minibar/data/tmpl/get', params)
 });
 
 export const getGlobalData = (params) => ({

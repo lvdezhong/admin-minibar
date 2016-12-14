@@ -1,384 +1,316 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
-import { Form, Row, Col, Input, Select, Button, Radio, Table, Tag, Pagination, DatePicker, message } from 'antd'
-var LineChart = require('../../../components/lineChart');
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
+import { Form, Button, Select, Card, Row, Col, DatePicker, message, Radio } from 'antd'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
+import moment from 'moment'
+
 import action from '../../../store/actions'
-
-import { price } from '../../../utils'
-
-import './index.less'
+import { getDayCount } from '../../../utils'
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const ButtonGroup = Button.Group;
 const RangePicker = DatePicker.RangePicker;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
+const Option = Select.Option;
 
 @connect(
     state => ({state: state}),
     dispatch => ({action: bindActionCreators(action, dispatch)})
 )
 
-class Chart extends React.Component {
+class activityChart extends React.Component {
     constructor() {
         super()
-
-        this.timeData = {
-            start_time: '',
-            end_time: ''
+        this.state = {
+            type: 1
         }
-        this.hotelData = {
-            hotel_id_list: ''
-        }
-        this.postData = {
-            task_id: ''
-        }
-        this.state={
-            value:'1',
-            valueRatio:'1'
-        }
-        this.chartOne = []
-        this.chartTwo = []
-        this.chartThree = []
-        this.LineChartOne = 'peopleLine'
-        this.RatioLineTwo = 'peopleRatioLine'
-    }
-
-    //时间选择
-    handleTimeChange(dates, dateStrings) {
-        this.timeData.start_time = dateStrings[0] + ' 00:00:00';
-        this.timeData.end_time = dateStrings[1] + ' 00:00:00';
-        this.postData = Object.assign(this.postData, this.timeData);
-    }
-
-    //酒店列表
-    handleChangeSelect(value) {
-        var arrVal = [];
-        value.forEach(function (v, i) {
-            arrVal.push(v * 1);
-        });
-        this.hotelData.hotel_id_list = JSON.stringify(arrVal);
-        this.postData = Object.assign(this.postData, this.hotelData);
-    }
-
-    //图形一切换
-    onChangeLineType(e) {
-        this.setState({
-            value: e.target.value
-        });
-        if (e.target.value == 1) {
-            this.LineChartOne = 'peopleLine';
-        } else {
-            this.LineChartOne = 'countLine';
-        }
-    }
-    //图形二切换
-    onChangeRatioType(e) {
-        this.setState({
-            valueRatio: e.target.value
-        });
-        if (e.target.value == 1) {
-            this.RatioLineTwo = 'peopleRatioLine';
-        } else {
-            this.RatioLineTwo = 'countRatioLine';
-        }
-    }
-
-    //处理数据
-    handleLine(_obj) {
-        var lineData = [];
-        var lineObj = {
-            name: '',
-            values: [],
-            strokeWidth: 3
-        }
-        var obj = {
-            x: null,
-            y: null
-        }
-        var arr = [];
-        _obj.data.forEach(function (item, index) {
-            lineObj = {
-                name: '',
-                values: [],
-                strokeWidth: null
-            }
-            arr = [];
-            if (_obj.type == 'hourCount') {
-                item.point.forEach(function (v, i) {
-                    obj = {
-                        x: null,
-                        y: null
-                    }
-                    obj.x = v * 1;
-                    obj.y = item.hourCount[i];
-                    arr.push(obj);
-                    lineObj.values = arr;
-                });
-            } else {
-                item.date.forEach(function (v, i) {
-                    obj = {
-                        x: null,
-                        y: null
-                    }
-                    obj.x = v * 1;
-                    switch (_obj.type) {
-                        case 'peopleLine':
-                            obj.y = item.people[i];
-                            break;
-                        case 'countLine':
-                            obj.y = item.count[i];
-                            break;
-                        case 'countRatioLine':
-                            obj.y = item.countRatio[i];
-                            break;
-                        case 'peopleRatioLine':
-                            obj.y = item.peopleRatio[i];
-                            break;
-                    }
-                    arr.push(obj);
-                    lineObj.values = arr;
-                });
-            }
-            lineObj.name = item.name;
-            lineData.push(lineObj);
-        });
-        return lineData;
-    }
-
-    //筛选按钮
-    handleSubmit(e) {
-        e.preventDefault();
-        this.handleChangeSelect(this.props.form.getFieldsValue().hotel_id_list);
-        this.postData = Object.assign(this.postData, this.timeData);
-        this.props.action.getChart(this.postData).catch((data) => {
-            message.error(data.msg);
-        })
     }
 
     componentDidMount() {
-        var arrHotelList = [];
-        this.postData.task_id = this.props.params.id;
+        this.id = this.props.params.id;
+
         this.props.action.getHotel({
             offset: 0,
             count: 1000
-        }).then((data)=> {
-            data.value.data.hotel_list.forEach(function (val, index) {
-                arrHotelList.push(val.id * 1);
+        });
+
+        this.getFormData(data => {
+            this.props.action.getActivityPartData({
+                code: 'task_tendency',
+                from_date: data.start_time,
+                to_date: data.end_time,
+                hotel_id_list: JSON.stringify(data.hotel),
+                task_id: this.id
             });
-            this.props.action.getChart({
-                start_time: '2016-11-02 00:00:00',
-                end_time: '2016-11-18 00:00:00',
-                hotel_id_list: JSON.stringify(arrHotelList),
-                task_id: this.postData.task_id
-            }).catch((data) => {
-                message.error(data.msg);
+
+            this.props.action.getActivityLiveData({
+                code: 'task_hour',
+                from_date: data.start_time,
+                to_date: data.end_time,
+                hotel_id_list: JSON.stringify(data.hotel),
+                task_id: this.id
+            });
+
+            this.props.action.getActivityRatioData({
+                code: 'task_ratio',
+                from_date: data.start_time,
+                to_date: data.end_time,
+                hotel_id_list: JSON.stringify(data.hotel),
+                task_id: this.id
             });
         });
     }
 
-    //不可选择今天之后
-    newArray(start, end) {
-        const result = [];
-        for (let i = start; i < end; i++) {
-            result.push(i);
+    componentWillReceiveProps(nextProps) {
+        const errors = this.props.state.chart.errors;
+        const nextErrors = nextProps.state.chart.errors;
+
+        if (errors != nextErrors && nextErrors != null) {
+            message.error(nextErrors);
         }
-        return result;
     }
 
-    disabledDate = function (current) {
-        return current && current.valueOf() > Date.now();
-    };
+    handleSubmit(e) {
+        e.preventDefault();
 
-    disabledTime(time, type) {
-        var that = this;
-        if (type === 'start') {
-            return {
-                disabledHours() {
-                    return that.newArray(0, 60).splice(4, 20);
-                },
-                disabledMinutes() {
-                    return that.newArray(30, 60);
-                },
-                disabledSeconds() {
-                    return [55, 56];
-                },
-            };
-        }
-        return {
-            disabledHours() {
-                return that.newArray(0, 60).splice(20, 4);
-            },
-            disabledMinutes() {
-                return that.newArray(0, 31);
-            },
-            disabledSeconds() {
-                return [55, 56];
-            },
-        };
+        this.getFormData(data => {
+            this.props.action.getActivityPartData({
+                code: 'task_tendency',
+                from_date: data.start_time,
+                to_date: data.end_time,
+                hotel_id_list: JSON.stringify(data.hotel),
+                task_id: this.id
+            });
+
+            this.props.action.getActivityLiveData({
+                code: 'task_hour',
+                from_date: data.start_time,
+                to_date: data.end_time,
+                hotel_id_list: JSON.stringify(data.hotel),
+                task_id: this.id
+            });
+
+            this.props.action.getActivityRatioData({
+                code: 'task_ratio',
+                from_date: data.start_time,
+                to_date: data.end_time,
+                hotel_id_list: JSON.stringify(data.hotel),
+                task_id: this.id
+            });
+        });
+    }
+
+    handleChange(e) {
+        this.setState({
+            type: e.target.value
+        })
+    }
+
+    handleClick(AddDayCount) {
+        this.props.form.setFieldsValue({
+            time: [moment(getDayCount(AddDayCount)), moment(new Date())]
+        });
+    }
+
+    getFormData(cb) {
+        this.props.form.validateFields((errors, values) => {
+            if (errors) {
+                message.error('请正确填写筛选条件');
+                return;
+            }
+
+            values.start_time = values.end_time = '';
+
+            if (values.time != '') {
+                values.start_time = values.time[0].format('YYYY-MM-DD');
+                values.end_time = values.time[1].format('YYYY-MM-DD');
+            }
+            delete values.time;
+
+            if (_.indexOf(values.hotel, '0') != -1) {
+                values.hotel = ['0'];
+            }
+
+            cb && cb(values)
+        });
     }
 
     render() {
-        const {chart, hotel } = this.props.state.chart;
+        const { hotel, activityPart, activityLive, activityRatio } = this.props.state.chart;
+        const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
-            labelCol: {span: 10},
-            wrapperCol: {span: 14},
-        }
-        const { getFieldDecorator } = this.props.form
-        //hotel列表
-        var hotelList = hotel.hotel_list || [];
-        let options = hotelList.map((item) => {
-            return (
-                <Option key={item.id} value={item.id.toString()}>{`${item.name}`}</Option>
-            )
-        });
-        let hotelId = [];
-        hotelList.forEach(function (val, index) {
-            hotelId.push(val.id.toString());
+            labelCol: { span: 5 },
+            wrapperCol: { span: 19 }
+        };
+        const defaultTime = [moment(getDayCount(-7)), moment(new Date())];
+        const options = [<Option key={0}>全部</Option>];
+
+        _.each(hotel, (item) => {
+            options.push(<Option key={item.id}>{item.name}</Option>);
         });
 
-        if (chart.hotel) {
-            this.chartOne = this.handleLine({
-                data: chart.hotel,
-                type: this.LineChartOne
-            });
-            this.chartTwo = this.handleLine({
-                data: chart.hotel,
-                type: this.RatioLineTwo
-            });
-            this.chartThree = this.handleLine({
-                data: chart.hotel,
-                type: 'hourCount'
-            });
+        const defaultStyle = {
+            width: '900px',
+            height: '350px',
+            textAlign: 'center',
+            paddingTop: '135px'
         }
 
-        if (chart.hotel && chart.hotel.length == 0) {
-            var elem = <div>暂无活动数据</div>
-        } else {
-            var elem = <div>
+        let activityChart1 = <div style={defaultStyle}>暂无数据</div>,
+            activityChart2 = <div style={defaultStyle}>暂无数据</div>,
+            activityChart3 = <div style={defaultStyle}>暂无数据</div>;
+
+        if (activityPart.data) {
+            activityChart1 = <LineChart
+                width={900}
+                height={350}
+                data={activityPart.data}
+            >
+                <XAxis dataKey="time" />
+                <YAxis />
+                <CartesianGrid strokeDasharray="3" />
+                <Tooltip />
+                <Legend />
+                {
+                    _.map(activityPart.hotel, (item, index) => {
+                        return (
+                            <Line
+                                type="monotone"
+                                key={index}
+                                name={item.name}
+                                stroke={item.color}
+                                dataKey={this.state.type == 1 ? `hotel_${index}_people` : `hotel_${index}_num`}
+                            />
+                        )
+                    })
+                }
+            </LineChart>
+        }
+        if (activityLive.data) {
+            activityChart2 = <LineChart
+                width={900}
+                height={350}
+                data={activityLive.data}
+            >
+                <XAxis dataKey="time" />
+                <YAxis />
+                <CartesianGrid strokeDasharray="3" />
+                <Tooltip />
+                <Legend />
+                {
+                    _.map(activityLive.hotel, (item, index) => {
+                        return (
+                            <Line
+                                type="monotone"
+                                key={index}
+                                name={item.name}
+                                stroke={item.color}
+                                dataKey={`hotel_${index}_num`}
+                            />
+                        )
+                    })
+                }
+            </LineChart>
+        }
+        if (activityRatio.data) {
+            activityChart3 = <LineChart
+                width={900}
+                height={350}
+                data={activityRatio.data}
+            >
+                <XAxis dataKey="time" />
+                <YAxis />
+                <CartesianGrid strokeDasharray="3" />
+                <Tooltip />
+                <Legend />
+                {
+                    _.map(activityRatio.hotel, (item, index) => {
+                        return (
+                            <Line
+                                type="monotone"
+                                key={index}
+                                name={item.name}
+                                stroke={item.color}
+                                dataKey={`hotel_${index}_num`}
+                            />
+                        )
+                    })
+                }
+            </LineChart>
+        }
+
+        return (
+            <div>
                 <div className="ui-box">
                     <Form className="ant-advanced-search-form" onSubmit={this.handleSubmit.bind(this)}>
-                        <Row gutter={25}>
-                            <Col sm={8}>
-                                <FormItem label="活动时间" {...formItemLayout}>
-                                    <RangePicker style={{ width: 200 }} disabledDate={this.disabledDate}
-                                                 disabledTime={this.disabledTime}
-                                                 onChange={this.handleTimeChange.bind(this)}/>
+                        <Row gutter={40}>
+                            <Col span={12}>
+                                <FormItem label="操作时间" {...formItemLayout} style={{ marginBottom: '0' }}>
+                                    {getFieldDecorator('time', {
+                                        initialValue: defaultTime,
+                                        rules: [
+                                            { required: true, type: 'array', message: '操作时间不能为空' }
+                                        ]
+                                    })(
+                                        <RangePicker style={{ width: 200 }} />
+                                    )}
+                                    <span className="ant-form-text" style={{paddingLeft: '8px'}}>
+                                        <ButtonGroup size="small">
+                                            <Button type="ghost" onClick={this.handleClick.bind(this, -7)}>最近7天</Button>
+                                            <Button type="ghost" onClick={this.handleClick.bind(this, -30)}>最近30天</Button>
+                                        </ButtonGroup>
+                                    </span>
                                 </FormItem>
                             </Col>
-                            <Col sm={12}>
-                                <FormItem label="酒店名称" labelCol={{ span: 6 }}>
-                                    {getFieldDecorator('hotel_id_list', {initialValue: hotelId})(
-                                        <Select style={{width:'75%'}} multiple
-                                                onChange={this.handleChangeSelect.bind(this)}>
+                            <Col span={12}>
+                                <FormItem label="酒店" {...formItemLayout}>
+                                    {getFieldDecorator('hotel', {
+                                        initialValue: ['0'],
+                                        rules: [
+                                            { required: true, type: 'array', message: '酒店不能为空' }
+                                        ]
+                                    })(
+                                        <Select multiple>
                                             {options}
                                         </Select>
                                     )}
                                 </FormItem>
                             </Col>
-                            <Col sm={2} sm={2} style={{ textAlign: 'right' }}>
+                            <Col span={8} offset={16} style={{ textAlign: 'right' }}>
                                 <Button type="primary" htmlType="submit">筛选</Button>
                             </Col>
                         </Row>
                     </Form>
                 </div>
-
                 <div className="ui-box">
-                    <RadioGroup className="radio_type" onChange={this.onChangeLineType.bind(this)} defaultValue="1" value={this.state.value}>
-                        <RadioButton value="1">人数</RadioButton>
-                        <RadioButton value="2">次数</RadioButton>
-                    </RadioGroup>
-                    <LineChart
-                        legend={true}
-                        data={this.chartOne}
-                        width={800}
-                        height={400}
-                        viewBoxObject={{
-                                x: 0,
-                                y: 0,
-                                width: 800,
-                                height: 400
-                            }}
-                        title="酒店维度，活动参与人数，次数日变化折线图"
-                        yAxisLabel="活动参与数"
-                        xAxisLabel="日期"
-                        xAccessor={(d)=> {
-                            return new Date(d.x);
-                            }
-                        }
-                        tickStroke={'#666'}
-                        gridHorizontal={true}
-                        gridVertical={true}
-                        gridHorizontalStroke={'#000'}
-                        gridVerticalStrokeDash={'1, 0'}
-                    />
+                    <Card title="趋势">
+                        <div className="ui-box">
+                            <div style={{textAlign: 'right', marginBottom: '20px'}}>
+                                <RadioGroup value={this.state.type} onChange={this.handleChange.bind(this)}>
+                                    <RadioButton value={1}>人数</RadioButton>
+                                    <RadioButton value={2}>次数</RadioButton>
+                                </RadioGroup>
+                            </div>
+                            <p style={{textAlign: 'center', fontSize: '14px', marginBottom: '15px'}}>活动参与人数，次数日变化折现图</p>
+                            {activityChart1}
+                        </div>
+                        <div className="ui-box">
+                            <p style={{textAlign: 'center', fontSize: '14px', marginBottom: '15px'}}>全天活跃度变化曲线图</p>
+                            {activityChart2}
+                        </div>
+                        <div className="ui-box">
+                            <p style={{textAlign: 'center', fontSize: '14px', marginBottom: '15px'}}>参与人数与首页UV比率日变化折线图</p>
+                            {activityChart3}
+                        </div>
+                    </Card>
                 </div>
-                <div className="ui-box">
-                    <RadioGroup className="radio_type" onChange={this.onChangeRatioType.bind(this)} defaultValue="1" value={this.state.valueRatio}>
-                        <RadioButton value="1">人数</RadioButton>
-                        <RadioButton value="2">次数</RadioButton>
-                    </RadioGroup>
-                    <LineChart
-                        legend={true}
-                        data={this.chartTwo}
-                        width={800}
-                        height={400}
-                        viewBoxObject={{
-                                x: 0,
-                                y: 0,
-                                width: 700,
-                                height: 400
-                            }}
-                        title="酒店维度，购买人数与活动参与人数比率日变化折线图"
-                        yAxisLabel="活动参与比率"
-                        xAxisLabel="日期"
-                        xAccessor={(d)=> {
-                                return new Date(d.x);
-                                }
-                            }
-                        yAccessor={(d)=>d.y}
-                        tickStroke={'#666'}
-                        gridHorizontal={true}
-                        gridVertical={true}
-                        gridHorizontalStroke={'#000'}
-                        gridVerticalStrokeDash={'1, 0'}
-                    />
-                </div>
-                <div className="ui-box">
-                    <LineChart
-                        legend={true}
-                        data={this.chartThree}
-                        width={800}
-                        height={400}
-                        viewBoxObject={{
-                                x: 0,
-                                y: 0,
-                                width: 700,
-                                height: 400
-                            }}
-                        title="酒店维度，全天活跃度变化曲线图"
-                        yAxisLabel="活动参与人数"
-                        xAxisLabel="小时"
-                        tickStroke={'#666'}
-                        gridHorizontal={true}
-                        gridVertical={true}
-                        gridHorizontalStroke={'#000'}
-                        gridVerticalStrokeDash={'1, 0'}
-                    />
-                </div>
-            </div>
-        }
-
-        return (
-            <div>
-                {elem}
             </div>
         )
     }
 }
 
-Chart = Form.create()(Chart);
+activityChart = Form.create()(activityChart);
 
-export default Chart;
+export default activityChart;
