@@ -90,8 +90,8 @@ class OrderList extends React.Component {
         }
 
         const formItemLayout = {
-            labelCol: { span: 10 },
-            wrapperCol: { span: 14 },
+            labelCol: { span: 7 },
+            wrapperCol: { span: 17 },
         }
 
         const { getFieldDecorator } = this.props.form
@@ -151,18 +151,15 @@ class OrderList extends React.Component {
             <div>
                 <div className="ui-box">
                     <Form className="ant-advanced-search-form" onSubmit={this.handleSubmit.bind(this)}>
-                        <Row gutter={16}>
-                            <Col sm={8}>
+                        <Row gutter={40}>
+                            <Col span={8}>
                                 <FormItem label="订单号" {...formItemLayout}>
                                     {getFieldDecorator('order_sn', { initialValue: '' })(
                                         <Input placeholder="请输入订单号" />
                                     )}
                                 </FormItem>
-                                <FormItem label="下单时间" {...formItemLayout}>
-                                    <RangePicker style={{ width: 200 }} onChange={this.handleTimeChange.bind(this)} />
-                                </FormItem>
                             </Col>
-                            <Col sm={8}>
+                            <Col span={8}>
                                 <FormItem label="订单状态" {...formItemLayout}>
                                     {getFieldDecorator('status', { initialValue: '0' })(
                                         <Select size="default">
@@ -176,7 +173,7 @@ class OrderList extends React.Component {
                                     )}
                                 </FormItem>
                             </Col>
-                            <Col sm={8}>
+                            <Col span={8}>
                                 <FormItem label="售货机" {...formItemLayout}>
                                     {getFieldDecorator('machine_id', { initialValue: '' })(
                                         <Select size="default">
@@ -185,9 +182,14 @@ class OrderList extends React.Component {
                                     )}
                                 </FormItem>
                             </Col>
+                            <Col span={8}>
+                                <FormItem label="下单时间" {...formItemLayout}>
+                                    <RangePicker style={{ width: 200 }} onChange={this.handleTimeChange.bind(this)} />
+                                </FormItem>
+                            </Col>
                         </Row>
                         <Row>
-                            <Col span={12} offset={12} style={{ textAlign: 'right' }}>
+                            <Col span={24} style={{ textAlign: 'right' }}>
                                 <Button type="primary" htmlType="submit">筛选</Button>
                             </Col>
                         </Row>
@@ -212,7 +214,12 @@ class OrderList extends React.Component {
                         </table>
                     </div>
                     <div className="order-pagination">
-                        <Pagination current={this.state.current} onChange={this.handleChange.bind(this)} total={order.total_count} showTotal={total => `共 ${total} 条`} />
+                        <Pagination
+                            current={this.state.current}
+                            onChange={this.handleChange.bind(this)}
+                            total={order.total_count}
+                            showTotal={total => `共 ${total} 条`}
+                        />
                     </div>
                 </div>
             </div>
