@@ -69,8 +69,8 @@ class LogList extends React.Component {
         const { log } = this.props.state.log;
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
-            labelCol: { span: 10 },
-            wrapperCol: { span: 14 },
+            labelCol: { span: 7 },
+            wrapperCol: { span: 17 },
         }
         const options = _.map(device, (item) => {
             return (
@@ -147,20 +147,15 @@ class LogList extends React.Component {
             <div>
                 <div className="ui-box">
                     <Form className="ant-advanced-search-form" onSubmit={this.handleSubmit.bind(this)}>
-                        <Row gutter={16}>
-                            <Col sm={8}>
+                        <Row gutter={40}>
+                            <Col span={8}>
                                 <FormItem label="操作名称" {...formItemLayout}>
                                     {getFieldDecorator('op_name', { initialValue: '' })(
                                         <Input placeholder="请输入操作名称" />
                                     )}
                                 </FormItem>
-                                <FormItem label="操作时间" {...formItemLayout}>
-                                    {getFieldDecorator('time', { initialValue: '' })(
-                                        <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: 315 }} />
-                                    )}
-                                </FormItem>
                             </Col>
-                            <Col sm={8}>
+                            <Col span={8}>
                                 <FormItem label="操作状态" {...formItemLayout}>
                                     {getFieldDecorator('success', { initialValue: '' })(
                                         <Select size="default">
@@ -171,7 +166,7 @@ class LogList extends React.Component {
                                     )}
                                 </FormItem>
                             </Col>
-                            <Col sm={8}>
+                            <Col span={8}>
                                 <FormItem label="售货机" {...formItemLayout}>
                                     {getFieldDecorator('machine_id', { initialValue: '' })(
                                         <Select size="default">
@@ -180,9 +175,16 @@ class LogList extends React.Component {
                                     )}
                                 </FormItem>
                             </Col>
+                            <Col span={8}>
+                                <FormItem label="操作时间" {...formItemLayout}>
+                                    {getFieldDecorator('time', { initialValue: '' })(
+                                        <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: 320 }} />
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Row>
                         <Row>
-                            <Col span={12} offset={12} style={{ textAlign: 'right' }}>
+                            <Col span={24} style={{ textAlign: 'right' }}>
                                 <Button type="primary" htmlType="submit">筛选</Button>
                             </Col>
                         </Row>

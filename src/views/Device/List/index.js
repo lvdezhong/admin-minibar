@@ -6,8 +6,6 @@ import { Form, Row, Col, Input, Select, Table, Tag, Button } from 'antd'
 
 import action from '../../../store/actions'
 
-import './index.less'
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -56,8 +54,8 @@ class DeviceList extends React.Component {
         const self = this;
 
         const formItemLayout = {
-            labelCol: { span: 10 },
-            wrapperCol: { span: 14 },
+            labelCol: { span: 7 },
+            wrapperCol: { span: 17 },
         }
 
         const stock_status = {
@@ -150,20 +148,15 @@ class DeviceList extends React.Component {
             <div>
                 <div className="ui-box">
                     <Form className="ant-advanced-search-form" onSubmit={this.handleSubmit.bind(this)}>
-                        <Row gutter={16}>
-                            <Col sm={8}>
+                        <Row gutter={40}>
+                            <Col span={8}>
                                 <FormItem label="设备编号" {...formItemLayout}>
                                     {getFieldDecorator('machine_sn', { initialValue: '' })(
                                         <Input placeholder="请输入设备编号" />
                                     )}
                                 </FormItem>
-                                <FormItem label="酒店名称" {...formItemLayout}>
-                                    {getFieldDecorator('hotel_name', { initialValue: '' })(
-                                        <Input placeholder="请输入酒店名称" />
-                                    )}
-                                </FormItem>
                             </Col>
-                            <Col sm={8}>
+                            <Col span={8}>
                                 <FormItem label="模版" {...formItemLayout}>
                                     {getFieldDecorator('tmpl_id', { initialValue: '' })(
                                         <Select size="default">
@@ -171,18 +164,8 @@ class DeviceList extends React.Component {
                                         </Select>
                                     )}
                                 </FormItem>
-                                <FormItem label="运行状态" {...formItemLayout}>
-                                    {getFieldDecorator('status', { initialValue: '' })(
-                                        <Select size="default">
-                                            <Option value="">全部</Option>
-                                            <Option value="1">在线</Option>
-                                            <Option value="0">离线</Option>
-                                            <Option value="2">故障</Option>
-                                        </Select>
-                                    )}
-                                </FormItem>
                             </Col>
-                            <Col sm={8}>
+                            <Col span={8}>
                                 <FormItem label="库存" {...formItemLayout}>
                                     {getFieldDecorator('stock_status', { initialValue: '' })(
                                         <Select size="default">
@@ -195,9 +178,28 @@ class DeviceList extends React.Component {
                                     )}
                                 </FormItem>
                             </Col>
+                            <Col span={8}>
+                                <FormItem label="酒店名称" {...formItemLayout}>
+                                    {getFieldDecorator('hotel_name', { initialValue: '' })(
+                                        <Input placeholder="请输入酒店名称" />
+                                    )}
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem label="运行状态" {...formItemLayout}>
+                                    {getFieldDecorator('status', { initialValue: '' })(
+                                        <Select size="default">
+                                            <Option value="">全部</Option>
+                                            <Option value="1">在线</Option>
+                                            <Option value="0">离线</Option>
+                                            <Option value="2">故障</Option>
+                                        </Select>
+                                    )}
+                                </FormItem>
+                            </Col>
                         </Row>
                         <Row>
-                            <Col span={12} offset={12} style={{ textAlign: 'right' }}>
+                            <Col span={24} style={{ textAlign: 'right' }}>
                                 <Button type="primary" htmlType="submit">筛选</Button>
                             </Col>
                         </Row>
