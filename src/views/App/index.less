@@ -12,6 +12,29 @@
         .ant-layout-content {
             background: #fff;
             padding: 24px;
+
+            .transition-wrapper {
+                position: relative;
+
+                .transition-wrapper-enter {
+                    position: absolute;
+                    opacity: 0.01;
+                }
+
+                .transition-wrapper-enter.transition-wrapper-enter-active {
+                    opacity: 1;
+                    transition: opacity .3s ease-in;
+                }
+
+                .transition-wrapper-leave {
+                    opacity: 1;
+                }
+
+                .transition-wrapper-leave.transition-wrapper-leave-active {
+                    opacity: 0;
+                    transition: opacity .3s ease-out;
+                }
+            }
         }
     }
 }

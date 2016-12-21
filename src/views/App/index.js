@@ -1,6 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 import NavPath from '../../components/NavPath'
 import Header from '../../components/Header'
@@ -25,7 +26,17 @@ class App extends React.Component {
                     <NavPath />
                     <div className="ant-layout-container">
                         <div className="ant-layout-content">
-                            {this.props.children}
+                            <ReactCSSTransitionGroup
+                                component="div"
+                                className="transition-wrapper"
+                                transitionName="transition-wrapper"
+                                transitionEnterTimeout={300}
+                                transitionLeaveTimeout={300}
+                            >
+                                <div key={this.props.location.pathname} style={{width: '100%'}}>
+                                    {this.props.children}
+                                </div>
+                            </ReactCSSTransitionGroup>
                         </div>
                     </div>
                     <Footer />

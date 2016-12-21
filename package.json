@@ -16,6 +16,7 @@
     "mirrorkey": "^1.2.0",
     "pubsub-js": "^1.5.3",
     "react": "^15.4.1",
+    "react-addons-css-transition-group": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-redux": "^4.4.0",
     "react-router": "^2.8.1",

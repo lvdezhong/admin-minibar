@@ -64,6 +64,7 @@ var config = {
             'react-dom',
             'react-router',
             'react-redux',
+            'react-addons-css-transition-group',
             'redux',
             'redux-promise-middleware',
             'redux-thunk',
