@@ -1,9 +1,142 @@
 {
-    "/minibar/data/get/global": {
+    "/minibar/hotel/list": {
         "code": 10000,
         "msg": "success",
         "data": {
+            "hotel_list": [{
+                "id": 1,
+                "name": "爱情海精品酒店1",
+                "address": "丰登街299号(银泰城对面)",
+                "room_number": "10086",
+                "longitude": "100",
+                "latitude": "100"
+            }, {
+                "id": 2,
+                "name": "爱情海精品酒店2",
+                "address": "丰登街299号(银泰城对面)",
+                "room_number": "10086",
+                "longitude": "100",
+                "latitude": "100"
+            }],
+            "total_count": 2
+        }
+    },
 
+    "/minibar/service/switch_status": {
+        "code": 10000,
+        "msg": "success",
+        "data": {
+            "status": 1
+        }
+    },
+
+    "/minibar/service/switch": {
+        "code": 10000,
+        "msg": "success",
+        "data": {}
+    },
+
+    "/minibar/wifi/config/list": {
+        "code": 10000,
+        "msg": "success",
+        "data": {
+            "wifi_config_list": [{
+                "id": 1,
+                "name": "wifi1",
+                "pwd": "12345678",
+                "room_list": [{
+                    "id": 1,
+                    "number": "10086",
+                    "machine_id": 1,
+                    "status": 0
+                }, {
+                    "id": 2,
+                    "number": "10000",
+                    "machine_id": 2,
+                    "status": 1
+                }]
+            }, {
+                "id": 2,
+                "name": "wifi2",
+                "pwd": "11111111",
+                "room_list": [{
+                    "id": 1,
+                    "number": "10086",
+                    "machine_id": 1,
+                    "status": 0
+                }, {
+                    "id": 2,
+                    "number": "10000",
+                    "machine_id": 2,
+                    "status": 1
+                }]
+            }],
+            "total_count": 2
+        }
+    },
+
+    "/minibar/wifi/config/room/list": {
+        "code": 10000,
+        "msg": "success",
+        "data": {
+            "room_list": [{
+                "id": 1,
+                "number": 10086,
+                "machine_id": 1,
+                "status": 1
+            }, {
+                "id": 2,
+                "number": 10087,
+                "machine_id": 2,
+                "status": 1
+            }, {
+                "id": 3,
+                "number": 10088,
+                "machine_id": 3,
+                "status": 0
+            }],
+            "total_count": 3
+        }
+    },
+
+    "/minibar/front/mobile/get": {
+        "code": 10000,
+        "msg": "success",
+        "data": {
+            "mobile": "18767104605"
+        }
+    },
+
+    "/minibar/manager/news/list": {
+        "code": 10000,
+        "msg": "success",
+        "data": {
+            "news_list": [{
+                "id": 1,
+                "title": "资讯1",
+                "pv": 100,
+                "uv": 100,
+                "content": "内容",
+                "font_image_url": "https://placeholdit.imgix.net/~text?txtsize=22&txt=100%C3%97100&w=100&h=100",
+                "origin_url": "http://www.baidu.com",
+                "share_image_url": "https://placeholdit.imgix.net/~text?txtsize=22&txt=100%C3%97100&w=100&h=100",
+                "share_title": "标题",
+                "share_content": "说明",
+                "gmt_created": "2017-01-01"
+            }, {
+                "id": 2,
+                "title": "资讯1",
+                "pv": 100,
+                "uv": 100,
+                "content": "内容",
+                "font_image_url": "https://placeholdit.imgix.net/~text?txtsize=22&txt=100%C3%97100&w=100&h=100",
+                "origin_url": "http://www.baidu.com",
+                "share_image_url": "https://placeholdit.imgix.net/~text?txtsize=22&txt=100%C3%97100&w=100&h=100",
+                "share_title": "标题",
+                "share_content": "说明",
+                "gmt_created": "2017-01-01"
+            }],
+            "total_count": 10
         }
     }
 }
