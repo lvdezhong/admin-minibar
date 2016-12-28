@@ -19,17 +19,25 @@ const FormItem = Form.Item;
 )
 
 class newsDetail extends React.Component {
-    constructor() {
+    constructor(props) {
         super()
-
-        this.state = {
-
-        }
+        this.state = {}
+        this.hotel_id = props.state.hotel.currentHotel;
     }
 
     componentDidMount() {
         this.id = this.props.params.id;
         this.id ? this.isEdit = true : this.isEdit = false;
+
+        if (this.isEdit) {
+            this.props.action.getCurrentNews({
+                id: this.id
+            }).then((data) => {
+                this.editor.$txt.html(data.value.data.news.content);
+            });
+        } else {
+            this.props.action.getEmptyNews();
+        }
 
         // 富文本编辑器插件
         var editorContainer = document.getElementById('editor');
@@ -65,7 +73,18 @@ class newsDetail extends React.Component {
         this.editor.create();
     }
 
-    handleChange(info) {
+    componentWillReceiveProps(nextProps) {
+        const { news } = nextProps.state;
+
+        if (nextProps.state.news.currentNews != this.props.state.news.currentNews) {
+            this.setState({
+                frontImg: news.currentNews.front_image_url,
+                shareImg: news.currentNews.share_image_url
+            });
+        }
+    }
+
+    handleFrontChange(info) {
         let file = info.file;
 
         if (file.status === 'done') {
@@ -83,6 +102,28 @@ class newsDetail extends React.Component {
 
             this.props.form.setFieldsValue({
                 front_image_url: file.url
+            });
+        }
+    }
+
+    handleShareChange(info) {
+        let file = info.file;
+
+        if (file.status === 'done') {
+            message.success(`${file.name} 上传成功！`);
+        } else if (file.status === 'error') {
+            message.error(`${file.name} 上传失败！`);
+        }
+
+        if (file.response && file.response.code == 10000) {
+            file.url = file.response.data.url;
+
+            this.setState({
+                shareImg: file.url
+            });
+
+            this.props.form.setFieldsValue({
+                share_image_url: file.url
             });
         }
     }
@@ -111,19 +152,36 @@ class newsDetail extends React.Component {
 
             values.content = editorHtml;
 
-            console.log(values);
+            if (this.isEdit) {
+                values.id = this.id;
+                this.props.action.updateNews(values).then(() => {
+                    message.success('修改成功');
+                    browserHistory.push('/news/list');
+                }).catch(data => {
+                    message.error(data.msg);
+                });
+            } else {
+                values.hotel_id = this.hotel_id;
+                this.props.action.addNews(values).then(() => {
+                    message.success('添加成功');
+                    browserHistory.push('/news/list');
+                }).catch(data => {
+                    message.error(data.msg);
+                });
+            }
         });
     }
 
     render() {
-        const { frontImg } = this.state;
+        const { currentNews } = this.props.state.news;
+        const { frontImg, shareImg } = this.state;
         const formItemLayout = {
             labelCol: { span: 4 },
             wrapperCol: { span: 20 },
         }
         const { getFieldDecorator } = this.props.form;
 
-        const props_upload = {
+        const front_props_upload = {
             action: 'http://media.mockuai.com/upload.php',
             data: {
                 user_id: 2088575
@@ -133,7 +191,21 @@ class newsDetail extends React.Component {
             },
             accept: ".jpg,.png",
             showUploadList: false,
-            onChange: this.handleChange.bind(this),
+            onChange: this.handleFrontChange.bind(this),
+            beforeUpload: this.handleStartUpload.bind(this)
+        }
+
+        const share_props_upload = {
+            action: 'http://media.mockuai.com/upload.php',
+            data: {
+                user_id: 2088575
+            },
+            headers:{
+                "X-Requested-With": null
+            },
+            accept: ".jpg,.png",
+            showUploadList: false,
+            onChange: this.handleShareChange.bind(this),
             beforeUpload: this.handleStartUpload.bind(this)
         }
 
@@ -141,14 +213,14 @@ class newsDetail extends React.Component {
             <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                 <FormItem {...formItemLayout} label="封面">
                     {getFieldDecorator('front_image_url', {
-                        initialValue: '',
+                        initialValue: currentNews.front_image_url,
                         rules: [
                             { required: true, message: '封面图片不能为空' }
                         ]
                     })(
                         <Input style={{display: 'none'}}/>
                     )}
-                    <Upload className="frontimg-uploader" {...props_upload}>
+                    <Upload className="frontimg-uploader" {...front_props_upload}>
                         {
                             frontImg ?
                             <img src={frontImg} className="frontimg" /> :
@@ -158,6 +230,7 @@ class newsDetail extends React.Component {
                 </FormItem>
                 <FormItem {...formItemLayout} label="标题">
                     {getFieldDecorator('title', {
+                        initialValue: currentNews.title,
                         rules: [
                             { required: true, message: '标题不能为空' },
                             { max: 20, message: '标题不能超过20个字' }
@@ -171,6 +244,7 @@ class newsDetail extends React.Component {
                 </FormItem>
                 <FormItem {...formItemLayout} label="链接">
                     {getFieldDecorator('origin_url', {
+                        initialValue: currentNews.origin_url,
                         rules: [
                             { required: true, message: '链接不能为空' },
                             { pattern: /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/, message: '链接格式不正确' }
@@ -180,21 +254,41 @@ class newsDetail extends React.Component {
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout} label="分享图片">
-                    {getFieldDecorator('front_image_url', {
-                        initialValue: '',
+                    {getFieldDecorator('share_image_url', {
+                        initialValue: currentNews.share_image_url,
                         rules: [
-                            { required: true, message: '封面图片不能为空' }
+                            { required: true, message: '分享图片不能为空' }
                         ]
                     })(
                         <Input style={{display: 'none'}}/>
                     )}
-                    <Upload className="frontimg-uploader" {...props_upload}>
+                    <Upload className="shareimg-uploader" {...share_props_upload}>
                         {
-                            frontImg ?
-                            <img src={frontImg} className="frontimg" /> :
-                            <Icon type="plus" className="frontimg-uploader-trigger" />
+                            shareImg ?
+                            <img src={shareImg} className="shareimg" /> :
+                            <Icon type="plus" className="shareimg-uploader-trigger" />
                         }
                     </Upload>
+                </FormItem>
+                <FormItem {...formItemLayout} label="分享标题">
+                    {getFieldDecorator('share_title', {
+                        initialValue: currentNews.share_title,
+                        rules: [
+                            { required: true, message: '分享标题不能为空' }
+                        ]
+                    })(
+                        <Input />
+                    )}
+                </FormItem>
+                <FormItem {...formItemLayout} label="分享内容">
+                    {getFieldDecorator('share_content', {
+                        initialValue: currentNews.share_content,
+                        rules: [
+                            { required: true, message: '分享内容不能为空' }
+                        ]
+                    })(
+                        <Input type="textarea" rows={4} />
+                    )}
                 </FormItem>
                 <FormItem wrapperCol={{ span: 20, offset: 4 }}>
                     <Button type="primary" htmlType="submit" size="default">确定</Button>

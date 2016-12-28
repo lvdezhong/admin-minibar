@@ -39,8 +39,12 @@ import WifiDetail from './views/Wifi/Detail'
 
 import Contact from './views/Contact'
 
-import newsList from './views/News/List'
-import newsDetail from './views/News/Detail'
+import NewsList from './views/News/List'
+import NewsDetail from './views/News/Detail'
+
+import ServiceList from './views/Service/List'
+import ServiceDetail from './views/Service/Detail'
+import ServiceOrder from './views/Service/Order'
 
 const store = configureStore();
 
@@ -98,8 +102,13 @@ ReactDOM.render(
                     <Route path="contact" component={Contact} />
 
                     <Redirect from="news" to="news/list" />
-                    <Route path="news/list" component={newsList} />
-                    <Route path="news/detail(/:id)" component={newsDetail} />
+                    <Route path="news/list" component={NewsList} />
+                    <Route path="news/detail(/:id)" component={NewsDetail} />
+
+                    <Redirect from="service" to="service/list" />
+                    <Route path="service/list" component={ServiceList} />
+                    <Route path="service/detail(/:id)" component={ServiceDetail} />
+                    <Route path="service/order(/:id)" component={ServiceOrder} />
                 </Route>
             </Route>
         </Router>

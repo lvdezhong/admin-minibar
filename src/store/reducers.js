@@ -14,6 +14,7 @@ import hotel from './modules/hotel/hotelReducer'
 import wifi from './modules/wifi/wifiReducer'
 import contact from './modules/contact/contactReducer'
 import news from './modules/news/newsReducer'
+import service from './modules/service/serviceReducer'
 
 export default combineReducers({
     user,
@@ -29,5 +30,6 @@ export default combineReducers({
     hotel,
     wifi,
     contact,
-    news
+    news,
+    service
 });

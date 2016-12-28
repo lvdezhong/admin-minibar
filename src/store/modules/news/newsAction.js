@@ -20,3 +20,22 @@ export const deleteNews = (params) => ({
     type: types.DELETE_NEWS,
     payload: api.post('/minibar/manager/news/delete', params)
 })
+
+export const addNews = (params) => ({
+    type: types.ADD_NEWS,
+    payload: api.post('/minibar/manager/news/add', params)
+})
+
+export const updateNews = (params) => ({
+    type: types.UPDATE_NEWS,
+    payload: api.post('/minibar/manager/news/update', params)
+})
+
+export const getCurrentNews = (params) => ({
+    type: types.GET_NEWS_ITEM,
+    payload: api.get('/minibar/manager/news/get', params, true)
+})
+
+export const getEmptyNews = () => ({
+    type: types.GET_EMPTY_NEWS
+})

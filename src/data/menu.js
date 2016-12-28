@@ -87,7 +87,7 @@ const data = [{
     }, {
         "name": "服务预约",
         "key": 704,
-        "link": "/wifi/list"
+        "link": "/service/list"
     }]
 }]
 

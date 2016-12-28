@@ -2,7 +2,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { Table, Row, Col, Button, message, Switch, Modal } from 'antd'
+import { Table, Row, Col, message, Modal } from 'antd'
 
 import SearchInput from '../../../components/SearchInput'
 
@@ -15,7 +15,7 @@ const confirm = Modal.confirm;
     dispatch => ({action: bindActionCreators(action, dispatch)})
 )
 
-class newList extends React.Component {
+class ServiceOrder extends React.Component {
     constructor(props) {
         super()
         this.state = {
@@ -26,18 +26,20 @@ class newList extends React.Component {
            offset: 0
         }
         this.hotel_id = props.state.hotel.currentHotel;
+        this.id = props.params.id;
+
         this.postData = {
             hotel_id: this.hotel_id
+        }
+
+        if (this.id) {
+            this.postData.service_id = this.id
         }
     }
 
     componentDidMount() {
         this.postData = Object.assign(this.postData, this.paginationCfg);
-        this.props.action.getNews(this.postData);
-        this.props.action.getNewsState({
-            hotel_id: this.hotel_id,
-            type: 1
-        });
+        this.props.action.getServiceOrder(this.postData);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -49,20 +51,26 @@ class newList extends React.Component {
         }
     }
 
-    handleChange() {
-        this.props.action.setNewsState({
-            hotel_id: this.hotel_id,
-            type: 1
+    handleSearch(value) {
+        this.paginationCfg.offset = 0;
+        this.postData = Object.assign(this.postData, {
+            keywords: value
+        }, this.paginationCfg);
+
+        this.setState({
+            current: 1
         });
+
+        this.props.action.getServiceOrder(this.postData);
     }
 
-    handleDelete(id) {
-        this.showConfirm('你确定要删除？', () => {
-            this.props.action.deleteNews({
-                id
+    handleClick(code) {
+        this.showConfirm('你确定使用吗？', () => {
+            this.props.action.orderConfirm({
+                code
             }).then(() => {
-                message.success('删除成功');
-                this.props.action.getNews(this.postData);
+                message.success('使用成功');
+                this.props.action.getServiceOrder(this.postData);
             }).catch(data => {
                 message.error(data.msg);
             });
@@ -79,61 +87,67 @@ class newList extends React.Component {
         });
     }
 
-    handleSearch(value) {
-        this.paginationCfg.offset = 0;
-        this.postData = Object.assign(this.postData, {
-            keywords: value
-        }, this.paginationCfg);
-
-        this.setState({
-            current: 1
-        });
-
-        this.props.action.getNews(this.postData);
-    }
-
     render() {
         const self = this;
-        const { news, newsState } = this.props.state.news;
+        const { order } = this.props.state.service;
 
         const columns = [{
-            title: '标题',
+            title: '预约房间号',
+            dataIndex: 'room_number',
+            key: 'room_number',
+            width: '14%'
+        }, {
+            title: '预约活动',
             dataIndex: 'title',
             key: 'title',
-            width: '20%'
+            width: '15%'
         }, {
-            title: '创建时间',
-            dataIndex: 'gmt_created',
-            key: 'gmt_created',
-            width: '20%'
+            title: '预约时间',
+            dataIndex: 'time',
+            key: 'time',
+            width: '18%'
         }, {
-            title: 'PV',
-            dataIndex: 'pv',
-            key: 'pv',
-            width: '20%'
+            title: '预约人数',
+            dataIndex: 'count',
+            key: 'count',
+            width: '10%'
         }, {
-            title: 'UV',
-            dataIndex: 'uv',
-            key: 'uv',
-            width: '20%'
+            title: '联系电话',
+            dataIndex: 'mobile',
+            key: 'mobile',
+            width: '15%'
+        }, {
+            title: '使用情况',
+            dataIndex: 'used',
+            key: 'used',
+            width: '18%',
+            render(text, record) {
+                if (text == 0) {
+                    return '未使用'
+                } else {
+                    return (
+                        <div>
+                            <p>已使用</p>
+                            <p>{record.time}</p>
+                        </div>
+                    )
+                }
+            }
         }, {
             title: '操作',
-            dataIndex: 'id',
+            dataIndex: 'code',
             key: 'operate',
-            width: '20%',
+            width: '10%',
             render(text) {
                 return (
-                    <div>
-                        <Link to={`/news/detail/${text}`}>编辑</Link>-
-                        <Link onClick={self.handleDelete.bind(self, text)}>删除</Link>
-                    </div>
+                    <Link onClick={self.handleClick.bind(self, text)}>确认使用</Link>
                 )
             }
         }]
 
         const pagination = {
             current: this.state.current,
-            total: news.total_count,
+            total: order.total_count,
             onChange(page) {
                 self.paginationCfg.offset = (page - 1) * self.paginationCfg.count;
                 self.postData = Object.assign(self.postData, self.paginationCfg);
@@ -142,7 +156,7 @@ class newList extends React.Component {
                     current: page,
                 });
 
-                self.props.action.getNews(self.postData);
+                self.props.action.getServiceOrder(self.postData);
             },
             showTotal(total) {
                 return `共 ${total} 条`
@@ -152,26 +166,14 @@ class newList extends React.Component {
         return (
             <div>
                 <div className="ui-box">
-                    <div className="title-switch">
-                        <Row>
-                            <Col span={12}>
-                                <h3>最新资讯</h3>
-                            </Col>
-                            <Col span={12} style={{textAlign: 'right'}}>
-                                <Switch
-                                    checked={newsState == 0 ? false : true}
-                                    onChange={this.handleChange.bind(this)}
-                                />
-                            </Col>
-                        </Row>
+                    <div className="tab">
+                        <Link to='/service/list'>所有服务</Link>
+                        <Link className="active" to='/service/order'>预约服务</Link>
                     </div>
                 </div>
                 <div className="ui-box">
                     <Row>
-                        <Col span={12}>
-                            <Button type="primary"><Link to="/news/detail">添加</Link></Button>
-                        </Col>
-                        <Col span={12}>
+                        <Col>
                             <SearchInput placeholder="请输入标题" onSearch={value => this.handleSearch(value)} style={{ width: 200, float: 'right' }} />
                         </Col>
                     </Row>
@@ -179,7 +181,7 @@ class newList extends React.Component {
                 <div className="ui-box">
                     <Table
                         columns={columns}
-                        dataSource={news.news_list}
+                        dataSource={order.service_appointment_list}
                         pagination={pagination}
                     />
                 </div>
@@ -188,4 +190,4 @@ class newList extends React.Component {
     }
 }
 
-export default newList;
+export default ServiceOrder;
