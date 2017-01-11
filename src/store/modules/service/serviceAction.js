@@ -3,17 +3,17 @@ import types from './serviceType'
 
 export const getService = (params) => ({
     type: types.GET_SERVICE,
-    payload: api.get('/minibar/manager/service/list', params, true)
+    payload: api.get('/minibar/manager/service/list', params)
 })
 
 export const deleteService = (params) => ({
     type: types.DELETE_SERVICE,
-    payload: api.get('/minibar/manager/service/delete', params)
+    payload: api.post('/minibar/manager/service/delete', params)
 })
 
 export const getServiceOrder = (params) => ({
     type: types.GET_SERVICE_ORDER,
-    payload: api.get('/minibar/manager/service_appointment/list', params, true)
+    payload: api.get('/minibar/manager/service_appointment/list', params)
 })
 
 export const orderConfirm = (params) => ({
@@ -28,7 +28,7 @@ export const addService = (params) => ({
 
 export const getCurrentService = (params) => ({
     type: types.GET_SERVICE_ITEM,
-    payload: api.post('/minibar/manager/service/get', params, true)
+    payload: api.get('/minibar/manager/service/get', params)
 })
 
 export const updateService = (params) => ({

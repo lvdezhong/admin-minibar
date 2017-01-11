@@ -138,10 +138,16 @@ class ServiceOrder extends React.Component {
             dataIndex: 'code',
             key: 'operate',
             width: '10%',
-            render(text) {
-                return (
-                    <Link onClick={self.handleClick.bind(self, text)}>确认使用</Link>
-                )
+            render(text, record) {
+                if (record.used == 0) {
+                    return (
+                        <Link onClick={self.handleClick.bind(self, text)}>确认使用</Link>
+                    )
+                } else {
+                    return (
+                        <Link>已使用</Link>
+                    )
+                }
             }
         }]
 
@@ -174,7 +180,7 @@ class ServiceOrder extends React.Component {
                 <div className="ui-box">
                     <Row>
                         <Col>
-                            <SearchInput placeholder="请输入标题" onSearch={value => this.handleSearch(value)} style={{ width: 200, float: 'right' }} />
+                            <SearchInput placeholder="请输入房间号或名称" onSearch={value => this.handleSearch(value)} style={{ width: 200, float: 'right' }} />
                         </Col>
                     </Row>
                 </div>

@@ -67,7 +67,7 @@ class Hotel extends React.Component {
                     <Col span={12}>
                         <div className="ui-box hotel-select">
                             <FormItem>
-                                {getFieldDecorator('hotel', { initialValue: '1' })(
+                                {getFieldDecorator('hotel', { initialValue: '' })(
                                     <Select>
                                         {options}
                                     </Select>

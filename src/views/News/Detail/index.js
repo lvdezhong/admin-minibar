@@ -33,7 +33,7 @@ class newsDetail extends React.Component {
             this.props.action.getCurrentNews({
                 id: this.id
             }).then((data) => {
-                this.editor.$txt.html(data.value.data.news.content);
+                this.editor.$txt.html(data.value.data.content);
             });
         } else {
             this.props.action.getEmptyNews();

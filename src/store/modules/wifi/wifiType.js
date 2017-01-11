@@ -30,5 +30,10 @@ export default keyMirror({
 
     UPDATE_ROOM_LIST: null,
 
-    GET_NEW_WIFI: null
+    GET_NEW_WIFI: null,
+
+    ADD_WIFI: null,
+    ADD_WIFI_PENDING: null,
+    ADD_WIFI_SUCCESS: null,
+    ADD_WIFI_ERROR: null
 })

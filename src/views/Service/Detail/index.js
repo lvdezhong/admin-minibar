@@ -171,8 +171,8 @@ class serviceDetail extends React.Component {
         let defaultServiceStart = moment('00:00', 'HH:mm'),
             defaultServiceEnd = moment('00:30', 'HH:mm');
         if (currentService.service_start && currentService.service_end) {
-            defaultServiceStart = moment(currentService.service_start, 'HH:mm');
-            defaultServiceEnd = moment(currentService.service_end, 'HH:mm');
+            defaultServiceStart = moment(currentService.service_start, 'YYYY-MM-DD HH:mm');
+            defaultServiceEnd = moment(currentService.service_end, 'YYYY-MM-DD HH:mm');
         }
 
         return (
@@ -252,7 +252,7 @@ class serviceDetail extends React.Component {
                 </FormItem>
                 <FormItem {...formItemLayout} label="服务时长">
                     {getFieldDecorator('duration', {
-                        initialValue: currentService.service_duration ? currentService.service_duration : '0',
+                        initialValue: currentService.duration ? currentService.duration.toString() : '0',
                         rules: [
                             { required: true, message: '服务时长不能为空' }
                         ]

@@ -1,4 +1,5 @@
 import React from 'react'
+import { browserHistory } from 'react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Table, Form, Row, Col, Input, Button, Modal, message } from 'antd'
@@ -42,7 +43,7 @@ const RoomList = props => {
 )
 
 class WifiDetail extends React.Component {
-    constructor() {
+    constructor(props) {
         super()
         this.state = {
             visible: false,
@@ -55,7 +56,10 @@ class WifiDetail extends React.Component {
            offset: 0
         }
 
-        this.postData = {}
+        this.hotel_id = props.state.hotel.currentHotel;
+        this.postData = {
+            hotel_id: this.hotel_id
+        }
     }
 
     componentDidMount() {
@@ -138,7 +142,8 @@ class WifiDetail extends React.Component {
             visible: true
         });
 
-        this.props.action.getRoom(this.paginationCfg);
+        this.postData = Object.assign(this.postData, this.paginationCfg);
+        this.props.action.getRoom(this.postData);
     }
 
     handleCancel() {
@@ -165,7 +170,7 @@ class WifiDetail extends React.Component {
 
     handleSearch(value) {
         this.paginationCfg.offset = 0;
-        this.postData = Object.assign({
+        this.postData = Object.assign(this.postData, {
             keywords: value
         }, this.paginationCfg);
 
@@ -207,9 +212,24 @@ class WifiDetail extends React.Component {
                 return;
             }
 
-            console.log(values);
-        });
+            let machine_id_list = _.map(room_list, function(item) {
+                return item.machine_id;
+            });
 
+            let postData = {
+                hotel_id: this.hotel_id,
+                wifi_name: values.account,
+                wifi_pwd: values.password,
+                machine_id_list: JSON.stringify(machine_id_list)
+            }
+            if (this.isEdit) {
+                postData.id = this.id;
+            }
+
+            this.props.action.addWifi(postData).then(() => {
+                browserHistory.push('/wifi/list');
+            });
+        });
     }
 
     handleRemove(index) {

@@ -3,7 +3,7 @@ import types from './hotelType'
 
 export const getHotel = (params) => ({
     type: types.GET_HOTEL,
-    payload: api.post('/minibar/hotel/list', params, true)
+    payload: api.get('/minibar/hotel/list', params)
 })
 
 export const setHotel = (id) => ({

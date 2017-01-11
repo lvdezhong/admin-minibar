@@ -20,7 +20,7 @@ const service = (state = initialState.service, action) => {
 const currentService = (state = {}, action) => {
     switch (action.type) {
         case types.GET_SERVICE_ITEM_SUCCESS:
-            return action.payload.data.service;
+            return action.payload.data;
         case types.GET_NEW_SERVICE:
             return {}
         default:

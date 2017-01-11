@@ -3,7 +3,7 @@ import { combineReducers } from 'redux'
 
 const initialState = {
     hotel: {},
-    currentHotel: 1,
+    currentHotel: 2,
     isPending: false,
     errors: null
 }

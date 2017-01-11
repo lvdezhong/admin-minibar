@@ -31,7 +31,7 @@ const news = (state = initialState.news, action) => {
 const currentNews = (state = {}, action) => {
     switch (action.type) {
         case types.GET_NEWS_ITEM_SUCCESS:
-            return action.payload.data.news;
+            return action.payload.data;
         case types.GET_EMPTY_NEWS:
             return {}
         default:

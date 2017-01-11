@@ -3,7 +3,7 @@ import types from './wifiType'
 
 export const getWifi = (params) => ({
     type: types.GET_WIFI,
-    payload: api.post('/minibar/wifi/config/list', params, true)
+    payload: api.get('/minibar/wifi/config/list', params)
 })
 
 export const deleteWifi = (params) => ({
@@ -13,12 +13,12 @@ export const deleteWifi = (params) => ({
 
 export const getWifiState = (params) => ({
     type: types.GET_WIFI_STATE,
-    payload: api.post('/minibar/service/switch_status', params, true)
+    payload: api.get('/minibar/service/switch_status', params)
 })
 
 export const setWifiState = (params) => ({
     type: types.SET_WIFI_STATE,
-    payload: api.post('/minibar/service/switch', params, true)
+    payload: api.post('/minibar/service/switch', params)
 })
 
 export const getCurrentWifi = (data) => ({
@@ -30,7 +30,7 @@ export const getCurrentWifi = (data) => ({
 
 export const getRoom = (params) => ({
     type: types.GET_ROOM,
-    payload: api.post('/minibar/wifi/config/room/list', params, true)
+    payload: api.get('/minibar/wifi/config/room/list', params)
 })
 
 export const updateRoomList = (data, key) => ({
@@ -39,6 +39,11 @@ export const updateRoomList = (data, key) => ({
         data,
         key
     }
+})
+
+export const addWifi = (params) => ({
+    type: types.ADD_WIFI,
+    payload: api.post('/minibar/wifi/config/add', params)
 })
 
 export const getNewWifi = () => ({

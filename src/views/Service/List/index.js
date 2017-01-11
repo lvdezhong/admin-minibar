@@ -155,7 +155,7 @@ class ServiceList extends React.Component {
                             <Button type="primary"><Link to="/service/detail">添加</Link></Button>
                         </Col>
                         <Col span={12}>
-                            <SearchInput placeholder="请输入标题" onSearch={value => this.handleSearch(value)} style={{ width: 200, float: 'right' }} />
+                            <SearchInput placeholder="请输入服务名称" onSearch={value => this.handleSearch(value)} style={{ width: 200, float: 'right' }} />
                         </Col>
                     </Row>
                 </div>

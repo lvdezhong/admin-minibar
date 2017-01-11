@@ -70,6 +70,7 @@ const isPending = (state = initialState.isPending, action) => {
         case types.GET_WIFI_STATE_PENDING:
         case types.SET_WIFI_STATE_PENDING:
         case types.GET_ROOM_PENDING:
+        case types.ADD_WIFI_PENDING:
             return true;
         default:
             return false;
@@ -83,6 +84,7 @@ const errors = (state = initialState.errors, action) => {
         case types.GET_WIFI_STATE_ERROR:
         case types.SET_WIFI_STATE_ERROR:
         case types.GET_ROOM_ERROR:
+        case types.ADD_WIFI_ERROR:
             return action.payload.msg;
         default:
             return null;
