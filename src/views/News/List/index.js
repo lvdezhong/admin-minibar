@@ -36,7 +36,7 @@ class newList extends React.Component {
         this.props.action.getNews(this.postData);
         this.props.action.getNewsState({
             hotel_id: this.hotel_id,
-            type: 1
+            type: 2
         });
     }
 
@@ -52,7 +52,7 @@ class newList extends React.Component {
     handleChange() {
         this.props.action.setNewsState({
             hotel_id: this.hotel_id,
-            type: 1
+            type: 2
         });
     }
 
