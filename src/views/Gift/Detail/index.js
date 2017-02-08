@@ -12,7 +12,6 @@ import GoodsItem from '../../../components/GoodsItem'
 import { price } from '../../../utils'
 
 const FormItem = Form.Item;
-const confirm = Modal.confirm;
 
 @connect(
     state => ({state: state}),
@@ -172,8 +171,9 @@ class GiftDetail extends React.Component {
     handleGoodsItemCancel(index) {
         const { selectedArr } = this.state;
         selectedArr.splice(index, 1);
+        const _selectedArr = _.clone(selectedArr, true)
 
-        this.props.action.updateGiftList(selectedArr, 'gift_list');
+        this.props.action.updateGiftList(_selectedArr, 'gift_list');
     }
 
     componentDidMount() {

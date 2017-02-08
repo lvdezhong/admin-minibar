@@ -241,7 +241,7 @@ class GoodsDetail extends React.Component {
             data: {
                 user_id: 2088575
             },
-            headers:{
+            headers: {
                 "X-Requested-With": null
             },
             accept: ".jpg,.png",

@@ -1,0 +1,40 @@
+import keyMirror from 'mirrorkey'
+
+export default keyMirror({
+    GET_SERVICE: null,
+    GET_SERVICE_PENDING: null,
+    GET_SERVICE_SUCCESS: null,
+    GET_SERVICE_ERROR: null,
+
+    DELETE_SERVICE: null,
+    DELETE_SERVICE_PENDING: null,
+    DELETE_SERVICE_SUCCESS: null,
+    DELETE_SERVICE_ERROR: null,
+
+    GET_SERVICE_ORDER: null,
+    GET_SERVICE_ORDER_PENDING: null,
+    GET_SERVICE_ORDER_SUCCESS: null,
+    GET_SERVICE_ORDER_ERROR: null,
+
+    CONFIRM_ORDER: null,
+    CONFIRM_ORDER_PENDING: null,
+    CONFIRM_ORDER_SUCCESS: null,
+    CONFIRM_ORDER_ERROR: null,
+
+    ADD_SERVICE: null,
+    ADD_SERVICE_PENDING: null,
+    ADD_SERVICE_SUCCESS: null,
+    ADD_SERVICE_ERROR: null,
+
+    GET_SERVICE_ITEM: null,
+    GET_SERVICE_ITEM_PENDING: null,
+    GET_SERVICE_ITEM_SUCCESS: null,
+    GET_SERVICE_ITEM_ERROR: null,
+
+    UPDATE_SERVICE: null,
+    UPDATE_SERVICE_PENDING: null,
+    UPDATE_SERVICE_SUCCESS: null,
+    UPDATE_SERVICE_ERROR: null,
+
+    GET_NEW_SERVICE: null
+})
