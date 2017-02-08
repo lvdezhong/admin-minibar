@@ -10,6 +10,11 @@ import gift from './modules/gift/giftReducer'
 import task from './modules/task/taskReducer'
 import chart from './modules/chart/chartReducer'
 import log from './modules/log/logReducer'
+import hotel from './modules/hotel/hotelReducer'
+import wifi from './modules/wifi/wifiReducer'
+import contact from './modules/contact/contactReducer'
+import news from './modules/news/newsReducer'
+import service from './modules/service/serviceReducer'
 
 export default combineReducers({
     user,
@@ -21,5 +26,10 @@ export default combineReducers({
     gift,
     task,
     chart,
-    log
+    log,
+    hotel,
+    wifi,
+    contact,
+    news,
+    service
 });

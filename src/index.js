@@ -26,11 +26,25 @@ import TaskList from './views/Task/List'
 import TaskNew from './views/Task/New'
 import TaskDetail from './views/Task/Detail'
 
-import activityChart from './views/Chart/Activity'
-import tradeChart from './views/Chart/Trade'
-import goodsChart from './views/Chart/Goods'
+import ActivityChart from './views/Chart/Activity'
+import TradeChart from './views/Chart/Trade'
+import GoodsChart from './views/Chart/Goods'
 
 import LogList from './views/Log/List'
+
+import Hotel from './views/Hotel'
+
+import WifiList from './views/Wifi/List'
+import WifiDetail from './views/Wifi/Detail'
+
+import Contact from './views/Contact'
+
+import NewsList from './views/News/List'
+import NewsDetail from './views/News/Detail'
+
+import ServiceList from './views/Service/List'
+import ServiceDetail from './views/Service/Detail'
+import ServiceOrder from './views/Service/Order'
 
 const store = configureStore();
 
@@ -74,11 +88,27 @@ ReactDOM.render(
                     <Route path="task/detail(/:id)(/:disabled)" component={TaskDetail} />
 
                     <Redirect from="chart" to="chart/trade" />
-                    <Route path="chart/activity/:id" component={activityChart}/>
-                    <Route path="chart/trade" component={tradeChart}/>
-                    <Route path="chart/goods" component={goodsChart}/>
+                    <Route path="chart/activity/:id" component={ActivityChart} />
+                    <Route path="chart/trade" component={TradeChart} />
+                    <Route path="chart/goods" component={GoodsChart} />
 
-                    <Route path="log/list" component={LogList}/>
+                    <Route path="log/list" component={LogList} />
+
+                    <Redirect from="wifi" to="wifi/list" />
+                    <Route path="hotel" component={Hotel} />
+                    <Route path="wifi/list" component={WifiList} />
+                    <Route path="wifi/detail(/:id)" component={WifiDetail} />
+
+                    <Route path="contact" component={Contact} />
+
+                    <Redirect from="news" to="news/list" />
+                    <Route path="news/list" component={NewsList} />
+                    <Route path="news/detail(/:id)" component={NewsDetail} />
+
+                    <Redirect from="service" to="service/list" />
+                    <Route path="service/list" component={ServiceList} />
+                    <Route path="service/detail(/:id)" component={ServiceDetail} />
+                    <Route path="service/order(/:id)" component={ServiceOrder} />
                 </Route>
             </Route>
         </Router>

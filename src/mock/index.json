@@ -1,9 +1,254 @@
 {
-    "/minibar/data/get/global": {
+    "/minibar/hotel/list": {
         "code": 10000,
         "msg": "success",
         "data": {
+            "hotel_list": [{
+                "id": 1,
+                "name": "爱情海精品酒店1",
+                "address": "丰登街299号(银泰城对面)",
+                "room_number": "10086",
+                "longitude": "100",
+                "latitude": "100"
+            }, {
+                "id": 2,
+                "name": "爱情海精品酒店2",
+                "address": "丰登街299号(银泰城对面)",
+                "room_number": "10086",
+                "longitude": "100",
+                "latitude": "100"
+            }],
+            "total_count": 2
+        }
+    },
 
+    "/minibar/service/switch_status": {
+        "code": 10000,
+        "msg": "success",
+        "data": {
+            "status": 1
+        }
+    },
+
+    "/minibar/service/switch": {
+        "code": 10000,
+        "msg": "success",
+        "data": {}
+    },
+
+    "/minibar/wifi/config/list": {
+        "code": 10000,
+        "msg": "success",
+        "data": {
+            "wifi_config_list": [{
+                "id": 1,
+                "name": "wifi1",
+                "pwd": "12345678",
+                "room_list": [{
+                    "id": 1,
+                    "number": "10086",
+                    "machine_id": 1,
+                    "status": 0
+                }, {
+                    "id": 2,
+                    "number": "10000",
+                    "machine_id": 2,
+                    "status": 1
+                }]
+            }, {
+                "id": 2,
+                "name": "wifi2",
+                "pwd": "11111111",
+                "room_list": [{
+                    "id": 1,
+                    "number": "10086",
+                    "machine_id": 1,
+                    "status": 0
+                }, {
+                    "id": 2,
+                    "number": "10000",
+                    "machine_id": 2,
+                    "status": 1
+                }]
+            }],
+            "total_count": 2
+        }
+    },
+
+    "/minibar/wifi/config/room/list": {
+        "code": 10000,
+        "msg": "success",
+        "data": {
+            "room_list": [{
+                "id": 1,
+                "number": 10086,
+                "machine_id": 1,
+                "status": 1
+            }, {
+                "id": 2,
+                "number": 10087,
+                "machine_id": 2,
+                "status": 1
+            }, {
+                "id": 3,
+                "number": 10088,
+                "machine_id": 3,
+                "status": 0
+            }],
+            "total_count": 3
+        }
+    },
+
+    "/minibar/front/mobile/get": {
+        "code": 10000,
+        "msg": "success",
+        "data": {
+            "mobile": "18767104605"
+        }
+    },
+
+    "/minibar/manager/news/list": {
+        "code": 10000,
+        "msg": "success",
+        "data": {
+            "news_list": [{
+                "id": 1,
+                "title": "资讯1",
+                "pv": 100,
+                "uv": 100,
+                "content": "内容",
+                "font_image_url": "https://placeholdit.imgix.net/~text?txtsize=22&txt=100%C3%97100&w=100&h=100",
+                "origin_url": "http://www.baidu.com",
+                "share_image_url": "https://placeholdit.imgix.net/~text?txtsize=22&txt=100%C3%97100&w=100&h=100",
+                "share_title": "标题",
+                "share_content": "说明",
+                "gmt_created": "2017-01-01"
+            }, {
+                "id": 2,
+                "title": "资讯1",
+                "pv": 100,
+                "uv": 100,
+                "content": "内容",
+                "font_image_url": "https://placeholdit.imgix.net/~text?txtsize=22&txt=100%C3%97100&w=100&h=100",
+                "origin_url": "http://www.baidu.com",
+                "share_image_url": "https://placeholdit.imgix.net/~text?txtsize=22&txt=100%C3%97100&w=100&h=100",
+                "share_title": "标题",
+                "share_content": "说明",
+                "gmt_created": "2017-01-01"
+            }],
+            "total_count": 10
+        }
+    },
+
+    "/minibar/manager/news/get": {
+        "code": 10000,
+        "msg": "success",
+        "data": {
+            "news": {
+                "id": 1,
+                "title": "标题",
+                "pv": 100,
+                "uv": 100,
+                "content": "内容",
+                "front_image_url": "https://placeholdit.imgix.net/~text?txtsize=22&txt=100%C3%97100&w=100&h=100",
+                "origin_url": "http://www.baidu.com",
+                "share_image_url": "https://placeholdit.imgix.net/~text?txtsize=22&txt=100%C3%97100&w=100&h=100",
+                "share_title": "标题",
+                "share_content": "说明",
+                "gmt_created": "2017-01-01"
+            }
+        }
+    },
+
+    "/minibar/manager/service/list": {
+        "code": 10000,
+        "msg": "success",
+        "data": {
+            "service_list": [{
+                "id": 1,
+                "title": "服务名称",
+                "service_image_url": "https://placeholdit.imgix.net/~text?txtsize=22&txt=100%C3%97100&w=100&h=100",
+                "shelf_start": "2017-01-01",
+                "shelf_end": "2017-01-01",
+                "service_start": "18:00",
+                "service_end": "19:00",
+                "service_duration": 1,
+                "count": 1,
+                "advanced_time": 10,
+                "single_count": 1,
+                "content": "服务说明",
+                "ask_count": 1,
+                "use_count": 1,
+                "gmt_created": "2017-01-01"
+            }, {
+                "id": 2,
+                "title": "服务名称",
+                "service_image_url": "https://placeholdit.imgix.net/~text?txtsize=22&txt=100%C3%97100&w=100&h=100",
+                "shelf_start": "2017-01-01",
+                "shelf_end": "2017-01-01",
+                "service_start": "18:00",
+                "service_end": "19:00",
+                "service_duration": 1,
+                "count": 1,
+                "advanced_time": 10,
+                "single_count": 1,
+                "content": "服务说明",
+                "ask_count": 1,
+                "use_count": 1,
+                "gmt_created": "2017-01-01"
+            }],
+            "total_count": 10
+        }
+    },
+
+    "/minibar/manager/service_appointment/list": {
+        "code": 10000,
+        "msg": "success",
+        "data": {
+            "service_appointment_list": [{
+                "id": 1,
+                "title": "服务名称",
+                "room_number": "10086",
+                "time": "2017-01-01 20:00:00",
+                "count": 1,
+                "mobile": "18767104605",
+                "used": 0,
+                "code": "000011"
+            }, {
+                "id": 2,
+                "title": "服务名称",
+                "room_number": "10086",
+                "time": "2017-01-01 20:00:00",
+                "count": 1,
+                "mobile": "18767104605",
+                "used": 1,
+                "code": "000012"
+            }],
+            "total_count": 10
+        }
+    },
+
+    "/minibar/manager/service/get": {
+        "code": 10000,
+        "msg": "success",
+        "data": {
+            "service": {
+                "id": 1,
+                "title": "服务名称",
+                "service_image_url": "https://placeholdit.imgix.net/~text?txtsize=22&txt=100%C3%97100&w=100&h=100",
+                "shelf_start": "2017-01-01",
+                "shelf_end": "2017-01-02",
+                "service_start": "20:00:00",
+                "service_end": "20:30:00",
+                "service_duration": "60",
+                "count": 1,
+                "advanced_time": "60",
+                "single_count": 5,
+                "content": "服务说明",
+                "ask_count": 1,
+                "use_count": 1,
+                "gmt_created": "2017-01-01"
+            }
         }
     }
 }

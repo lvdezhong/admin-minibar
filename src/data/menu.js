@@ -64,6 +64,31 @@ const data = [{
         "key": 601,
         "link": "/log/list"
     }]
+}, {
+    "key": 7,
+    "name": "酒店服务",
+    "icon": "customer-service",
+    "child": [{
+        "name": "选择酒店",
+        "key": 700,
+        "link": "/hotel"
+    }, {
+        "name": "WIFI密码",
+        "key": 701,
+        "link": "/wifi/list"
+    }, {
+        "name": "联系前台",
+        "key": 702,
+        "link": "/contact"
+    }, {
+        "name": "资讯管理",
+        "key": 703,
+        "link": "/news/list"
+    }, {
+        "name": "服务预约",
+        "key": 704,
+        "link": "/service/list"
+    }]
 }]
 
 export default data;
